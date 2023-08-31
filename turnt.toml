@@ -1,1 +1,1 @@
-command = "powershell.exe Get-Content {filename} | bril2json.cmd | python cfg.py"
+command = "bril2json < {filename} | python cfg.py"
