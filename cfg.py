@@ -46,10 +46,12 @@ def createCFG(basicBlocks):
         else:
             if i < len(basicBlocks) - 1:
                 cfg[label] = [basicBlocks[i+1][0]['label']]
+            else:
+                cfg[label] = []
     return cfg
 
 for i in data['functions']:
     blocks = formBasicBlocks(i['instrs'])
     cfg = createCFG(blocks)
-    print("cfg for "+i['name']+": "+cfg)
+    print("cfg for "+i['name']+": "+str(cfg))
     print("\n")
