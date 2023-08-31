@@ -1,0 +1,9 @@
+cfg for main: {'label_0': []}
+
+
+cfg for queen: {'label_0': ['next.ret', 'for.cond'], 'next.ret': ['for.cond'], 'for.cond': ['for.body', 'next.ret.1'], 'for.body': ['rec.func', 'next.loop'], 'rec.func': ['next.loop'], 'next.loop': ['for.cond'], 'next.ret.1': []}
+
+
+cfg for valid: {'label_0': ['for.cond'], 'for.cond': ['for.body', 'ret.end'], 'for.body': ['true.ret.0', 'false.else'], 'true.ret.0': ['false.else'], 'false.else': ['true.ret.1', 'false.loop'], 'true.ret.1': ['false.loop'], 'false.loop': ['for.cond'], 'ret.end': []}
+
+
