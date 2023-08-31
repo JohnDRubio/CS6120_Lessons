@@ -1,7 +1,7 @@
 import json
+import sys
 
-file = open('myCode.json')
-data = json.load(file)
+data = json.load(sys.stdin)
 
 def formBasicBlocks(insns):
     basicBlocks = []
@@ -51,9 +51,5 @@ def createCFG(basicBlocks):
 for i in data['functions']:
     blocks = formBasicBlocks(i['instrs'])
     cfg = createCFG(blocks)
-
-print(cfg)
-
-# for block in blocks:
-#     print(block)
-#     print("=================\n")
+    print("cfg for "+i['name']+": "+cfg)
+    print("\n")
