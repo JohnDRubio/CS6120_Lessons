@@ -11,7 +11,7 @@ def formBasicBlocks(insns):
             basicBlocks.append(currBlock)
             currBlock = []
             currBlock.append(i)
-        elif i['op'] == 'br' or i['op'] == 'jmp':
+        elif i['op'] == 'br' or i['op'] == 'jmp' or i['op'] == 'ret':
             currBlock.append(i)
             basicBlocks.append(currBlock)
             currBlock = []
@@ -36,6 +36,7 @@ def removeEmptyBasicBlocks(basicBlocks):
 
 def createCFG(basicBlocks):
     cfg = {}
+    terminators = []
     for i,block in enumerate(basicBlocks):
         label = block[0]['label']
         lastInstr = block[-1]
@@ -43,15 +44,28 @@ def createCFG(basicBlocks):
             continue
         elif lastInstr['op'] == 'br' or lastInstr['op'] == 'jmp':
             cfg[label] = lastInstr['labels']
+            terminators.append(lastInstr['op'])
         else:
             if i < len(basicBlocks) - 1:
                 cfg[label] = [basicBlocks[i+1][0]['label']]
+                terminators.append('fall-through')
             else:
                 cfg[label] = []
-    return cfg
+    return cfg, terminators
 
 for i in data['functions']:
     blocks = formBasicBlocks(i['instrs'])
-    cfg = createCFG(blocks)
+    cfg, terminators = createCFG(blocks)
+
     print("cfg for "+i['name']+": "+str(cfg))
     print("\n")
+    for j, key in enumerate(cfg):
+        if len(cfg[key]) == 0:
+            break
+        if terminators[j] == 'br':
+            print("Block "+str(key)+" branches to "+str(cfg[key]))
+        elif terminators[j] == 'jmp':
+            print("Block "+str(key)+" jumps to "+str(cfg[key]))
+        else:
+            print("Block "+str(key)+" falls through to "+str(cfg[key]))
+    print('\n')
