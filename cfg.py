@@ -35,11 +35,25 @@ def removeEmptyBasicBlocks(basicBlocks):
     return newBasicBlocks
 
 def createCFG(basicBlocks):
-    pass
+    cfg = {}
+    for i,block in enumerate(basicBlocks):
+        label = block[0]['label']
+        lastInstr = block[-1]
+        if 'label' in lastInstr:
+            continue
+        elif lastInstr['op'] == 'br' or lastInstr['op'] == 'jmp':
+            cfg[label] = lastInstr['labels']
+        else:
+            if i < len(basicBlocks) - 1:
+                cfg[label] = [basicBlocks[i+1][0]['label']]
+    return cfg
 
 for i in data['functions']:
     blocks = formBasicBlocks(i['instrs'])
+    cfg = createCFG(blocks)
 
-for block in blocks:
-    print(block)
-    print("=================\n")
+print(cfg)
+
+# for block in blocks:
+#     print(block)
+#     print("=================\n")
