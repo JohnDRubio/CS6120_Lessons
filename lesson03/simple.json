@@ -31,6 +31,15 @@
         },
         {
           "args": [
+            "c",
+            "d"
+          ],
+          "dest": "e",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
             "d"
           ],
           "op": "print"
