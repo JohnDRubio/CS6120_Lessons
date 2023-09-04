@@ -18,22 +18,21 @@ def addLabels(basicBlocks):
             num = num + 1
     return basicBlocks
 
-def formBasicBlocks(program):
+def formBasicBlocks(func):
     basicBlocks = []
     currBlock = []
-    for func in program['functions']:
-        for i in func['instrs']:
-            if 'label' in i:
-                basicBlocks.append(currBlock)
-                currBlock = []
-                currBlock.append(i)
-            elif i['op'] == 'br' or i['op'] == 'jmp' or i['op'] == 'ret':
-                currBlock.append(i)
-                basicBlocks.append(currBlock)
-                currBlock = []
-            else:
-                currBlock.append(i)
-        basicBlocks.append(currBlock)
-        basicBlocks = removeEmptyBasicBlocks(basicBlocks)
-        basicBlocks = addLabels(basicBlocks)
+    for i in func['instrs']:
+        if 'label' in i:
+            basicBlocks.append(currBlock)
+            currBlock = []
+            currBlock.append(i)
+        elif i['op'] == 'br' or i['op'] == 'jmp' or i['op'] == 'ret':
+            currBlock.append(i)
+            basicBlocks.append(currBlock)
+            currBlock = []
+        else:
+            currBlock.append(i)
+    basicBlocks.append(currBlock)
+    basicBlocks = removeEmptyBasicBlocks(basicBlocks)
+    basicBlocks = addLabels(basicBlocks)
     return basicBlocks
