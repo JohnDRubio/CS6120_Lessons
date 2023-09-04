@@ -53,19 +53,20 @@ def createCFG(basicBlocks):
                 cfg[label] = []
     return cfg, terminators
 
-for i in data['functions']:
-    blocks = formBasicBlocks(i['instrs'])
-    cfg, terminators = createCFG(blocks)
+if __name__ == "__main__":
+    for i in data['functions']:
+        blocks = formBasicBlocks(i['instrs'])
+        cfg, terminators = createCFG(blocks)
 
-    print("cfg for "+i['name']+": "+str(cfg))
-    print("\n")
-    for j, key in enumerate(cfg):
-        if len(cfg[key]) == 0:
-            break
-        if terminators[j] == 'br':
-            print("Block "+str(key)+" branches to "+str(cfg[key]))
-        elif terminators[j] == 'jmp':
-            print("Block "+str(key)+" jumps to "+str(cfg[key]))
-        else:
-            print("Block "+str(key)+" falls through to "+str(cfg[key]))
-    print('\n')
+        print("cfg for "+i['name']+": "+str(cfg))
+        print("\n")
+        for j, key in enumerate(cfg):
+            if len(cfg[key]) == 0:
+                break
+            if terminators[j] == 'br':
+                print("Block "+str(key)+" branches to "+str(cfg[key]))
+            elif terminators[j] == 'jmp':
+                print("Block "+str(key)+" jumps to "+str(cfg[key]))
+            else:
+                print("Block "+str(key)+" falls through to "+str(cfg[key]))
+        print('\n')
