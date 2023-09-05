@@ -53,7 +53,6 @@ Trivial Dead Code Elimination: Optimization #2
         a: int = const 4                    a: int = const 5
         a: int = const 5        --->        print a
         print a
-
 '''
 def tdce_opt2(blocks):
     newBlocks = []
