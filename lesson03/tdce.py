@@ -82,7 +82,6 @@ def tdce_opt2(blocks):
         newBlocks.append(newBlock)
     return newBlocks
 
-
 def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
