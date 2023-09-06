@@ -38,6 +38,8 @@ def lvn_helper(block):
             else:
                 if 'dest' in insn:
                     lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
+                    insn['args'] = [lvn_table.table[value][0]]
+                    insn['op'] = 'id'
             
             print(lvn_table)
             print('\n\n')
