@@ -5,8 +5,11 @@ import json
 import sys
 import blocks
 
-def construct_value(op, args):
-    return (op,) + tuple(args)
+def construct_value(op, args, lvn_table):
+    nums = []
+    for a in args:
+        nums.append(lvn_table.var2num[a])
+    return (op,) + tuple(nums)
 
 ''' 
     TODO:
@@ -27,7 +30,7 @@ def lvn_helper(block):
 
             # Construct value 
             if 'args' in insn:
-                value = construct_value(insn['op'], insn['args'])
+                value = construct_value(insn['op'], insn['args'], lvn_table)
             else:   # 'value' in insn
                 value = (insn['op'], insn['value'])
 
