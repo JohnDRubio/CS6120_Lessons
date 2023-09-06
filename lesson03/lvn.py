@@ -11,6 +11,25 @@ def construct_value(op, args, lvn_table):
         nums.append(lvn_table.var2num[a])
     return (op,) + tuple(nums)
 
+def willBeOverwritten(num, block, dest):
+    for i in range(num+1, len(block)):
+        insn = block[i]
+        if dest in insn:
+            if dest == insn['dest']:
+                return True
+    return False
+
+def generateFreshVar(var, block):
+    num = 1
+    while True:
+        newVar = var+str(num)
+        for insn in block:
+            if 'dest' in insn:
+                if newVar == insn['dest']:
+                    num = num + 1
+                    continue
+        return newVar
+        
 ''' 
     TODO:
         - Confirm that table is being constructed correctly
@@ -22,9 +41,8 @@ def construct_value(op, args, lvn_table):
                     -  Handle edge case Adrian mentioned (when insn.dest is rerwritten to later in program)
 '''
 def lvn_helper(block):
-    newBlock = block
     lvn_table = Table()
-    for insn in block:
+    for i,insn in enumerate(block):
         value = ()
         if 'op' in insn:
 
@@ -37,10 +55,20 @@ def lvn_helper(block):
             # Add value to table
             if value not in lvn_table.table:
                 if 'dest' in insn:
+                    # Edge case
+                    dest = insn['dest']
+                    if (willBeOverwritten(i, block, dest)):
+                        insn['dest'] = generateFreshVar(dest, block)
+
                     lvn_table.addRow(value, insn['dest'])
                     if 'args' in insn:
+                        newArgs = []
                         for arg in insn['args']:
-                            lvn_table.table[lvn_table.var2num[arg]][0]
+                            num = lvn_table.var2num[arg]
+                            for key in lvn_table.table:
+                                if lvn_table.table[key][1] == num:
+                                    newArgs.append(lvn_table.table[key][0])
+                        insn['args'] = newArgs
             else:
                 if 'dest' in insn:
                     lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
@@ -51,7 +79,6 @@ def lvn_helper(block):
             print('\n\n')
 
     return block
-    # return newBlock
 
 def lvn(blocks):
     newBlocks = []
