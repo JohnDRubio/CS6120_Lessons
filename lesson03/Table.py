@@ -11,6 +11,9 @@ class Table:
         self.table[value] = (varName, self.nrows)
         self.var2num[varName] = self.nrows
         self.nrows += 1
+
+    def updateEnv(self, var, num):
+        self.var2num[var] = num
         
 # test = Table()
 

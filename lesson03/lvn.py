@@ -35,6 +35,9 @@ def lvn_helper(block):
             if value not in lvn_table.table:
                 if 'dest' in insn:
                     lvn_table.addRow(value, insn['dest'])
+            else:
+                if 'dest' in insn:
+                    lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
             
             print(lvn_table)
             print('\n\n')

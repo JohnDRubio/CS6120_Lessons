@@ -12,7 +12,7 @@
           "dest": "b",
           "op": "const",
           "type": "int",
-          "value": 2
+          "value": 4
         },
         {
           "dest": "c",
