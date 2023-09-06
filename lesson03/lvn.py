@@ -9,6 +9,8 @@ def construct_value(op, args, lvn_table):
     nums = []
     for a in args:
         nums.append(lvn_table.var2num[a])
+    # sort list so (ADD, 0, 2) == (ADD, 2, 0) can be more easily supported
+    nums.sort()
     return (op,) + tuple(nums)
 
 def willBeOverwritten(num, block, dest):
