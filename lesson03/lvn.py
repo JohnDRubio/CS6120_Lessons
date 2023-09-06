@@ -27,10 +27,7 @@ def lvn_helper(block):
 
             # Construct value 
             if 'args' in insn:
-                args = []
-                for a in insn['args']:
-                    args.append(a)
-                value = construct_value(insn['op'], args)
+                value = construct_value(insn['op'], insn['args'])
             else:   # 'value' in insn
                 value = (insn['op'], insn['value'])
 
