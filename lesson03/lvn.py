@@ -16,9 +16,6 @@ def construct_value(op, args, lvn_table):
 def willBeOverwritten(num, block, dest):
     for i in range(num+1, len(block)):
         insn = block[i]
-        # print('will be overwritten '+str(dest))
-        # print('will be overwritten '+str(insn['dest']))
-        # print(dest == insn['dest'])
         if 'dest' in insn:
             if dest == insn['dest']:
                 return True, i
@@ -26,14 +23,17 @@ def willBeOverwritten(num, block, dest):
 
 def generateFreshVar(var, block):
     num = 1
-    while True:
+    restart = True
+    while restart:
+        restart = False
         newVar = var+str(num)
         for insn in block:
             if 'dest' in insn:
                 if newVar == insn['dest']:
                     num = num + 1
-                    # continue
-        return newVar
+                    restart = True
+                    break
+    return newVar
         
 ''' 
     TODO:
@@ -69,16 +69,11 @@ def lvn_helper(block):
                             if 'args' in block[n]:
                                 newArgs = []
                                 for a in block[n]['args']:
-                                    print("dest: "+dest)
-                                    print("insn[dest]: "+insn['dest'])
                                     if a == dest:
                                         newArgs.append(insn['dest'])
-                                        print("Adding newVar to use")
                                     else:
                                         newArgs.append(a)
-                                print(str(block[n]['args']))
                                 block[n]['args'] = newArgs
-                                print(str(block[n]['args']))
                     lvn_table.addRow(value, insn['dest'])
                     if 'args' in insn:
                         newArgs = []
@@ -88,8 +83,6 @@ def lvn_helper(block):
                                 if lvn_table.table[key][1] == num:
                                     newArgs.append(lvn_table.table[key][0])
                         insn['args'] = newArgs
-                print("Did anything change?")
-                print(str(block))
             else:
                 if 'dest' in insn:
                     lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
