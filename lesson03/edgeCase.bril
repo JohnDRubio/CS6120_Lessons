@@ -1,0 +1,16 @@
+@main {
+  a: int = const 4;
+  b: int = const 4;
+  x: int = add a b;
+  y: int = add x x
+  x: int = const 22;
+  z: int = add a b;
+}
+
+
+#   value         varName
+--------------------------
+0     const 4        'a'   <- b, a
+1     add 0 0        'x1'   <- x1, z
+2     add 1 1        'y'
+3     const 22       'x'
