@@ -12,18 +12,6 @@ def construct_value(insn, lvn_table):
         lvn_table.var2num[insn['dest']] = num
         value = lvn_table.getValue(num)
         return value
-        # if value[0] != 'id':
-        #     nums = []
-        #     for a in insn['args']:
-        #         nums.append(lvn_table.var2num[a])
-        #     # sort list so (ADD, 0, 2) == (ADD, 2, 0) can be more easily supported
-        #     nums.sort()
-        #     return (insn['op'],) + tuple(nums)
-        # else:
-        #     lvn_table.var2num[insn['dest']] = num
-        #     print('value[1]')
-        #     print(value[1])
-        #     return value
     else:
         nums = []
         for a in insn['args']:
@@ -59,14 +47,11 @@ def lvn_helper(block):
     for i,insn in enumerate(block):
         value = ()
         if 'op' in insn:
-
             # Construct value 
             if 'args' in insn:
                 value = construct_value(insn, lvn_table)
-                # print("insn: "+str(insn)+'\n value: '+str(value))
             else:   # 'value' in insn
                 value = (insn['op'], insn['value'])
-
             # Add value to table
             if value not in lvn_table.table:
                 if 'dest' in insn:
@@ -85,6 +70,7 @@ def lvn_helper(block):
                                         newArgs.append(a)
                                 block[n]['args'] = newArgs
                     lvn_table.addRow(value, insn['dest'])
+                    # Transforms each insn to use canonical vars for args
                     if 'args' in insn:
                         newArgs = []
                         for arg in insn['args']:
@@ -97,15 +83,8 @@ def lvn_helper(block):
                 if 'dest' in insn:
                     if insn['op'] != 'id':
                         lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
-                        insn['args'] = [lvn_table.table[value][0]]
                         insn['op'] = 'id'
-                    else:
-                        insn['args'] = [lvn_table.table[value][0]]
-
-            
-            # print(lvn_table)
-            # print('\n\n')
-
+                    insn['args'] = [lvn_table.table[value][0]]
     return block
 
 def lvn(blocks):
@@ -120,8 +99,6 @@ def main():
     for func in program['functions']:
         basicBlocks = blocks.formBasicBlocks(func)
         basicBlocks = lvn(basicBlocks)
-        # basicBlocks = tdce.tdce_opt1(basicBlocks)
-        # basicBlocks = tdce.tdce_opt2(basicBlocks)
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
