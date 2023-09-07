@@ -6,6 +6,10 @@ import sys
 import blocks
 
 def construct_value(insn, lvn_table):
+    for a in insn['args']:
+        if a not in lvn_table.var2num:
+            lvn_table.addRow(('unknown', a), a)
+
     if insn['op'] == 'id':
         arg = insn['args'][0]
         num = lvn_table.var2num[arg]
@@ -42,8 +46,14 @@ def generateFreshVar(var, block):
                     break
     return newVar
         
-def lvn_helper(block):
+def addArguments(args, table):
+    for a in args:
+        argName = a['name']
+        table.addRow(('arg', argName), argName)
+
+def lvn_helper(block, args):
     lvn_table = Table()
+    addArguments(args, lvn_table)
     for i,insn in enumerate(block):
         value = ()
         if 'op' in insn:
@@ -85,12 +95,16 @@ def lvn_helper(block):
                         lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
                         insn['op'] = 'id'
                     insn['args'] = [lvn_table.table[value][0]]
+    
+    print(lvn_table)
+    print('\n')
+    
     return block
 
-def lvn(blocks):
+def lvn(blocks, args):
     newBlocks = []
     for block in blocks:
-        newBlock = lvn_helper(block)
+        newBlock = lvn_helper(block, args)
         newBlocks.append(newBlock)
     return newBlocks
 
@@ -98,7 +112,7 @@ def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
         basicBlocks = blocks.formBasicBlocks(func)
-        basicBlocks = lvn(basicBlocks)
+        basicBlocks = lvn(basicBlocks, func['args'])
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)
 

@@ -1,6 +1,8 @@
-@main {
+@main(m: int, n: int) {
   a: int = const 4;
   b: int = const 2;
+  c: int = add m n;
+  d: int = add m n;
 
   sum1: int = add a b;
   sum2: int = add a b;
