@@ -2,6 +2,7 @@
 # WARNING: Will quickly exceed stack size
 # ARGS: 3 6
 @ack(m: int, n: int): int {
+  deleteThis: int = const 99;
   zero: int = const 0;
   one: int = const 1;
   cond_m: bool = eq m zero;

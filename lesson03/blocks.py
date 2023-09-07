@@ -18,10 +18,10 @@ def addLabels(basicBlocks):
             num = num + 1
     return basicBlocks
 
-def formBasicBlocks(func):
+def formBasicBlocks(insns):
     basicBlocks = []
     currBlock = []
-    for i in func['instrs']:
+    for i in insns:
         if 'label' in i:
             basicBlocks.append(currBlock)
             currBlock = []

@@ -96,8 +96,8 @@ def lvn_helper(block, args):
                         insn['op'] = 'id'
                     insn['args'] = [lvn_table.table[value][0]]
     
-    print(lvn_table)
-    print('\n')
+    # print(lvn_table)
+    # print('\n')
     
     return block
 
