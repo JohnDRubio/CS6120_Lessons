@@ -35,16 +35,6 @@ def generateFreshVar(var, block):
                     break
     return newVar
         
-''' 
-    TODO:
-        - Confirm that table is being constructed correctly
-
-        - Implement algorithm:
-                    - When we look at an instruction, and one of its args already points to a value
-                        in the table, replace that arg with the canonical name in the table
-
-                    -  Handle edge case Adrian mentioned (when insn.dest is rerwritten to later in program)
-'''
 def lvn_helper(block):
     lvn_table = Table()
     for i,insn in enumerate(block):
@@ -89,8 +79,8 @@ def lvn_helper(block):
                     insn['args'] = [lvn_table.table[value][0]]
                     insn['op'] = 'id'
             
-            print(lvn_table)
-            print('\n\n')
+            # print(lvn_table)
+            # print('\n\n')
 
     return block
 
