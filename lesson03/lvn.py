@@ -111,7 +111,7 @@ def lvn(blocks, args):
 def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
-        basicBlocks = blocks.formBasicBlocks(func)
+        basicBlocks = blocks.formBasicBlocks(func['instrs'])
         basicBlocks = lvn(basicBlocks, func['args'])
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)

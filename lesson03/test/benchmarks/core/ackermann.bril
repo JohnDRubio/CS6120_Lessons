@@ -3,6 +3,10 @@
 # ARGS: 3 6
 @ack(m: int, n: int): int {
   deleteThis: int = const 99;
+  x: int = const 4;
+  copy1: int = id x;
+  copy2: int = id copy1;
+  print copy2;
   zero: int = const 0;
   one: int = const 1;
   cond_m: bool = eq m zero;
