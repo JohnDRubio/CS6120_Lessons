@@ -20,14 +20,3 @@ class Table:
             if self.table[key][1] == num:
                 return key
         return -1, -1
-# test = Table()
-
-# value = "ADD", 1, 2
-
-# test.table[value] = "a", test.nrows
-
-# test.var2num["a"] = test.nrows
-
-# test.nrows += 1
-
-# print(test)
