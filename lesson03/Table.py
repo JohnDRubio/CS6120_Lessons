@@ -14,7 +14,12 @@ class Table:
 
     def updateEnv(self, var, num):
         self.var2num[var] = num
-        
+    
+    def getValue(self, num):
+        for key in self.table:
+            if self.table[key][1] == num:
+                return key
+        return -1, -1
 # test = Table()
 
 # value = "ADD", 1, 2

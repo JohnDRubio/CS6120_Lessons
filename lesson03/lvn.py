@@ -5,13 +5,32 @@ import json
 import sys
 import blocks
 
-def construct_value(op, args, lvn_table):
-    nums = []
-    for a in args:
-        nums.append(lvn_table.var2num[a])
-    # sort list so (ADD, 0, 2) == (ADD, 2, 0) can be more easily supported
-    nums.sort()
-    return (op,) + tuple(nums)
+def construct_value(insn, lvn_table):
+    if insn['op'] == 'id':
+        arg = insn['args'][0]
+        num = lvn_table.var2num[arg]
+        lvn_table.var2num[insn['dest']] = num
+        value = lvn_table.getValue(num)
+        return value
+        # if value[0] != 'id':
+        #     nums = []
+        #     for a in insn['args']:
+        #         nums.append(lvn_table.var2num[a])
+        #     # sort list so (ADD, 0, 2) == (ADD, 2, 0) can be more easily supported
+        #     nums.sort()
+        #     return (insn['op'],) + tuple(nums)
+        # else:
+        #     lvn_table.var2num[insn['dest']] = num
+        #     print('value[1]')
+        #     print(value[1])
+        #     return value
+    else:
+        nums = []
+        for a in insn['args']:
+            nums.append(lvn_table.var2num[a])
+        # sort list so (ADD, 0, 2) == (ADD, 2, 0) can be more easily supported
+        nums.sort()
+        return (insn['op'],) + tuple(nums)
 
 def willBeOverwritten(num, block, dest):
     for i in range(num+1, len(block)):
@@ -43,7 +62,8 @@ def lvn_helper(block):
 
             # Construct value 
             if 'args' in insn:
-                value = construct_value(insn['op'], insn['args'], lvn_table)
+                value = construct_value(insn, lvn_table)
+                # print("insn: "+str(insn)+'\n value: '+str(value))
             else:   # 'value' in insn
                 value = (insn['op'], insn['value'])
 
@@ -75,9 +95,13 @@ def lvn_helper(block):
                         insn['args'] = newArgs
             else:
                 if 'dest' in insn:
-                    lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
-                    insn['args'] = [lvn_table.table[value][0]]
-                    insn['op'] = 'id'
+                    if insn['op'] != 'id':
+                        lvn_table.var2num[insn['dest']] = lvn_table.table[value][1]
+                        insn['args'] = [lvn_table.table[value][0]]
+                        insn['op'] = 'id'
+                    else:
+                        insn['args'] = [lvn_table.table[value][0]]
+
             
             # print(lvn_table)
             # print('\n\n')
