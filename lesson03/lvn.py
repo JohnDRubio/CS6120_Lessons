@@ -29,6 +29,10 @@ def willBeOverwritten(num, block, dest):
         insn = block[i]
         if 'dest' in insn:
             if dest == insn['dest']:
+                if 'args' in insn:
+                    for a in insn['args']:
+                        if a == insn['dest']:   # Test to see if we have a = a +1 situation
+                            return True, i+1
                 return True, i
     return False, -1
 
@@ -116,7 +120,10 @@ def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
         basicBlocks = blocks.formBasicBlocks(func['instrs'])
-        basicBlocks = lvn(basicBlocks, func['args'])
+        if 'args' in func:
+            basicBlocks = lvn(basicBlocks, func['args'])
+        else:
+            basicBlocks = lvn(basicBlocks, [])
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
