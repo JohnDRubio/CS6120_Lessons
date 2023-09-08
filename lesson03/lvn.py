@@ -61,7 +61,11 @@ def lvn_helper(block, args):
             if 'args' in insn:
                 value = construct_value(insn, lvn_table)
             else:   # 'value' in insn
-                value = (insn['op'], insn['value'])
+                # print(insn)
+                if insn['op'] == 'const': 
+                    value = (insn['op'], insn['value'])
+                else:
+                    continue
             # Add value to table
             if value not in lvn_table.table:
                 if 'dest' in insn:
