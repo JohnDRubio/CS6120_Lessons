@@ -10,6 +10,6 @@ pipeline = [
 [runs.myopt]
 pipeline = [
     "bril2json",
-    "python tdce.py",
+    "python lvn.py",
     "brili -p {args}",
 ]
