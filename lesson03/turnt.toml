@@ -1,1 +1,15 @@
-command = "bril2json < {filename} | python lvn.py | python tdce.py"
+extract = 'total_dyn_inst: (\d+)'
+benchmarks = './test/benchmarks/core/*.bril'
+
+[runs.baseline]
+pipeline = [
+    "bril2json",
+    "brili -p {args}",
+]
+
+[runs.myopt]
+pipeline = [
+    "bril2json",
+    "python tdce.py",
+    "brili -p {args}",
+]

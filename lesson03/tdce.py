@@ -50,35 +50,40 @@ Trivial Dead Code Elimination: Optimization #2
         a: int = const 5        --->        print a
         print a
 '''
-def tdce_opt2(insns):
-    changed = True
-    last_def = {}
-    while changed:
-        changed = False
-        remove = []
-        for insn in insns:
-            # check for uses
-            if 'args' in insn:
-                for a in insn['args']:
-                    if a in last_def:
-                        del last_def[a]             
-            # check for defs
-            if 'dest' in insn:
-                if insn['dest'] not in last_def:
-                    last_def[insn['dest']] = insn
-                else:
-                    remove.append(last_def[insn['dest']])
-                    changed = True
-                    last_def[insn['dest']] = insn
-        insns = [ x for x in insns if x not in remove ]
-    return insns
+def tdce_opt2(blocks):
+    newBlocks = []
+    for block in blocks:
+        changed = True
+        newBlock = block
+        last_def = {}
+        while changed:
+            changed = False
+            remove = []
+            for insn in newBlock:
+                # check for uses
+                if 'args' in insn:
+                    for a in insn['args']:
+                        if a in last_def:
+                            del last_def[a]             
+                # check for defs
+                if 'dest' in insn:
+                    if insn['dest'] not in last_def:
+                        last_def[insn['dest']] = insn
+                    else:
+                        remove.append(last_def[insn['dest']])
+                        changed = True
+                        last_def[insn['dest']] = insn
+                        # newBlock = [ x for x in newBlock if x not in remove ]
+            newBlock = [ x for x in newBlock if x not in remove ]
+        newBlocks.append(newBlock)
+    return newBlocks
 
 def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
         insns = tdce_opt1(func)
-        insns = tdce_opt2(insns)
         basicBlocks = blocks.formBasicBlocks(insns)
+        basicBlocks = tdce_opt2(basicBlocks)
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
