@@ -2,7 +2,7 @@ import lesson02 as blocks
 import json
 import sys
 
-def worklist(cfg, transfer, init, merge, direction):
+def worklist(transfer, init, merge, direction):
   ins = {}
   outs = {}
   worklist = []
@@ -18,13 +18,26 @@ def worklist(cfg, transfer, init, merge, direction):
 
   return ins, outs
 
-def main():
-    program = json.load(sys.stdin)
-    for func in program['functions']:
-        basicBlocks = blocks.formBasicBlocks(func['instrs'])
-        cfg = blocks.createCFG(basicBlocks)
-        ins, outs = worklist(cfg, -1, -1, -1, -1)
+def getSuccessor(b):
+  return cfg[b]
+
+def getPredecessor(b):
+  return predecessors[b]
+
+def getPredecessors(cfg):
+  predecessors = {}
+  for label in cfg:
+    for successor in cfg[label]:
+      if successor in predecessors:
+        predecessors[successor].append(label)
+      else:
+        predecessors[successor] = [label]
+  return predecessors
 
 
-if __name__ == "__main__":
-    main()
+program = json.load(sys.stdin)
+for func in program['functions']:
+  basicBlocks = blocks.formBasicBlocks(func['instrs'])
+  cfg = blocks.createCFG(basicBlocks)
+  predecessors = getPredecessors(cfg)
+  ins, outs = worklist(-1, -1, -1, -1)
