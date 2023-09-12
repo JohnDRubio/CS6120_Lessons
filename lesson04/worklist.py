@@ -1,55 +1,86 @@
-import lesson02 as blocks
 import json
 import sys
+from enum import Enum
+#sys.path.append('../lesson02')
+from cfg import formBasicBlocks, createCFG
 
-def getSuccessors(block, cfg):
-  return cfg[block]
+# class Direction(Enum):
+#   FORWARD = 1
+#   BACKWARD = 2
 
-def getPredecessors(block, predecessors):
-  return predecessors[block]
+class Worklist:
+  def __init__(self, function, init, merge, transfer, direction):
+      self.init = init
+      self.merge = merge
+      self.transfer = transfer
+      self.direction = direction
+      self.function = function
+      self.basicBlocks = []
+      self.cfg = {}
+      self.predecessors = {}
 
-def buildPredecessorList(cfg):
-  predecessors = {}
-  for label in cfg:
-    for successor in cfg[label]:
-      if successor in predecessors:
-        predecessors[successor].append(label)
-      else:
-        predecessors[successor] = [label]
-  return predecessors
+  def setup(self):
+    self.basicBlocks = formBasicBlocks(self.function['instrs'])
+    self.cfg = createCFG(self.basicBlocks)[0]
+    self.predecessors = self.buildPredecessorList()
 
-def getBasicBlock(b_label, basicBlocks):
-  for block in basicBlocks:
-    if block[0]['label'] == b_label:
-      return block
-  return None
+  def buildPredecessorList(self):
+    predecessors = {}
+    for label in self.cfg:
+      for successor in self.cfg[label]:
+        if successor in predecessors:
+          predecessors[successor].append(label)
+        else:
+          predecessors[successor] = [label]
+    return predecessors
 
-def worklist(transfer, init, merge, direction, cfg):
-  ins = {}
-  outs = {}
-  worklist = []
-  for label in cfg:
-    ins[label] = init # TODO: algorithm only says entry block gets set to init
-    outs[label] = init
-    worklist.append(label)
+  def definitions(self, b_label):
+    pass
 
-  while len(worklist) != 0:
-    b_label = worklist[0]
-    mergeList = []
-    for pred in getPredecessors(b_label):
-      mergeList.append(outs[pred])
-    ins[b_label] = merge(mergeList)
-    outs[b_label] = transfer(b_label, ins[b_label])
+  def kills(self, b_label):
+    pass
 
-  return ins, outs
+  def getSuccessors(self, block):
+    return self.cfg[block]
 
-def main():
-  program = json.load(sys.stdin)
-  for func in program['functions']:
-    basicBlocks = blocks.formBasicBlocks(func['instrs'])
-    cfg = blocks.createCFG(basicBlocks)
-    predecessors = buildPredecessorList(cfg)
-    ins, outs = worklist(-1, -1, -1, -1) # TODO: implement functions to pass into worklist
+  def getPredecessors(self, block):
+    return self.predecessors[block]
 
-if __name__ == "__main__":
-    main()
+  def getBasicBlock(self, b_label):
+    for block in self.basicBlocks:
+      if block[0]['label'] == b_label:
+        return block
+    return None
+
+  def worklist(self):
+    self.setup()
+    ins = {}
+    outs = {}
+    worklist = []
+    for label in self.cfg:
+      ins[label] = self.init
+      outs[label] = self.init
+      worklist.append(label)
+
+    while len(worklist) != 0:
+      b_label = worklist.pop(0)
+      mergeList = []
+      for pred in self.getPredecessors(b_label):
+        mergeList.append(outs[pred])
+      ins[b_label] = self.merge(mergeList)
+      prevOut = outs[b_label]
+      outs[b_label] = self.transfer(b_label, ins[b_label])
+      if prevOut != outs[b_label]:
+        for s in self.getSuccessors(b_label):
+          worklist.append(s)
+
+    return ins, outs
+
+# program = json.load(sys.stdin)
+# for func in program['functions']:
+#   basicBlocks = formBasicBlocks(func['instrs'])
+#   cfg = createCFG(basicBlocks)[0]
+#   predecessors = buildPredecessorList()
+#   print(predecessors)
+#   # ins, outs = worklist(-1, -1, -1, -1) # TODO: implement functions to pass into worklist
+# #json.dump(program, sys.stdout, indent=2, sort_keys=True)
