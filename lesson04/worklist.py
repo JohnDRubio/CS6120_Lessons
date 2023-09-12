@@ -2,11 +2,11 @@ import lesson02 as blocks
 import json
 import sys
 
-def getSuccessors(b):
-  return cfg[b]
+def getSuccessors(block, cfg):
+  return cfg[block]
 
-def getPredecessors(b):
-  return predecessors[b]
+def getPredecessors(block, predecessors):
+  return predecessors[block]
 
 def buildPredecessorList(cfg):
   predecessors = {}
@@ -18,13 +18,13 @@ def buildPredecessorList(cfg):
         predecessors[successor] = [label]
   return predecessors
 
-def getBasicBlock(b_label):
+def getBasicBlock(b_label, basicBlocks):
   for block in basicBlocks:
     if block[0]['label'] == b_label:
       return block
   return None
 
-def worklist(transfer, init, merge, direction):
+def worklist(transfer, init, merge, direction, cfg):
   ins = {}
   outs = {}
   worklist = []
@@ -43,10 +43,13 @@ def worklist(transfer, init, merge, direction):
 
   return ins, outs
 
+def main():
+  program = json.load(sys.stdin)
+  for func in program['functions']:
+    basicBlocks = blocks.formBasicBlocks(func['instrs'])
+    cfg = blocks.createCFG(basicBlocks)
+    predecessors = buildPredecessorList(cfg)
+    ins, outs = worklist(-1, -1, -1, -1) # TODO: implement functions to pass into worklist
 
-program = json.load(sys.stdin)
-for func in program['functions']:
-  basicBlocks = blocks.formBasicBlocks(func['instrs'])
-  cfg = blocks.createCFG(basicBlocks)
-  predecessors = buildPredecessorList(cfg)
-  ins, outs = worklist(-1, -1, -1, -1) # TODO: implement functions to pass into worklist
+if __name__ == "__main__":
+    main()
