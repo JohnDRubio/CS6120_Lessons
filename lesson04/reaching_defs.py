@@ -3,13 +3,31 @@ import sys
 import worklist as w
 
 def merge(mergeList):
-  mergeSet = {}
-  for set in mergeList:
-    mergeSet = mergeSet.union(set)
-  return mergeSet
+  mergeDict = {}
+  for dict in mergeList:
+    for key, value in dict:
+      if key in mergeDict:
+        mergeDict[key].append(value)
+      else:
+        mergeDict[key] = [value]
+  return mergeDict
 
 def transfer(b, ins):
-  return w.definitions(b).union(ins.difference(w.kills(b)))
+  transfer = {}
+  kills = worklist.kills(b)
+  defs = worklist.defs(b)
+  for varIn, valueIn in ins:
+    if varIn in kills:
+      transfer[varIn] = [x for x in valueIn if x not in kills[varIn]]
+    else:
+      transfer[varIn] = valueIn
+  for varDef, valueDef in defs:
+    if varDef not in transfer:
+      transfer[varDef] = valueDef
+    else:
+      transfer[varDef] = list(set(transfer[varDef]) | set(valueDef))
+
+  return transfer
 
 init = {}
 direction = w.Direction.FORWARD
@@ -18,5 +36,9 @@ program = json.load(sys.stdin)
 for func in program['functions']:
   worklist = w.Worklist(func, init, merge, transfer, direction)
   ins, outs = worklist.worklist()
+  print(func+'\n')
+  print(ins)
+  print('\n')
+  print(outs)
 
 

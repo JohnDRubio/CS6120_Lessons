@@ -15,6 +15,7 @@ class Worklist:
       self.basicBlocks = []
       self.cfg = {}
       self.predecessors = {}
+      self.availableDefinitions = {}
 
   def setup(self):
     self.basicBlocks = formBasicBlocks(self.function['instrs'])
@@ -31,16 +32,35 @@ class Worklist:
           predecessors[successor] = [label]
     return predecessors
 
-  def definitions(self, b_label):
-    pass
+  def defs(self, b_label):
+    defs = {}
+    block = self.getBasicBlock(b_label)
+    for insn in block:
+      if 'dest' in insn:
+        val = (insn['op'],(insn['value'] if 'value' in insn else insn['args']))
+        if insn['dest'] in defs:
+          defs[insn['dest']].append(val)
+        else:
+          defs[insn['dest']] = [val]
+    return defs
 
   def kills(self, b_label):
-    pass
+    kills = {}
+    defs = self.defs(b_label)
+    for var, value in defs:
+      if var in self.availableDefinitions:
+        kills[var] = self.availableDefinitions[var]
+      self.availableDefinitions[var] = value
+    return kills
 
   def getSuccessors(self, block):
+    if block not in self.cfg:
+      return []
     return self.cfg[block]
 
   def getPredecessors(self, block):
+    if block not in self.predecessors:
+      return []
     return self.predecessors[block]
 
   def getBasicBlock(self, b_label):
@@ -51,6 +71,10 @@ class Worklist:
 
   def worklist(self):
     self.setup()
+    print('predecessors\n')
+    print(self.predecessors)
+    print('cfg\n')
+    print(self.cfg)
     ins = {}
     outs = {}
     worklist = []
