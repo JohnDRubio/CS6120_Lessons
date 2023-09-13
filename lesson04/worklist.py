@@ -71,10 +71,6 @@ class Worklist:
 
   def worklist(self):
     self.setup()
-    print('predecessors\n')
-    print(self.predecessors)
-    print('cfg\n')
-    print(self.cfg)
     ins = {}
     outs = {}
     worklist = []

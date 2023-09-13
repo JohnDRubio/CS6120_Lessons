@@ -36,10 +36,11 @@ program = json.load(sys.stdin)
 for func in program['functions']:
   worklist = w.Worklist(func, init, merge, transfer, direction)
   ins, outs = worklist.worklist()
+  print('func\n')
   print(func)
-  print('\n')
+  print('ins\n')
   print(ins)
-  print('\n')
+  print('outs\n')
   print(outs)
 
 
