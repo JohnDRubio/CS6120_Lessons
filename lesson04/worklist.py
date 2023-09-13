@@ -47,7 +47,7 @@ class Worklist:
   def kills(self, b_label):
     kills = {}
     defs = self.defs(b_label)
-    for var, value in defs:
+    for var, value in defs.items():
       if var in self.availableDefinitions:
         kills[var] = self.availableDefinitions[var]
       self.availableDefinitions[var] = value
