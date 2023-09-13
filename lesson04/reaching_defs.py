@@ -12,11 +12,11 @@ def transfer(b, ins):
   return w.definitions(b).union(ins.difference(w.kills(b)))
 
 init = {}
-direction = 0
+direction = w.Direction.FORWARD
 
 program = json.load(sys.stdin)
 for func in program['functions']:
   worklist = w.Worklist(func, init, merge, transfer, direction)
-  ins, outs = worklist.worklist()
+  #ins, outs = worklist.worklist()
 
 

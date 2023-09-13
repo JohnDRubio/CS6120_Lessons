@@ -1,12 +1,9 @@
-import json
-import sys
 from enum import Enum
-#sys.path.append('../lesson02')
 from cfg import formBasicBlocks, createCFG
 
-# class Direction(Enum):
-#   FORWARD = 1
-#   BACKWARD = 2
+class Direction(Enum):
+  FORWARD = 1
+  BACKWARD = 2
 
 class Worklist:
   def __init__(self, function, init, merge, transfer, direction):
@@ -75,12 +72,3 @@ class Worklist:
           worklist.append(s)
 
     return ins, outs
-
-# program = json.load(sys.stdin)
-# for func in program['functions']:
-#   basicBlocks = formBasicBlocks(func['instrs'])
-#   cfg = createCFG(basicBlocks)[0]
-#   predecessors = buildPredecessorList()
-#   print(predecessors)
-#   # ins, outs = worklist(-1, -1, -1, -1) # TODO: implement functions to pass into worklist
-# #json.dump(program, sys.stdout, indent=2, sort_keys=True)
