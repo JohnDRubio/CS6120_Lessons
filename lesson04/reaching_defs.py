@@ -17,6 +17,6 @@ direction = w.Direction.FORWARD
 program = json.load(sys.stdin)
 for func in program['functions']:
   worklist = w.Worklist(func, init, merge, transfer, direction)
-  #ins, outs = worklist.worklist()
+  ins, outs = worklist.worklist()
 
 
