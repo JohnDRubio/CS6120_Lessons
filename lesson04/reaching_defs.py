@@ -40,5 +40,3 @@ for func in program['functions']:
     print(key+":"+str(value))
     print('\n')
   print('----------------------------------------------\n')
-
-
