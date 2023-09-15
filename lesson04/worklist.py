@@ -89,7 +89,10 @@ class Worklist:
       print(mergeList)
       print('old in l1\n')
       print()
-      ins[b_label] = self.merge(mergeList)
+      copyMergeList = mergeList.copy()
+      selfMerge = self.merge(copyMergeList)
+      print(id(ins["l1"]))
+      ins[b_label] = selfMerge
       prevOut = outs[b_label]
       outs[b_label] = self.transfer(b_label, ins[b_label])
       if prevOut != outs[b_label]:
