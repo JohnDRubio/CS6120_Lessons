@@ -15,7 +15,6 @@ class Worklist:
       self.basicBlocks = []
       self.cfg = {}
       self.predecessors = {}
-      #self.availableDefinitions = {}
 
   def setup(self):
     self.basicBlocks = formBasicBlocks(self.function['instrs'])
@@ -67,6 +66,15 @@ class Worklist:
         return block
     return None
 
+  def removeDupDefs(self, d):
+    for key, value in d.items():
+      for var, l in value.items():
+        newList = []
+        for x in l:
+          if x not in newList:
+            newList.append(x)
+        value[var] = newList
+
   def worklist(self):
     self.setup()
     ins = {}
@@ -78,17 +86,10 @@ class Worklist:
       worklist.append(label)
 
     while len(worklist) != 0:
-      print('---------------------------------------------\n')
-      print('worklist\n')
-      print(worklist)
       b_label = worklist.pop(0)
       mergeList = []
       for pred in self.getPredecessors(b_label):
         mergeList.append(outs[pred])
-      print('mergelist\n')
-      print(mergeList)
-      print('old in l1\n')
-      print()
       ins[b_label] = self.merge(mergeList)
       prevOut = outs[b_label]
       outs[b_label] = self.transfer(b_label, ins[b_label])
@@ -96,14 +97,6 @@ class Worklist:
         for s in self.getSuccessors(b_label):
           if s not in worklist:
             worklist.append(s)
-      print('ins\n')
-      for key, value in ins.items():
-        print(key+":"+str(value))
-        print('\n')
-      print('outs\n')
-      for key, value in outs.items():
-        print(key+":"+str(value))
-        print('\n')
-      print('----------------------------------------------\n')
-
+    self.removeDupDefs(ins)
+    self.removeDupDefs(outs)
     return ins, outs
