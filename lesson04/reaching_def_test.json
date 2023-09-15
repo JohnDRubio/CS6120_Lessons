@@ -49,7 +49,7 @@
           "dest": "b",
           "op": "const",
           "type": "int",
-          "value": 99
+          "value": 5
         },
         {
           "labels": [

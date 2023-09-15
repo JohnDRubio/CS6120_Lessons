@@ -15,7 +15,7 @@ class Worklist:
       self.basicBlocks = []
       self.cfg = {}
       self.predecessors = {}
-      self.availableDefinitions = {}
+      #self.availableDefinitions = {}
 
   def setup(self):
     self.basicBlocks = formBasicBlocks(self.function['instrs'])
@@ -43,13 +43,12 @@ class Worklist:
           defs[insn['dest']] = (insn['op'], insn['args'])
     return defs
 
-  def kills(self, b_label):
+  def kills(self, b_label, avail):
     kills = {}
     defs = self.defs(b_label)
     for var, value in defs.items():
-      if var in self.availableDefinitions:
-        kills[var] = self.availableDefinitions[var]
-      self.availableDefinitions[var] = value
+      if var in avail:
+        kills[var] = avail[var]
     return kills
 
   def getSuccessors(self, block):
@@ -79,10 +78,17 @@ class Worklist:
       worklist.append(label)
 
     while len(worklist) != 0:
+      print('---------------------------------------------\n')
+      print('worklist\n')
+      print(worklist)
       b_label = worklist.pop(0)
       mergeList = []
       for pred in self.getPredecessors(b_label):
         mergeList.append(outs[pred])
+      print('mergelist\n')
+      print(mergeList)
+      print('old in l1\n')
+      print()
       ins[b_label] = self.merge(mergeList)
       prevOut = outs[b_label]
       outs[b_label] = self.transfer(b_label, ins[b_label])
@@ -90,5 +96,14 @@ class Worklist:
         for s in self.getSuccessors(b_label):
           if s not in worklist:
             worklist.append(s)
+      print('ins\n')
+      for key, value in ins.items():
+        print(key+":"+str(value))
+        print('\n')
+      print('outs\n')
+      for key, value in outs.items():
+        print(key+":"+str(value))
+        print('\n')
+      print('----------------------------------------------\n')
 
     return ins, outs

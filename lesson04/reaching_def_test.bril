@@ -6,7 +6,7 @@
   a: int = const 4;
   jmp .end;
 .l2:
-  b: int = const 99;
+  b: int = const 5;
   jmp .end;
 .end:
   tmp: int = const 100;

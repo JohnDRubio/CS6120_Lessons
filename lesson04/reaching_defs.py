@@ -14,18 +14,13 @@ def merge(mergeList):
 
 def transfer(b, ins):
   transfer = {}
-  kills = worklist.kills(b)
+  kills = worklist.kills(b,ins)
   defs = worklist.defs(b)
   for varIn, valueIn in ins.items():
-    if varIn in kills:
-      transfer[varIn] = [x for x in valueIn if x != kills[varIn]]
-    else:
+    if varIn not in kills:
       transfer[varIn] = valueIn
   for varDef, valueDef in defs.items():
-    if varDef not in transfer:
-      transfer[varDef] = [valueDef]
-    else:
-      transfer[varDef].append(valueDef)
+    transfer[varDef] = [valueDef]
 
   return transfer
 
@@ -36,11 +31,11 @@ program = json.load(sys.stdin)
 for func in program['functions']:
   worklist = w.Worklist(func, init, merge, transfer, direction)
   ins, outs = worklist.worklist()
-  print('func\n')
-  print(func)
-  print('ins\n')
-  print(ins)
-  print('outs\n')
-  print(outs)
+  # print('func\n')
+  # print(func)
+  # print('ins\n')
+  # print(ins)
+  # print('outs\n')
+  # print(outs)
 
 
