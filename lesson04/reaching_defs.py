@@ -7,9 +7,9 @@ def merge(mergeList):
   for dict in mergeList:
     for key, value in dict.items():
       if key in mergeDict:
-        mergeDict[key].append(value)
+        mergeDict[key].extend(value)
       else:
-        mergeDict[key] = [value]
+        mergeDict[key] = value
   return mergeDict
 
 def transfer(b, ins):
@@ -18,14 +18,14 @@ def transfer(b, ins):
   defs = worklist.defs(b)
   for varIn, valueIn in ins.items():
     if varIn in kills:
-      transfer[varIn] = [x for x in valueIn if x not in kills[varIn]]
+      transfer[varIn] = [x for x in valueIn if x != kills[varIn]]
     else:
       transfer[varIn] = valueIn
   for varDef, valueDef in defs.items():
     if varDef not in transfer:
-      transfer[varDef] = valueDef
+      transfer[varDef] = [valueDef]
     else:
-      transfer[varDef] = list(set(transfer[varDef]) | set(valueDef))
+      transfer[varDef].append(valueDef)
 
   return transfer
 

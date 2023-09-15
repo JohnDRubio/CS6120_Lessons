@@ -37,11 +37,10 @@ class Worklist:
     block = self.getBasicBlock(b_label)
     for insn in block:
       if 'dest' in insn:
-        val = (insn['op'],(insn['value'] if 'value' in insn else insn['args']))
-        if insn['dest'] in defs:
-          defs[insn['dest']].append(val)
+        if 'value' in insn:
+          defs[insn['dest']] = (insn['op'], insn['value'])
         else:
-          defs[insn['dest']] = [val]
+          defs[insn['dest']] = (insn['op'], insn['args'])
     return defs
 
   def kills(self, b_label):
@@ -89,6 +88,7 @@ class Worklist:
       outs[b_label] = self.transfer(b_label, ins[b_label])
       if prevOut != outs[b_label]:
         for s in self.getSuccessors(b_label):
-          worklist.append(s)
+          if s not in worklist:
+            worklist.append(s)
 
     return ins, outs
