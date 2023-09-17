@@ -1,9 +1,19 @@
 import json
 import sys
 
-#
-def buildPredecessorList(cfg):
+# cfg is a map from label to list of successor labels
+#   Example: {startLabel : [label2, label3]}
+def buildPredecessorMap(cfg):
+    # Basically a reverse cfg: map from label to list of its predecessors
     predecessors = {}
+    for label in cfg:
+        for successorLabel in cfg[label]:
+            if successorLabel in predecessors:
+                predecessors[successorLabel].append(label)
+            else:
+                predecessors[successorLabel] = [label]
+    return predecessors
+
 
 def formBasicBlocks(insns):
     basicBlocks = []
