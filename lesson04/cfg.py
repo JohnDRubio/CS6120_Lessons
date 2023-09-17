@@ -1,6 +1,10 @@
 import json
 import sys
 
+#
+def buildPredecessorList(cfg):
+    predecessors = {}
+
 def formBasicBlocks(insns):
     basicBlocks = []
     currBlock = []
