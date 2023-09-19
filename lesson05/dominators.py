@@ -1,6 +1,7 @@
 import cfg
 import sys
 import json
+import graph
 
 '''
     input: CFG
@@ -94,6 +95,7 @@ def main():
         # print(str(getDominatorTree(doms)))
         print(str(getDominanceFrontier(doms, predecessors)))
         # print(inDominanceFrontier('l3','l3',doms, predecessors))
+        graph.createGraph(c,'cfg')
 
 if __name__ == "__main__":
     main()
