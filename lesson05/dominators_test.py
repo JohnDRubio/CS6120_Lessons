@@ -1,7 +1,6 @@
 import dominators
 import json
 import sys
-import cfg
 
 def getPathsHelper(c, node, dest, path, visited, allPaths):
     path.append(node)
@@ -21,17 +20,17 @@ def getPaths(c, start, dest, allPaths):
     visited = []
     getPathsHelper(c,start,dest,path,visited,allPaths)
 
-def main():
-    program = json.load(sys.stdin)
-    # data = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson04\\reaching_def_test2.json')
-    # program = json.load(data)
-    for func in program['functions']:
-        c = cfg.createCFG(func['instrs'])
-        start = 'label_0'       # this will likely be a constant
-        end = 'end'             # this will change depending on which block we're interested in
-        allPaths = []
-        getPaths(c, start, end, allPaths)
-        print(str(allPaths))
+def convertToSets(allPaths):
+    setList = []
+    for l in allPaths:
+        setList.append(set(l))
+    return setList
 
-if __name__ == "__main__":
-    main()
+def confirmDominators(actualDoms, cfg, vertex):
+    start = list(cfg.keys())[0]
+    allPaths = []
+    getPaths(cfg, start, vertex, allPaths)
+    allPaths = convertToSets(allPaths)
+    intersection = set.intersection(*allPaths)
+    return intersection == actualDoms
+    

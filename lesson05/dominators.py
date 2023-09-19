@@ -2,6 +2,7 @@ import cfg
 import sys
 import json
 import graph
+import dominators_test
 
 '''
     input: CFG
@@ -91,7 +92,12 @@ def main():
         # print(doesStrictlyDominate('label_0', 'label_0', doms))
         # print(doesImmediatelyDominate('label_0', 'l4', doms))
         # print(str(getDominatorTree(doms)))
-        print(str(getDominanceFrontier(doms, predecessors)))
+        for vertex in doms:
+            if dominators_test.confirmDominators(doms[vertex], c, vertex):
+                print(f'Doms computed correctly for vertex: {vertex}')
+            else:
+                print(f'Doms NOT computed correctly for vertex: {vertex}')
+        # print(str(getDominanceFrontier(doms, predecessors)))
         # print(inDominanceFrontier('l3','l3',doms, predecessors))
         graph.createGraph(c,'cfg')
 
