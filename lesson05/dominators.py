@@ -7,9 +7,9 @@ import graph
     input: CFG
 
     output: map: label -> set of labels
-            where label represents a node
-            and set of labels are the nodes
-            that dominate the label
+            where label represents some node
+            in CFG, A, and set of labels are the nodes
+            that dominate A
 '''
 def getDominators(c, predecessors):
     dom = {}        # map from label to set
@@ -57,15 +57,14 @@ def getDominatorTree(dom):
 
 def inDominanceFrontier(A, B, dom, predecessors):
     if doesStrictlyDominate(A,B,dom) or A == B:
-        return False
-    
-    predecessors = cfg.getPredecessors(B, predecessors)
+        return False  
+    preds = cfg.getPredecessors(B, predecessors)
 
     # Here, we ran into a weird situation where: 
     #     A is a pred of B 
     #     A does not dominate B 
     #     BUT A dominates itself therefore B is in the dom frontier of A
-    for pred in predecessors:
+    for pred in preds:
         if A in dom[pred]: 
             return True
     return False
@@ -79,7 +78,6 @@ def getDominanceFrontier(dom,predecessors):
                     domFrontier[A] = set()
                 domFrontier[A].add(B)
     return domFrontier 
-
 
 def main():
     program = json.load(sys.stdin)
