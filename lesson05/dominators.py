@@ -83,11 +83,14 @@ def getDominanceFrontier(dom,predecessors):
 
 def main():
     program = json.load(sys.stdin)
-
+    # data = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson05\\test\\benchmarks\\core\\relative-primes.json')
+    # program = json.load(data)
     for func in program['functions']:
         c = cfg.createCFG(func['instrs'])
+        # print(str(c))
         predecessors = cfg.buildPredecessorList(c)
         doms = getDominators(c, predecessors)
+        # print(str(doms))
         
         # Test to see if dominator sets were computed correctly
         for vertex in doms:
