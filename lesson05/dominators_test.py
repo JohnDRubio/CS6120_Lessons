@@ -9,9 +9,10 @@ def getPathsHelper(c, node, dest, path, visited, allPaths):
         allPaths.append(path[:])
     
     else:
-        for n in c[node]:
-            if n not in visited:
-                getPathsHelper(c,n,dest,path,visited,allPaths)
+        if node in c:
+            for n in c[node]:
+                if n not in visited:
+                    getPathsHelper(c,n,dest,path,visited,allPaths)
     path.pop()
     visited.pop()
 
@@ -31,7 +32,7 @@ def getDominators(cfg, vertex):
     allPaths = []
     getPaths(cfg, start, vertex, allPaths)
     allPaths = convertToSets(allPaths)
-    intersection = set.intersection(*allPaths)
+    intersection = set.intersection(*allPaths) if allPaths else set()
     return intersection 
 
 def confirmDominators(ourDoms, cfg, vertex):
