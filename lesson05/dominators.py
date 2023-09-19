@@ -54,6 +54,30 @@ def getDominatorTree(dom):
                 domTree[dominator].add(vertex)
     return domTree
 
+def inDominanceFrontier(A, B, dom, predecessors):
+    if doesStrictlyDominate(A,B,dom) or A == B:
+        return False
+    
+    predecessors = cfg.getPredecessors(B, predecessors)
+
+    # Here, we ran into a weird situation where: 
+    #     A is a pred of B 
+    #     A does not dominate B 
+    #     BUT A dominates itself therefore B is in the dom frontier of A
+    for pred in predecessors:
+        if A in dom[pred]: 
+            return True
+    return False
+
+def getDominanceFrontier(dom,predecessors):
+    domFrontier = {}
+    for A in dom:
+        for B in dom:
+            if inDominanceFrontier(A,B,dom,predecessors):
+                if A not in domFrontier:
+                    domFrontier[A] = set()
+                domFrontier[A].add(B)
+    return domFrontier 
 
 
 def main():
@@ -67,7 +91,9 @@ def main():
         # print(str(doms))
         # print(doesStrictlyDominate('label_0', 'label_0', doms))
         # print(doesImmediatelyDominate('label_0', 'l4', doms))
-        print(str(getDominatorTree(doms)))
+        # print(str(getDominatorTree(doms)))
+        print(str(getDominanceFrontier(doms, predecessors)))
+        # print(inDominanceFrontier('l3','l3',doms, predecessors))
 
 if __name__ == "__main__":
     main()
