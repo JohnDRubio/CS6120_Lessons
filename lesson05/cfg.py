@@ -32,9 +32,9 @@ def removeEmptyBasicBlocks(basicBlocks):
     newBasicBlocks = [x for x in basicBlocks if x != []]
     return newBasicBlocks
 
-def createCFG(basicBlocks):
+def createCFG(insns):
+    basicBlocks = formBasicBlocks(insns)
     cfg = {}
-    terminators = []
     for i,block in enumerate(basicBlocks):
         label = block[0]['label']
         lastInstr = block[-1]
@@ -42,14 +42,12 @@ def createCFG(basicBlocks):
             continue
         elif lastInstr['op'] == 'br' or lastInstr['op'] == 'jmp':
             cfg[label] = lastInstr['labels']
-            terminators.append(lastInstr['op'])
         else:
-            if i < len(basicBlocks) - 1 and lastInstr['op'] != 'ret': # make this change in lesson02
+            if i < len(basicBlocks) - 1 and lastInstr['op'] != 'ret':
                 cfg[label] = [basicBlocks[i+1][0]['label']]
-                terminators.append('fall-through')
             else:
                 cfg[label] = []
-    return cfg, terminators
+    return cfg
 
 def buildPredecessorList(cfg):
     predecessors = {}
