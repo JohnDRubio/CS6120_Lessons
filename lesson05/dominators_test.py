@@ -26,11 +26,38 @@ def convertToSets(allPaths):
         setList.append(set(l))
     return setList
 
-def confirmDominators(actualDoms, cfg, vertex):
+def getDominators(cfg, vertex):
     start = list(cfg.keys())[0]
     allPaths = []
     getPaths(cfg, start, vertex, allPaths)
     allPaths = convertToSets(allPaths)
     intersection = set.intersection(*allPaths)
-    return intersection == actualDoms
-    
+    return intersection 
+
+def confirmDominators(ourDoms, cfg, vertex):
+    return getDominators(cfg, vertex) == ourDoms
+
+def confirmDomTree(ourDomTree, dominators):
+    for vertex in ourDomTree:
+        for child in ourDomTree[vertex]:
+            for i in ourDomTree:
+                if i != vertex and i != child:
+                    if vertex in dominators[i] and dominators[child] == i:
+                        return False
+                    if vertex not in dominators[child]:
+                        return False
+    return True
+
+def confirmDomFrontier(ourDomFrontier, dominators, predecessors, cfg):
+    for A in cfg:
+        if A in ourDomFrontier:
+            for B in ourDomFrontier[A]:
+                if A in dominators[B] and A != B:
+                    return False
+                numPredsDominated = 0
+                for pred in predecessors[B]:
+                    if A in dominators[pred]:
+                        numPredsDominated = numPredsDominated + 1
+                if numPredsDominated == 0:
+                    return False
+    return True

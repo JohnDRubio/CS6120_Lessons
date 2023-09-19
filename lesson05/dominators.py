@@ -97,6 +97,15 @@ def main():
                 print(f'Doms computed correctly for vertex: {vertex}')
             else:
                 print(f'Doms NOT computed correctly for vertex: {vertex}')
+        if dominators_test.confirmDomTree(getDominatorTree(doms), doms):
+            print(f'Dominator Tree computed correctly')
+        else:
+            print(f'Dominator Tree NOT computed correctly')
+
+        if dominators_test.confirmDomFrontier(getDominanceFrontier(doms, predecessors), doms, predecessors, c):
+            print(f'Dominator Frontier computed correctly')
+        else:
+            print(f'Dominator Frontier NOT computed correctly')
         # print(str(getDominanceFrontier(doms, predecessors)))
         # print(inDominanceFrontier('l3','l3',doms, predecessors))
         graph.createGraph(c,'cfg')
