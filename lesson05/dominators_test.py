@@ -33,6 +33,8 @@ def getDominators(cfg, vertex):
     getPaths(cfg, start, vertex, allPaths)
     allPaths = convertToSets(allPaths)
     intersection = set.intersection(*allPaths) if allPaths else set()
+    print("DOMINATORS EXPECTED\n\n")
+    print(intersection)
     return intersection 
 
 def confirmDominators(ourDoms, cfg, vertex):

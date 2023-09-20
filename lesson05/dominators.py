@@ -86,11 +86,13 @@ def main():
     # data = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson05\\test\\benchmarks\\core\\relative-primes.json')
     # program = json.load(data)
     for func in program['functions']:
+        print(func['name']+' function\n')
+        #print(str(cfg.formBasicBlocks(func['instrs'])))
         c = cfg.createCFG(func['instrs'])
-        # print(str(c))
+        #print(str(c))
         predecessors = cfg.buildPredecessorList(c)
         doms = getDominators(c, predecessors)
-        # print(str(doms))
+        print(str(doms))
         
         # Test to see if dominator sets were computed correctly
         for vertex in doms:
