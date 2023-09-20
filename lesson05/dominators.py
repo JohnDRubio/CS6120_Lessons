@@ -92,7 +92,8 @@ def main():
         #print(str(c))
         predecessors = cfg.buildPredecessorList(c)
         doms = getDominators(c, predecessors)
-        print(str(doms))
+        #print(str(doms))
+        #print(cfg.dfs(set(),c,'label_0', set()))
         
         # Test to see if dominator sets were computed correctly
         for vertex in doms:

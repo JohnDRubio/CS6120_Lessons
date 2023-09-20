@@ -32,6 +32,22 @@ def removeEmptyBasicBlocks(basicBlocks):
     newBasicBlocks = [x for x in basicBlocks if x != []]
     return newBasicBlocks
 
+def dfs(visited, cfg, node, nodes):
+    if node not in visited:
+        nodes.add(node)
+        visited.add(node)
+        for child in cfg[node]:
+            dfs(visited,cfg,child,nodes)
+    return nodes
+
+def reduceCFG(cfg):
+    start = list(cfg.keys())[0]
+    reachableNodes = dfs(set(),cfg,start, set())
+
+    for node in cfg.copy():
+        if node not in reachableNodes:
+            del cfg[node]
+
 def createCFG(insns):
     basicBlocks = formBasicBlocks(insns)
     cfg = {}
@@ -50,6 +66,7 @@ def createCFG(insns):
                 cfg[label] = [basicBlocks[i+1][0]['label']]
             else:
                 cfg[label] = []
+    reduceCFG(cfg)
     return cfg
 
 def buildPredecessorList(cfg):
