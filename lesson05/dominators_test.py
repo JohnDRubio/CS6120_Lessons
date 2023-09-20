@@ -7,7 +7,6 @@ def getPathsHelper(c, node, dest, path, visited, allPaths):
     visited.append(node)
     if node == dest:
         allPaths.append(path[:])
-    
     else:
         if node in c:
             for n in c[node]:
@@ -33,8 +32,6 @@ def getDominators(cfg, vertex):
     getPaths(cfg, start, vertex, allPaths)
     allPaths = convertToSets(allPaths)
     intersection = set.intersection(*allPaths) if allPaths else set()
-    # print("DOMINATORS EXPECTED\n\n")
-    # print(intersection)
     return intersection 
 
 def confirmDominators(ourDoms, cfg, vertex):

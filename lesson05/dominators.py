@@ -83,17 +83,11 @@ def getDominanceFrontier(dom,predecessors):
 
 def main():
     program = json.load(sys.stdin)
-    # data = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson05\\test\\benchmarks\\core\\relative-primes.json')
-    # program = json.load(data)
     for func in program['functions']:
-        print(func['name']+' function\n')
-        #print(str(cfg.formBasicBlocks(func['instrs'])))
+        print(func['name']+' function')
         c = cfg.createCFG(func['instrs'])
-        #print(str(c))
         predecessors = cfg.buildPredecessorList(c)
         doms = getDominators(c, predecessors)
-        #print(str(doms))
-        #print(cfg.dfs(set(),c,'label_0', set()))
         
         # Test to see if dominator sets were computed correctly
         for vertex in doms:
@@ -113,8 +107,8 @@ def main():
             print(f'Dominator Frontier computed correctly')
         else:
             print(f'Dominator Frontier NOT computed correctly')
-
-        graph.createGraph(c,'cfg')
+        print('\n')
+        graph.createGraph(c,func['name']+"CFG")
 
 if __name__ == "__main__":
     main()
