@@ -44,8 +44,10 @@ def dfs(visited, graph, node, nodes):
 def getNumNodes(graph):
     if len(list(graph.keys())) == 0:    # This is a hack - single-node CFGs don't have dom trees
         return 1                        # since we're assuming immediate dominance isn't reflexive.
-    start = list(graph.keys())[0]       # Therefore, we want to return 1 for empty domTree graphs so
-    visited = set()                     # it matches the number of nodes in single-node CFGs
+                                        # Therefore, we want to return 1 for empty domTree graphs so
+                                        # it matches the number of nodes in single-node CFGs 
+    start = list(graph.keys())[0]       
+    visited = set()                     
     nodes = set()
     throwAway = dfs(visited, graph, start, nodes)
     return len(visited)
