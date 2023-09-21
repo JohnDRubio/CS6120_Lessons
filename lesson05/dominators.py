@@ -33,7 +33,7 @@ def doesStrictlyDominate(A, B, dom):
     return A in dom[B] and A != B
 
 def doesImmediatelyDominate(A, B, dom):
-    if A not in dom[B]:
+    if A not in dom[B] or A == B:
         return False
     
     strictlyDominatesB = set()
@@ -109,6 +109,7 @@ def main():
             print(f'Dominator Frontier NOT computed correctly')
         print('\n')
         graph.createGraph(c,func['name']+"CFG")
+        graph.createGraph(getDominatorTree(doms),func['name']+"DomTree")
 
 if __name__ == "__main__":
     main()

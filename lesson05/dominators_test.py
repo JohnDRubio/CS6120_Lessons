@@ -1,6 +1,7 @@
 import dominators
 import json
 import sys
+import cfg
 
 def getPathsHelper(c, node, dest, path, visited, allPaths):
     path.append(node)
@@ -46,7 +47,7 @@ def confirmDomTree(ourDomTree, dominators, c):
                         return False
                     if vertex not in dominators[child]:
                         return False
-    return True and len(c) == len(ourDomTree)
+    return True and cfg.getNumNodes(c) == cfg.getNumNodes(ourDomTree)
 
 def confirmDomFrontier(ourDomFrontier, dominators, predecessors, cfg):
     for A in cfg:

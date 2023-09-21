@@ -32,15 +32,25 @@ def removeEmptyBasicBlocks(basicBlocks):
     newBasicBlocks = [x for x in basicBlocks if x != []]
     return newBasicBlocks
 
-def dfs(visited, cfg, node, nodes):
+def dfs(visited, graph, node, nodes):
     if node not in visited:
         nodes.add(node)
         visited.add(node)
-        for child in cfg[node]:
-            dfs(visited,cfg,child,nodes)
+        if node in graph:
+            for child in graph[node]:
+                dfs(visited,graph,child,nodes)
     return nodes
 
-def reduceCFG(cfg):
+def getNumNodes(graph):
+    if len(list(graph.keys())) == 0:    # This is a hack - single-node CFGs don't have dom trees
+        return 1                        # since we're assuming immediate dominance isn't reflexive.
+    start = list(graph.keys())[0]       # Therefore, we want to return 1 for empty domTree graphs so
+    visited = set()                     # it matches the number of nodes in single-node CFGs
+    nodes = set()
+    throwAway = dfs(visited, graph, start, nodes)
+    return len(visited)
+
+def pruneCFG(cfg):
     start = list(cfg.keys())[0]
     reachableNodes = dfs(set(),cfg,start, set())
 
@@ -66,7 +76,18 @@ def createCFG(insns):
                 cfg[label] = [basicBlocks[i+1][0]['label']]
             else:
                 cfg[label] = []
-    reduceCFG(cfg)
+
+    # pruneCFG removes nodes from CFG that
+    # are unreachable from entry
+    #
+    #   Ex/
+    #       label_0:        
+    #           x: int = const 5
+    #           ret x
+    #       label_1:        // assume there is no jmp to label_1
+    #           jmp end     // so label_1 is an unreachable basic block  
+          
+    pruneCFG(cfg)
     return cfg
 
 def buildPredecessorList(cfg):
