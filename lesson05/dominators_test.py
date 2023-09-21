@@ -37,7 +37,7 @@ def getDominators(cfg, vertex):
 def confirmDominators(ourDoms, cfg, vertex):
     return getDominators(cfg, vertex) == ourDoms
 
-def confirmDomTree(ourDomTree, dominators):
+def confirmDomTree(ourDomTree, dominators, c):
     for vertex in ourDomTree:
         for child in ourDomTree[vertex]:
             for i in ourDomTree:
@@ -46,7 +46,7 @@ def confirmDomTree(ourDomTree, dominators):
                         return False
                     if vertex not in dominators[child]:
                         return False
-    return True
+    return True and len(c) == len(ourDomTree)
 
 def confirmDomFrontier(ourDomFrontier, dominators, predecessors, cfg):
     for A in cfg:

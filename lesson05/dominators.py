@@ -97,7 +97,7 @@ def main():
                 print(f'Doms NOT computed correctly for vertex: {vertex}')
 
         # Test to see if dominator tree was computed correctly
-        if dominators_test.confirmDomTree(getDominatorTree(doms), doms):
+        if dominators_test.confirmDomTree(getDominatorTree(doms), doms, c):
             print(f'Dominator Tree computed correctly')
         else:
             print(f'Dominator Tree NOT computed correctly')
