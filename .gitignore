@@ -2,4 +2,7 @@ lesson02/__pycache__/*
 lesson03/__pycache__/*
 lesson04/__pycache__/*
 lesson05/__pycache__/*
+lesson06/__pycache__/*
 .DS_Store
+lesson05/graphs/*
+lesson06/graphs/*
