@@ -1,6 +1,3 @@
-import json
-import sys
-
 def formBasicBlocks(insns):
     basicBlocks = []
     currBlock = []
@@ -102,6 +99,12 @@ def buildPredecessorList(cfg):
           predecessors[successor] = [label]
     return predecessors
 
+def buildSuccessorList(cfg):
+    successors = {}     # map from block to set of it's successors
+    for node in cfg:
+        successors[node] = set(getSuccessors(node,cfg))
+    return successors
+
 def getSuccessors(block, cfg):
     if block not in cfg:
       return []
@@ -111,3 +114,24 @@ def getPredecessors(block, predecessors):
     if block not in predecessors:
         return []
     return predecessors[block]
+
+def getAllVars(insns):
+    vars = set()
+    for insn in insns:
+        if 'dest' in insn:
+            vars.add(insn['dest'])
+    return vars
+
+def getDefBlocks(insns):
+    defs = {}   # map from varName to set of blocks where var is def'd
+    basicBlocks = formBasicBlocks(insns)
+    for block in basicBlocks:
+        blockName = block[0]['label']
+        for insn in block:
+            if 'dest' in insn:
+                if insn['dest'] not in defs:
+                    defs[insn['dest']] = set()
+                    defs[insn['dest']].add(blockName)
+                else:
+                    defs[insn['dest']].add(blockName)
+    return defs

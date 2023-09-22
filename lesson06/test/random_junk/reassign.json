@@ -1,0 +1,57 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 100
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 101
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 102
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 103
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 104
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 105
+        },
+        {
+          "dest": "a",
+          "op": "const",
+          "type": "int",
+          "value": 42
+        },
+        {
+          "args": [
+            "a"
+          ],
+          "op": "print"
+        }
+      ],
+      "name": "main"
+    }
+  ]
+}

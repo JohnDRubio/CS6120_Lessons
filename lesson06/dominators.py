@@ -1,8 +1,4 @@
 import cfg
-import sys
-import json
-import graph
-import dominators_test
 
 '''
     input: CFG
@@ -80,36 +76,3 @@ def getDominanceFrontier(dom,predecessors):
                     domFrontier[A] = set()
                 domFrontier[A].add(B)
     return domFrontier 
-
-def main():
-    program = json.load(sys.stdin)
-    for func in program['functions']:
-        print(func['name']+' function')
-        c = cfg.createCFG(func['instrs'])
-        predecessors = cfg.buildPredecessorList(c)
-        doms = getDominators(c, predecessors)
-        
-        # Test to see if dominator sets were computed correctly
-        for vertex in doms:
-            if dominators_test.confirmDominators(doms[vertex], c, vertex):
-                print(f'Doms computed correctly for vertex: {vertex}')
-            else:
-                print(f'Doms NOT computed correctly for vertex: {vertex}')
-
-        # Test to see if dominator tree was computed correctly
-        if dominators_test.confirmDomTree(getDominatorTree(doms), doms, c):
-            print(f'Dominator Tree computed correctly')
-        else:
-            print(f'Dominator Tree NOT computed correctly')
-
-        # Test to see if dominance frontier was computed correctly
-        if dominators_test.confirmDomFrontier(getDominanceFrontier(doms, predecessors), doms, predecessors, c):
-            print(f'Dominator Frontier computed correctly')
-        else:
-            print(f'Dominator Frontier NOT computed correctly')
-        print('\n')
-        graph.createGraph(c,func['name']+"CFG")
-        graph.createGraph(getDominatorTree(doms),func['name']+"DomTree")
-
-if __name__ == "__main__":
-    main()
