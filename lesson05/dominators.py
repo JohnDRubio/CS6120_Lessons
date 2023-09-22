@@ -1,6 +1,7 @@
-import cfg
 import sys
+sys.path.append("../library")
 import json
+import cfg
 import graph
 import dominators_test
 

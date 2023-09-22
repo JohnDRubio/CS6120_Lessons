@@ -1,6 +1,5 @@
-import dominators
-import json
 import sys
+sys.path.append("../library")
 import cfg
 
 def getPathsHelper(c, node, dest, path, visited, allPaths):
