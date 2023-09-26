@@ -1,5 +1,7 @@
 from enum import Enum
-from cfg import formBasicBlocks, createCFG
+import sys
+sys.path.append("../library")
+import cfg
 
 class Direction(Enum):
   FORWARD = 1
@@ -17,8 +19,8 @@ class Worklist:
       self.predecessors = {}
 
   def setup(self):
-    self.basicBlocks = formBasicBlocks(self.function['instrs'])
-    self.cfg = createCFG(self.basicBlocks)[0]
+    self.basicBlocks = cfg.formBasicBlocks(self.function['instrs'])
+    self.cfg = cfg.createCFG(self.function['instrs'])
     self.predecessors = self.buildPredecessorList()
 
   def buildPredecessorList(self):

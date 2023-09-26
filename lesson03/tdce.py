@@ -1,7 +1,8 @@
 import itertools
 import json
 import sys
-import blocks
+sys.path.append("../library")
+import cfg
 
 '''
 Trivial Dead Code Elimination: Optimization #1
@@ -82,7 +83,7 @@ def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
         insns = tdce_opt1(func)
-        basicBlocks = blocks.formBasicBlocks(insns)
+        basicBlocks = cfg.formBasicBlocks(insns)
         basicBlocks = tdce_opt2(basicBlocks)
         func['instrs'] = list(itertools.chain(*basicBlocks))
     json.dump(program, sys.stdout, indent=2, sort_keys=True)

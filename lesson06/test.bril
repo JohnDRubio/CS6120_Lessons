@@ -1,0 +1,3 @@
+@func(): int {
+  x: int = phi a .here b .there;
+}

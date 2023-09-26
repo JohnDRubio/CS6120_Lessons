@@ -1,9 +1,9 @@
-import tdce
 from Table import Table
 import itertools
 import json
 import sys
-import blocks
+sys.path.append("../library")
+import cfg
 
 def construct_value(insn, lvn_table):
     for a in insn['args']:
@@ -65,7 +65,6 @@ def lvn_helper(block, args):
             if 'args' in insn:
                 value = construct_value(insn, lvn_table)
             else:   # 'value' in insn
-                # print(insn)
                 if insn['op'] == 'const': 
                     value = (insn['op'], insn['value'])
                 else:
@@ -104,9 +103,6 @@ def lvn_helper(block, args):
                         insn['op'] = 'id'
                     insn['args'] = [lvn_table.table[value][0]]
     
-    # print(lvn_table)
-    # print('\n')
-    
     return block
 
 def lvn(blocks, args):
@@ -119,7 +115,7 @@ def lvn(blocks, args):
 def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
-        basicBlocks = blocks.formBasicBlocks(func['instrs'])
+        basicBlocks = cfg.formBasicBlocks(func['instrs'])
         if 'args' in func:
             basicBlocks = lvn(basicBlocks, func['args'])
         else:

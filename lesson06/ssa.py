@@ -27,11 +27,27 @@ def getDefBlocks(insns):
                     defs[insn['dest']].add(blockName)
     return defs
 
-def insertPhiNodes(vars,defs,df):
+def addPhiNode(var,block,blocks,predsList):
+    preds = predsList[block]
+    phiNode = {"args": [var]*len(preds), "dest": var, "labels": preds, "op": "phi", "type": "int"}
+    for b in blocks:
+        if b[0]['label'] == block:
+            blocks.insert(1,phiNode)
+
+def insertPhiNodes(vars,defs,df,blocks,preds):
+    phis = {} # l0: [a,b,c] , l1: [a] , ...
     for v in vars:
         for d in defs[v]:
             for block in df[d]:
-                
+                if block in defs[v]:
+                    if block not in phis:
+                        phis[block] = set()
+                        phis[block].add(v)
+                        addPhiNode(v,block,blocks,preds)
+                    else:
+                        if v not in phis[block]:
+                            phis[block].add(v)
+                            addPhiNode(v,block,blocks,preds)
 
 def main():
     program = json.load(sys.stdin)
@@ -39,16 +55,17 @@ def main():
         print(func['name']+' function\n')
 
         c = cfg.createCFG(func['instrs'])
+        blocks = cfg.formBasicBlocks(func['instrs'])
         predecessors = cfg.buildPredecessorList(c)
         doms = dominators.getDominators(c, predecessors)
 
-        vars = getAllVars(func['instrs'])                               # set of all variables in func
+        #vars = getAllVars(func['instrs'])                               # set of all variables in func
         # print(str(vars))
-        defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
+        #defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
         # print(str(defBlocks))
-        domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
+        #domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
         # print(str(domFrontier))
-        domTree = dominators.getDominatorTree(doms)                         # map from block, b, -> set blocks that b immediately dominates
+        #domTree = dominators.getDominatorTree(doms)                         # map from block, b, -> set blocks that b immediately dominates
         # print(str(domTree))
 
         #graph.createGraph(c,func['name']+"CFG")
