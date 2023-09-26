@@ -1,3 +1,17 @@
 @func(): int {
-  x: int = phi a .here b .there;
+.entry:
+  a: int = const 47;
+  zero: int = const 0;
+  b: int = const 1;
+  cond: bool = eq b zero;
+  br cond .left .right;
+.left:
+  a: int = add a a;
+  jmp .exit;
+.right:
+  a: int = mul a a;
+  jmp .exit;
+.exit:
+  print a;
+  ret;
 }
