@@ -1,5 +1,6 @@
 import sys
 import json
+import itertools
 sys.path.append("../library")
 sys.path.append("../lesson05")
 import cfg
@@ -65,8 +66,6 @@ def insertPhiNodes(vars,defs,df,blocks,preds):
 def main():
     program = json.load(sys.stdin)
     for func in program['functions']:
-        print(func['name']+' function\n')
-
         c = cfg.createCFG(func['instrs'])
         blocks = cfg.formBasicBlocks(func['instrs'])
         predecessors = cfg.buildPredecessorList(c)
@@ -76,27 +75,13 @@ def main():
         defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
         domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
 
-        print('vars')
-        print(vars)
-        print('\n')
-
-        print('defs')
-        print(defs)
-        print('\n')
-
-        print('domFrontier')
-        print(domFrontier)
-        print('\n')
-
         insertPhiNodes(vars,defs,domFrontier,blocks,predecessors)
-
-        print('blocks')
-        for block in blocks:
-            print(block)
-            print('\n')
+        func['instrs'] = list(itertools.chain(*blocks))
 
         #graph.createGraph(c,func['name']+"CFG")
         #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
+
+    json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
 if __name__ == "__main__":
     main()
