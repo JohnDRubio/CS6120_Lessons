@@ -28,60 +28,64 @@ def getDefBlocks(insns):
                     defs[insn['dest']].add(blockName)
     return defs
 
-def getBlock(block_label,blocks):
+def getBlock(block):
     for b in blocks:
-         if b[0]['label'] == block_label:
+         if b[0]['label'] == block:
              return b
 
-def addPhiNode(var,block,blocks,predsList):
-    preds = predsList[block]
+def addPhiNode(var,block):
+    preds = predecessors[block]
     phiNode = {"args": [var]*len(preds), "dest": var, "labels": preds, "op": "phi", "type": "int"}
-    b = getBlock(block,blocks)
+    b = getBlock(block)
     b.insert(1,phiNode)
 
-def usesVar(block,var,blocks):
-    b = getBlock(block,blocks)
+def usesVar(block,var):
+    b = getBlock(block)
     for insn in b:
         if 'args' in insn:
             if var in insn['args']:
                 return True
     return False
 
-def insertPhiNodes(vars,defs,df,blocks,preds):
+def insertPhiNodes():
     phis = {} # l0: [a,b,c] , l1: [a] , ...
     for v in vars:
         for d in defs[v]:
-            if d in df:
-                for block in df[d]:
-                    if usesVar(block,v,blocks):
+            if d in domFrontier:
+                for block in domFrontier[d]:
+                    if usesVar(block,v):
                         if block not in phis:
                             phis[block] = set()
                             phis[block].add(v)
-                            addPhiNode(v,block,blocks,preds)
+                            addPhiNode(v,block)
                         else:
                             if v not in phis[block]:
                                 phis[block].add(v)
-                                addPhiNode(v,block,blocks,preds)
+                                addPhiNode(v,block)
 
-def main():
-    program = json.load(sys.stdin)
-    for func in program['functions']:
-        c = cfg.createCFG(func['instrs'])
-        blocks = cfg.formBasicBlocks(func['instrs'])
-        predecessors = cfg.buildPredecessorList(c)
-        doms = dominators.getDominators(c, predecessors)
+def rename(block):
+    stack = {} # stack[v] stack of names for var v
 
-        vars = getAllVars(func['instrs'])                               # set of all variables in func
-        defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
-        domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
+    for insn in block:
+        pass
 
-        insertPhiNodes(vars,defs,domFrontier,blocks,predecessors)
-        func['instrs'] = list(itertools.chain(*blocks))
+def toSSA():
+    insertPhiNodes()
+    #rename(blocks[0])
 
-        #graph.createGraph(c,func['name']+"CFG")
-        #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
+program = json.load(sys.stdin)
+for func in program['functions']:
+    c = cfg.createCFG(func['instrs'])
+    blocks = cfg.formBasicBlocks(func['instrs'])
+    predecessors = cfg.buildPredecessorList(c)
+    doms = dominators.getDominators(c, predecessors)
 
-    json.dump(program, sys.stdout, indent=2, sort_keys=True)
+    vars = getAllVars(func['instrs'])                               # set of all variables in func
+    defs = getDefBlocks(func['instrs'])                       # map from varName -> set of blocks where varName is defined
+    domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
+    toSSA()
+    func['instrs'] = list(itertools.chain(*blocks))
+    #graph.createGraph(c,func['name']+"CFG")
+    #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
 
-if __name__ == "__main__":
-    main()
+json.dump(program, sys.stdout, indent=2, sort_keys=True)
