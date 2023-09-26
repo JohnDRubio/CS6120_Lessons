@@ -76,19 +76,20 @@ def rename(block):
 
     for insn in block:
         if 'dest' in insn:
-            if 'arg' in insn:
-                args = insn['args']
-                newArgs = []
-                for arg in args:
-                    newArgs.append(stack[arg].peek())
-                insn['args'] = newArgs
+            if insn['op'] == 'phi':
+                if 'arg' in insn:
+                    args = insn['args']
+                    newArgs = []
+                    for arg in args:
+                        newArgs.append(stack[arg].peek())
+                    insn['args'] = newArgs
 
-            dest = insn['dest']
-            newDestName = dest+numbers[dest]
-            insn['dest'] = newDestName
-            numbers[dest] = numbers[dest]+1
-            stack[dest].push(newDestName)
-            pops.add(dest)
+                dest = insn['dest']
+                newDestName = dest+str(numbers[dest])
+                insn['dest'] = newDestName
+                numbers[dest] = numbers[dest]+1
+                stack[dest].push(newDestName)
+                pops.add(dest)
 
     successors = c[label]
     for succ in successors:
@@ -102,9 +103,10 @@ def rename(block):
                         newArgs.append(stack[arg].peek())
                     insn['args'] = newArgs
     
-    immediatelyDominated = domTree[label]
-    for b in immediatelyDominated:
-        rename(getBlock(b))
+    if label in domTree:
+        immediatelyDominated = domTree[label]
+        for b in immediatelyDominated:
+            rename(getBlock(b))
     
     for pop in pops:
         stack[pop].pop()
