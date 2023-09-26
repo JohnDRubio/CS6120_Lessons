@@ -59,14 +59,14 @@ def main():
         predecessors = cfg.buildPredecessorList(c)
         doms = dominators.getDominators(c, predecessors)
 
-        #vars = getAllVars(func['instrs'])                               # set of all variables in func
-        # print(str(vars))
-        #defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
-        # print(str(defBlocks))
-        #domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
-        # print(str(domFrontier))
-        #domTree = dominators.getDominatorTree(doms)                         # map from block, b, -> set blocks that b immediately dominates
-        # print(str(domTree))
+        vars = getAllVars(func['instrs'])                               # set of all variables in func
+        defs = getDefBlocks(func['instrs'])                        # map from varName -> set of blocks where varName is defined
+        domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
+
+        insertPhiNodes(vars,defs,domFrontier,blocks,predecessors)
+
+        print(blocks)
+        print('\n')
 
         #graph.createGraph(c,func['name']+"CFG")
         #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
