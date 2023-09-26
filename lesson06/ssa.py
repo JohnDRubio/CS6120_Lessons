@@ -6,6 +6,7 @@ sys.path.append("../lesson05")
 import cfg
 import graph
 import dominators
+from stack import Stack
 
 def getAllVars(insns):
     vars = set()
@@ -35,7 +36,7 @@ def getBlock(block):
 
 def addPhiNode(var,block):
     preds = predecessors[block]
-    phiNode = {"args": [var]*len(preds), "dest": var, "labels": preds, "op": "phi", "type": "int"}
+    phiNode = {'args': [var]*len(preds), 'dest': var, 'labels': preds, 'op': 'phi', 'type': 'int'}
     b = getBlock(block)
     b.insert(1,phiNode)
 
@@ -64,14 +65,53 @@ def insertPhiNodes():
                                 addPhiNode(v,block)
 
 def rename(block):
+    label = block[0]['label']
+    pops = set()
     stack = {} # stack[v] stack of names for var v
+    numbers = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
+    for v in vars:
+        stack[v] = Stack()
+        stack[v].push(v)
+        numbers[v] = 1
 
     for insn in block:
-        pass
+        if 'dest' in insn:
+            if 'arg' in insn:
+                args = insn['args']
+                newArgs = []
+                for arg in args:
+                    newArgs.append(stack[arg].peek())
+                insn['args'] = newArgs
+
+            dest = insn['dest']
+            newDestName = dest+numbers[dest]
+            insn['dest'] = newDestName
+            numbers[dest] = numbers[dest]+1
+            stack[dest].push(newDestName)
+            pops.add(dest)
+
+    successors = c[label]
+    for succ in successors:
+        succBlock = getBlock(succ)
+        for insn in succBlock:
+            if 'op' in insn:
+                if insn['op'] == 'phi':
+                    args = insn['args']
+                    newArgs = []
+                    for arg in args:
+                        newArgs.append(stack[arg].peek())
+                    insn['args'] = newArgs
+    
+    immediatelyDominated = domTree[label]
+    for b in immediatelyDominated:
+        rename(getBlock(b))
+    
+    for pop in pops:
+        stack[pop].pop()
 
 def toSSA():
     insertPhiNodes()
-    #rename(blocks[0])
+    rename(blocks[0])
 
 program = json.load(sys.stdin)
 for func in program['functions']:
@@ -83,6 +123,7 @@ for func in program['functions']:
     vars = getAllVars(func['instrs'])                               # set of all variables in func
     defs = getDefBlocks(func['instrs'])                       # map from varName -> set of blocks where varName is defined
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
+    domTree = dominators.getDominatorTree(doms)
     toSSA()
     func['instrs'] = list(itertools.chain(*blocks))
     #graph.createGraph(c,func['name']+"CFG")
