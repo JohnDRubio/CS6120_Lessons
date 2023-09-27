@@ -4,7 +4,7 @@ import itertools
 sys.path.append("../library")
 sys.path.append("../lesson05")
 import cfg
-import graph
+# import graph
 import dominators
 from stack import Stack
 
@@ -67,26 +67,30 @@ def insertPhiNodes():
 def rename(block):
     label = block[0]['label']
     pops = set()
-    stack = {} # stack[v] stack of names for var v
-    numbers = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
-    for v in vars:
-        stack[v] = Stack()
-        stack[v].push(v)
-        numbers[v] = 1
 
     for insn in block:
         if 'dest' in insn:
-            if insn['op'] == 'phi':
-                if 'arg' in insn:
-                    args = insn['args']
-                    newArgs = []
-                    for arg in args:
-                        newArgs.append(stack[arg].peek())
-                    insn['args'] = newArgs
+            # if insn['op'] != 'phi':
+            if 'args' in insn:
+                args = insn['args']
+                newArgs = []
+                for arg in args:
+                    newArgs.append(stack[arg].peek())
+                insn['args'] = newArgs
+
+                for newArg in newArgs:
+                    stack[newArg] = Stack()
+                    stack[newArg].push(newArg)
+                    numbers[newArg] = 1
 
                 dest = insn['dest']
                 newDestName = dest+str(numbers[dest])
                 insn['dest'] = newDestName
+
+                stack[newDestName] = Stack()
+                stack[newDestName].push(newDestName)
+                numbers[newDestName] = 1
+                
                 numbers[dest] = numbers[dest]+1
                 stack[dest].push(newDestName)
                 pops.add(dest)
@@ -97,11 +101,12 @@ def rename(block):
         for insn in succBlock:
             if 'op' in insn:
                 if insn['op'] == 'phi':
-                    args = insn['args']
-                    newArgs = []
-                    for arg in args:
-                        newArgs.append(stack[arg].peek())
-                    insn['args'] = newArgs
+                    if 'args' in insn:
+                        args = insn['args']
+                        newArgs = []
+                        for arg in args:
+                            newArgs.append(stack[arg].peek())
+                        insn['args'] = newArgs
     
     if label in domTree:
         immediatelyDominated = domTree[label]
@@ -116,14 +121,23 @@ def toSSA():
     rename(blocks[0])
 
 program = json.load(sys.stdin)
+# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test.json')
+# program = json.load(file)
 for func in program['functions']:
+    stack = {} # stack[v] stack of names for var v
+    numbers = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
+    vars = getAllVars(func['instrs'])                                   # set of all variables in func
+    for v in vars:
+        stack[v] = Stack()
+        stack[v].push(v)
+        numbers[v] = 1
+
     c = cfg.createCFG(func['instrs'])
     blocks = cfg.formBasicBlocks(func['instrs'])
     predecessors = cfg.buildPredecessorList(c)
     doms = dominators.getDominators(c, predecessors)
 
-    vars = getAllVars(func['instrs'])                               # set of all variables in func
-    defs = getDefBlocks(func['instrs'])                       # map from varName -> set of blocks where varName is defined
+    defs = getDefBlocks(func['instrs'])                                 # map from varName -> set of blocks where varName is defined
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
     domTree = dominators.getDominatorTree(doms)
     toSSA()

@@ -83,19 +83,6 @@
         },
         {
           "args": [
-            "a",
-            "a"
-          ],
-          "dest": "a1",
-          "labels": [
-            "left",
-            "right"
-          ],
-          "op": "phi",
-          "type": "int"
-        },
-        {
-          "args": [
             "a"
           ],
           "op": "print"
