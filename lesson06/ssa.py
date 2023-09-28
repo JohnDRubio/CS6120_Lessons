@@ -82,15 +82,16 @@ def rename(block):
     pops = {}    # map from varName -> number of pops
 
     for insn in block:
-        if 'args' in insn:
+        if 'args' in insn and insn['op'] != 'phi':
             args = insn['args']
             newArgs = []
             for arg in args:
                 newArgs.append(stack[arg].peek())
             insn['args'] = newArgs
 
-            updateStack(newArgs)
+            # updateStack(newArgs)
 
+        # if 'dest' in insn and insn['op'] != 'phi':
         if 'dest' in insn:
             # if insn['op'] != 'phi':
             dest = insn['dest']     # assuming we only visit each block once
@@ -132,19 +133,19 @@ def rename(block):
                         for i in range(len(insn['args'])):
                             if i == labelIndex:
                                 insn['args'][i] = stack[insn['args'][i]].peek()
-                                updateStack([insn['args'][i]])
+                                # updateStack([insn['args'][i]])
                         # for arg in args:
                         #     newArgs.append(stack[arg].peek())
                         # insn['args'] = newArgs
 
                 # Hack but let's see if it works
-                    destIndex = int(insn['dest'].split('.')[1]) if '.' in insn['dest'] else 0
-                    maxIndex = highestIndex(insn['args'])
+                    # destIndex = int(insn['dest'].split('.')[1]) if '.' in insn['dest'] else 0
+                    # maxIndex = highestIndex(insn['args'])
                     
-                    if maxIndex >= destIndex:
-                        newDest = insn['dest'].split('.')[0]+'.'+str(maxIndex+1)
-                        insn['dest'] = newDest
-                        updateStack([newDest])
+                    # if maxIndex >= destIndex:
+                    #     newDest = insn['dest'].split('.')[0]+'.'+str(maxIndex+1)
+                    #     insn['dest'] = newDest
+                    #     updateStack([newDest])
 
     
     if label in domTree:

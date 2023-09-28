@@ -21,19 +21,6 @@
           "label": "loop"
         },
         {
-          "args": [
-            "i",
-            "i"
-          ],
-          "dest": "i1",
-          "labels": [
-            "entry",
-            "body"
-          ],
-          "op": "phi",
-          "type": "int"
-        },
-        {
           "dest": "max",
           "op": "const",
           "type": "int",
