@@ -36,7 +36,7 @@ def getBlock(block):
 
 def addPhiNode(var,block):
     preds = predecessors[block]
-    phiNode = {'args': [var]*len(preds), 'dest': var, 'labels': preds, 'op': 'phi', 'type': 'int'}
+    phiNode = {'args': [var]*len(preds), 'dest': var, 'labels': preds, 'op': 'phi', 'type': 'int'} # don't hardcode int type
     b = getBlock(block)
     b.insert(1,phiNode)
 
@@ -114,6 +114,48 @@ def rename(block):
             stack[dest].pop()
             pops[dest] -= 1
 
+def fromSSA():
+    numSSA = 0
+    for block in blocks:
+        currentLabel = block[0]['label']
+        for insn in block:
+            if 'op' in insn:
+                if insn['op'] == 'phi':
+                    args = insn['args']
+                    labels = insn['labels']
+                    for i,label in enumerate(labels):
+                        addNewBlock(insn['dest'],args[i],insn['type'],currentLabel,numSSA)
+                        addPredsToNewBlock(label,numSSA,currentLabel)
+                        numSSA = numSSA + 1
+                    block.remove(insn)
+                        
+
+def addPredsToNewBlock(predLabel, currentNum, oldLabel):
+    toLabel = 'ssaLabel_'+str(currentNum)
+    blockPhiNode = getBlock(predLabel)
+    lastInsn = blockPhiNode[-1]
+    if lastInsn['op'] == 'jmp' and lastInsn['labels'][0] == oldLabel: # second check may not be necessary
+        lastInsn['labels'][0] = toLabel
+    elif lastInsn['op'] == 'br' and oldLabel in lastInsn['labels']:
+        if lastInsn['labels'][0] == oldLabel:
+            lastInsn['labels'][0] = toLabel
+        else:
+            lastInsn['labels'][1] = toLabel
+    else:
+        blockPhiNode.append({"labels": [toLabel], "op": "jmp"})
+
+def addNewBlock(destVar,idVar,type,labelTo,num):
+    blockLabel = 'ssaLabel_'+str(num)
+    labelInsn = {"label": blockLabel}
+    idInsn = {'dest': destVar, 'args': [idVar], 'op': 'id', 'type': type}
+    jmpInsn = {"labels": [labelTo], "op": "jmp"}
+    newBlock = []
+    newBlock.append(labelInsn)
+    newBlock.append(idInsn)
+    newBlock.append(jmpInsn)
+    blocks.append(newBlock)
+
+
 def toSSA():
     insertPhiNodes()
     rename(blocks[0])
@@ -139,6 +181,7 @@ for func in program['functions']:
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
     domTree = dominators.getDominatorTree(doms)
     toSSA()
+    fromSSA()
     func['instrs'] = list(itertools.chain(*blocks))
     #graph.createGraph(c,func['name']+"CFG")
     #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")

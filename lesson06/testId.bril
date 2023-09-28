@@ -1,0 +1,6 @@
+@func(): int {
+.entry:
+  y: int = const 5;
+  x: int = id y;
+  ret x;
+}
