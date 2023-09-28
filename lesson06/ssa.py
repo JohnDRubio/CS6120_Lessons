@@ -64,19 +64,6 @@ def insertPhiNodes():
                                 phis[block].add(v)
                                 addPhiNode(v,block)
 
-def updateStack(newArgs):
-    for newArg in newArgs:
-                stack[newArg] = Stack()
-                stack[newArg].push(newArg)        
-                newNames[newArg] = int(newArg.split('.')[1]) if '.' in newArg else 1
-
-def highestIndex(args):
-    max = -1
-    for arg in args:
-        idx = int(arg.split('.')[1]) if '.' in arg else 0
-        max = idx if idx > max else max
-    return max if max > 0 else ""
-
 def rename(block):
     label = block[0]['label']
     pops = {}    # map from varName -> number of pops
