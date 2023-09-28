@@ -41,8 +41,9 @@ def getValidPredecessors(var,block):
     dominators_test.getPaths(c, list(c.keys())[0], block, allPaths)
     break_flag = False
     for path in allPaths:
+        break_flag = False
         for node in path:
-            for insn in node:
+            for insn in getBlock(node):
                 if 'dest' in insn and insn['dest'] == var:
                     break_flag = True
                     break
@@ -180,7 +181,7 @@ def toSSA():
     rename(blocks[0])
 
 program = json.load(sys.stdin)
-# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test.json')
+# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test3.json')
 # program = json.load(file)
 for func in program['functions']:
     stack = {}                                                          # stack[v] stack of names for var v
@@ -200,7 +201,7 @@ for func in program['functions']:
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
     domTree = dominators.getDominatorTree(doms)
     toSSA()
-    #fromSSA()
+    fromSSA()
     func['instrs'] = list(itertools.chain(*blocks))
     #graph.createGraph(c,func['name']+"CFG")
     #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
