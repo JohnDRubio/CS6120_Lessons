@@ -1,0 +1,96 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "label": "entry"
+        },
+        {
+          "dest": "i.1",
+          "op": "const",
+          "type": "int",
+          "value": 1
+        },
+        {
+          "labels": [
+            "loop"
+          ],
+          "op": "jmp"
+        },
+        {
+          "label": "loop"
+        },
+        {
+          "args": [
+            "i.1",
+            "i.3"
+          ],
+          "dest": "i.2",
+          "labels": [
+            "entry",
+            "body"
+          ],
+          "op": "phi",
+          "type": "int"
+        },
+        {
+          "dest": "max.1",
+          "op": "const",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "args": [
+            "i.2",
+            "max.1"
+          ],
+          "dest": "cond.1",
+          "op": "lt",
+          "type": "bool"
+        },
+        {
+          "args": [
+            "cond.1"
+          ],
+          "labels": [
+            "body",
+            "exit"
+          ],
+          "op": "br"
+        },
+        {
+          "label": "body"
+        },
+        {
+          "args": [
+            "i.2",
+            "i.2"
+          ],
+          "dest": "i.3",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "labels": [
+            "loop"
+          ],
+          "op": "jmp"
+        },
+        {
+          "label": "exit"
+        },
+        {
+          "args": [
+            "i.2"
+          ],
+          "op": "print"
+        },
+        {
+          "op": "ret"
+        }
+      ],
+      "name": "func",
+      "type": "int"
+    }
+  ]
+}

@@ -89,12 +89,8 @@ def rename(block):
                 newArgs.append(stack[arg].peek())
             insn['args'] = newArgs
 
-            # updateStack(newArgs)
-
-        # if 'dest' in insn and insn['op'] != 'phi':
         if 'dest' in insn:
-            # if insn['op'] != 'phi':
-            dest = insn['dest']     # assuming we only visit each block once
+            dest = insn['dest']     
             newDestName = dest+'.'+str(newNames[dest])
             insn['dest'] = newDestName
 
@@ -103,19 +99,8 @@ def rename(block):
             else:
                 pops[dest] = 1 
             
-
-            # stack[newDestName] = Stack()
-            # stack[newDestName].push(newDestName)
-            # numbers[newDestName] = 1
-            
             newNames[dest] = newNames[dest]+1
             stack[dest].push(newDestName)
-            # pops.add(dest)      # <- bug might be here
-
-
-# phi
-# args = [a, a, a]
-# labels = [l0, l1, l2]
 
     successors = c[label]
     for succ in successors:
@@ -128,40 +113,19 @@ def rename(block):
                         if succLabel == label:
                             labelIndex = i
                     if 'args' in insn:
-                        # args = insn['args']
-                        # newArgs = []
                         for i in range(len(insn['args'])):
                             if i == labelIndex:
                                 insn['args'][i] = stack[insn['args'][i]].peek()
-                                # updateStack([insn['args'][i]])
-                        # for arg in args:
-                        #     newArgs.append(stack[arg].peek())
-                        # insn['args'] = newArgs
-
-                # Hack but let's see if it works
-                    # destIndex = int(insn['dest'].split('.')[1]) if '.' in insn['dest'] else 0
-                    # maxIndex = highestIndex(insn['args'])
-                    
-                    # if maxIndex >= destIndex:
-                    #     newDest = insn['dest'].split('.')[0]+'.'+str(maxIndex+1)
-                    #     insn['dest'] = newDest
-                    #     updateStack([newDest])
-
     
     if label in domTree:
         immediatelyDominated = domTree[label]
         for b in immediatelyDominated:
             rename(getBlock(b))
-    
-    # for pop in pops:
-    #     stack[pop].pop()
 
     for dest in pops:
         while pops[dest] != 0:
             stack[dest].pop()
             pops[dest] -= 1
-            # might also need to decrement newNames[dest]
-            # newNames[dest] -= 1
 
 def toSSA():
     insertPhiNodes()
@@ -171,8 +135,8 @@ program = json.load(sys.stdin)
 # file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test.json')
 # program = json.load(file)
 for func in program['functions']:
-    stack = {} # stack[v] stack of names for var v
-    newNames = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
+    stack = {}                                                          # stack[v] stack of names for var v
+    newNames = {}                                                       # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
     vars = getAllVars(func['instrs'])                                   # set of all variables in func
     for v in vars:
         stack[v] = Stack()
