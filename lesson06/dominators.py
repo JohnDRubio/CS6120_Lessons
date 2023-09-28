@@ -58,6 +58,16 @@ def getDominatorTree(dom):
                 domTree[dominator].add(vertex)
     return domTree
 
+# def getDominatorTreeOrdered(dom):
+#     domTree = {}
+#     for vertex in dom:
+#         for dominator in dom[vertex]:
+#             if doesImmediatelyDominate(dominator,vertex,dom):
+#                 if dominator not in domTree:
+#                     domTree[dominator] = []
+#                 domTree[dominator].append(vertex)
+#     return domTree
+
 def inDominanceFrontier(A, B, dom, predecessors):
     if doesStrictlyDominate(A,B,dom) or A == B:
         return False  

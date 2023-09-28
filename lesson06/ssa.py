@@ -68,7 +68,14 @@ def updateStack(newArgs):
     for newArg in newArgs:
                 stack[newArg] = Stack()
                 stack[newArg].push(newArg)        
-                newNames[newArg] = newArg.split('.')[1]
+                newNames[newArg] = int(newArg.split('.')[1]) if '.' in newArg else 1
+
+def highestIndex(args):
+    max = -1
+    for arg in args:
+        idx = int(arg.split('.')[1]) if '.' in arg else 0
+        max = idx if idx > max else max
+    return max if max > 0 else ""
 
 def rename(block):
     label = block[0]['label']
@@ -104,20 +111,40 @@ def rename(block):
             stack[dest].push(newDestName)
             # pops.add(dest)      # <- bug might be here
 
+
+# phi
+# args = [a, a, a]
+# labels = [l0, l1, l2]
+
     successors = c[label]
     for succ in successors:
         succBlock = getBlock(succ)
         for insn in succBlock:
             if 'op' in insn:
                 if insn['op'] == 'phi':
+                    labelIndex = -1
+                    for i, succLabel in enumerate(insn['labels']):
+                        if succLabel == label:
+                            labelIndex = i
                     if 'args' in insn:
-                        args = insn['args']
-                        newArgs = []
-                        for arg in args:
-                            newArgs.append(stack[arg].peek())
-                        insn['args'] = newArgs
+                        # args = insn['args']
+                        # newArgs = []
+                        for i in range(len(insn['args'])):
+                            if i == labelIndex:
+                                insn['args'][i] = stack[insn['args'][i]].peek()
+                                updateStack([insn['args'][i]])
+                        # for arg in args:
+                        #     newArgs.append(stack[arg].peek())
+                        # insn['args'] = newArgs
 
-                        updateStack(newArgs)
+                # Hack but let's see if it works
+                    destIndex = int(insn['dest'].split('.')[1]) if '.' in insn['dest'] else 0
+                    maxIndex = highestIndex(insn['args'])
+                    
+                    if maxIndex >= destIndex:
+                        newDest = insn['dest'].split('.')[0]+'.'+str(maxIndex+1)
+                        insn['dest'] = newDest
+                        updateStack([newDest])
 
     
     if label in domTree:
@@ -133,7 +160,7 @@ def rename(block):
             stack[dest].pop()
             pops[dest] -= 1
             # might also need to decrement newNames[dest]
-            newNames[dest] -= 1
+            # newNames[dest] -= 1
 
 def toSSA():
     insertPhiNodes()
