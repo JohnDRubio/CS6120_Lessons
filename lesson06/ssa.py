@@ -6,6 +6,7 @@ sys.path.append("../lesson05")
 import cfg
 # import graph
 import dominators
+import dominators_test
 from stack import Stack
 
 def getAllVars(insns):
@@ -34,8 +35,26 @@ def getBlock(block):
          if b[0]['label'] == block:
              return b
 
+def getValidPredecessors(var,block):
+    validPredecessors = predecessors[block]
+    allPaths = []
+    dominators_test.getPaths(c, list(c.keys())[0], block, allPaths)
+    break_flag = False
+    for path in allPaths:
+        for node in path:
+            for insn in node:
+                if 'dest' in insn and insn['dest'] == var:
+                    break_flag = True
+                    break
+            if break_flag:
+                break
+        if not break_flag:
+            validPredecessors.remove(path[-2])
+
+    return validPredecessors
+
 def addPhiNode(var,block):
-    preds = predecessors[block]
+    preds = getValidPredecessors(var,block)
     phiNode = {'args': [var]*len(preds), 'dest': var, 'labels': preds, 'op': 'phi', 'type': 'int'} # don't hardcode int type
     b = getBlock(block)
     b.insert(1,phiNode)
@@ -181,7 +200,7 @@ for func in program['functions']:
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
     domTree = dominators.getDominatorTree(doms)
     toSSA()
-    fromSSA()
+    #fromSSA()
     func['instrs'] = list(itertools.chain(*blocks))
     #graph.createGraph(c,func['name']+"CFG")
     #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
