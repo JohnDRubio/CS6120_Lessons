@@ -18,14 +18,14 @@
           "value": 0
         },
         {
-          "dest": "b",
+          "dest": "one",
           "op": "const",
           "type": "int",
           "value": 1
         },
         {
           "args": [
-            "b",
+            "one",
             "zero"
           ],
           "dest": "cond",

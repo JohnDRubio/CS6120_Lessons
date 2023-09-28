@@ -64,36 +64,45 @@ def insertPhiNodes():
                                 phis[block].add(v)
                                 addPhiNode(v,block)
 
+def updateStack(newArgs):
+    for newArg in newArgs:
+                stack[newArg] = Stack()
+                stack[newArg].push(newArg)        
+                newNames[newArg] = newArg.split('.')[1]
+
 def rename(block):
     label = block[0]['label']
-    pops = set()
+    pops = {}    # map from varName -> number of pops
 
     for insn in block:
+        if 'args' in insn:
+            args = insn['args']
+            newArgs = []
+            for arg in args:
+                newArgs.append(stack[arg].peek())
+            insn['args'] = newArgs
+
+            updateStack(newArgs)
+
         if 'dest' in insn:
             # if insn['op'] != 'phi':
-            if 'args' in insn:
-                args = insn['args']
-                newArgs = []
-                for arg in args:
-                    newArgs.append(stack[arg].peek())
-                insn['args'] = newArgs
+            dest = insn['dest']     # assuming we only visit each block once
+            newDestName = dest+'.'+str(newNames[dest])
+            insn['dest'] = newDestName
 
-                for newArg in newArgs:
-                    stack[newArg] = Stack()
-                    stack[newArg].push(newArg)
-                    numbers[newArg] = 1
+            if dest in pops:
+                pops[dest] += 1
+            else:
+                pops[dest] = 1 
+            
 
-                dest = insn['dest']
-                newDestName = dest+str(numbers[dest])
-                insn['dest'] = newDestName
-
-                stack[newDestName] = Stack()
-                stack[newDestName].push(newDestName)
-                numbers[newDestName] = 1
-                
-                numbers[dest] = numbers[dest]+1
-                stack[dest].push(newDestName)
-                pops.add(dest)
+            # stack[newDestName] = Stack()
+            # stack[newDestName].push(newDestName)
+            # numbers[newDestName] = 1
+            
+            newNames[dest] = newNames[dest]+1
+            stack[dest].push(newDestName)
+            # pops.add(dest)      # <- bug might be here
 
     successors = c[label]
     for succ in successors:
@@ -107,14 +116,24 @@ def rename(block):
                         for arg in args:
                             newArgs.append(stack[arg].peek())
                         insn['args'] = newArgs
+
+                        updateStack(newArgs)
+
     
     if label in domTree:
         immediatelyDominated = domTree[label]
         for b in immediatelyDominated:
             rename(getBlock(b))
     
-    for pop in pops:
-        stack[pop].pop()
+    # for pop in pops:
+    #     stack[pop].pop()
+
+    for dest in pops:
+        while pops[dest] != 0:
+            stack[dest].pop()
+            pops[dest] -= 1
+            # might also need to decrement newNames[dest]
+            newNames[dest] -= 1
 
 def toSSA():
     insertPhiNodes()
@@ -125,12 +144,12 @@ program = json.load(sys.stdin)
 # program = json.load(file)
 for func in program['functions']:
     stack = {} # stack[v] stack of names for var v
-    numbers = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
+    newNames = {} # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
     vars = getAllVars(func['instrs'])                                   # set of all variables in func
     for v in vars:
         stack[v] = Stack()
-        stack[v].push(v)
-        numbers[v] = 1
+        stack[v].push(v+'.')
+        newNames[v] = 1
 
     c = cfg.createCFG(func['instrs'])
     blocks = cfg.formBasicBlocks(func['instrs'])

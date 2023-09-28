@@ -2,8 +2,8 @@
 .entry:
   a: int = const 47;
   zero: int = const 0;
-  b: int = const 1;
-  cond: bool = eq b zero;
+  one: int = const 1;
+  cond: bool = eq one zero;
   br cond .left .right;
 .left:
   a: int = add a a;
