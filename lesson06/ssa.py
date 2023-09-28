@@ -203,6 +203,7 @@ for func in program['functions']:
     toSSA()
     fromSSA()
     func['instrs'] = list(itertools.chain(*blocks))
+    c = cfg.createCFG(func['instrs'])                   # UPDATED CFG
     #graph.createGraph(c,func['name']+"CFG")
     #graph.createGraph(dominators.getDominatorTree(doms),func['name']+"DomTree")
 
