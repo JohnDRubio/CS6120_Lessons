@@ -16,7 +16,7 @@ def getAllVars(insns):
             vars.add(insn['dest'])
     return vars
 
-def getDefBlocks(insns):
+def getDefBlocks(insns, args):
     defs = {}   # map from varName to set of blocks where var is def'd
     basicBlocks = cfg.formBasicBlocks(insns)
     for block in basicBlocks:
@@ -28,6 +28,13 @@ def getDefBlocks(insns):
                     defs[insn['dest']].add(blockName)
                 else:
                     defs[insn['dest']].add(blockName)
+    for arg in args:
+        argName = arg['name']
+        if argName not in defs:
+            defs[argName] = set()
+            defs[argName].add(list(c.keys())[0])
+        else:
+            defs[argName].add(list(c.keys())[0])
     return defs
 
 def getBlock(block):
@@ -194,7 +201,7 @@ for func in program['functions']:
             vars.add(arg['name'])
     for v in vars:
         stack[v] = Stack()
-        stack[v].push(v+'.')
+        stack[v].push(v)
         newNames[v] = 1
 
     c = cfg.createCFG(func['instrs'])
@@ -202,7 +209,10 @@ for func in program['functions']:
     predecessors = cfg.buildPredecessorList(c)
     doms = dominators.getDominators(c, predecessors)
 
-    defs = getDefBlocks(func['instrs'])                                 # map from varName -> set of blocks where varName is defined
+    args = []
+    if 'args' in func:
+        args = func['args']
+    defs = getDefBlocks(func['instrs'],args)                                 # map from varName -> set of blocks where varName is defined
     domFrontier = dominators.getDominanceFrontier(doms, predecessors)   # map from block, b, -> set of blocks in b's dominance frontier
     domTree = dominators.getDominatorTree(doms)
     toSSA()
