@@ -182,11 +182,16 @@ def toSSA():
 
 program = json.load(sys.stdin)
 # file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test3.json')
+# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test\\benchmarks\\core\\ackermann.json')
 # program = json.load(file)
 for func in program['functions']:
     stack = {}                                                          # stack[v] stack of names for var v
     newNames = {}                                                       # {x:1,y:1,z:2,a:5} means that the next var for x is x1, z is z5, etc.
     vars = getAllVars(func['instrs'])                                   # set of all variables in func
+    funcArgs = set()
+    if 'args' in func:
+        for arg in func['args']:
+            vars.add(arg['name'])
     for v in vars:
         stack[v] = Stack()
         stack[v].push(v+'.')
