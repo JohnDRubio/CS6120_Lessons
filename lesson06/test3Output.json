@@ -44,13 +44,13 @@
             "zero.1",
             "zero.1"
           ],
-          "dest": "a.2",
+          "dest": "a.1",
           "op": "add",
           "type": "int"
         },
         {
           "labels": [
-            "exit"
+            "ssaLabel_0"
           ],
           "op": "jmp"
         },
@@ -67,20 +67,30 @@
           "label": "exit"
         },
         {
-          "args": [],
-          "dest": "a.1",
-          "labels": [],
-          "op": "phi",
-          "type": "int"
-        },
-        {
           "args": [
-            "a.1"
+            "a.2"
           ],
           "op": "print"
         },
         {
           "op": "ret"
+        },
+        {
+          "label": "ssaLabel_0"
+        },
+        {
+          "args": [
+            "a.1"
+          ],
+          "dest": "a.2",
+          "op": "id",
+          "type": "int"
+        },
+        {
+          "labels": [
+            "exit"
+          ],
+          "op": "jmp"
         }
       ],
       "name": "func",
