@@ -149,12 +149,36 @@ def fromSSA():
             if 'op' in insn:
                 if insn['op'] == 'phi':
                     args = insn['args']
+                    dest = insn['dest']
                     labels = insn['labels']
-                    for i,label in enumerate(labels):
-                        addNewBlock(insn['dest'],args[i],insn['type'],currentLabel,numSSA)
-                        addPredsToNewBlock(label,numSSA,currentLabel)
-                        numSSA = numSSA + 1
-                    block.remove(insn)
+                    type = insn['type']
+
+                    # method #2
+                    for i, label in enumerate(insn['labels']):
+                        var = insn['args'][i]
+
+                        # Insert a copy in the predecessor block, before the
+                        # terminator.
+                        preds = cfg.getPredecessors(label, predecessors)
+                        preds = [] if preds == [] else preds[0]
+                        pred = getBlock(preds) if preds else getBlock(label)
+                        pred.insert(-1, {
+                            'op': 'id',
+                            'type': type,
+                            'args': [var],
+                            'dest': dest,
+                        })
+
+                        # Remove all phis.
+                        new_block = [i for i in block if i.get('op') != 'phi']
+                        block[:] = new_block
+
+                    # method #1
+                    # for i,label in enumerate(labels):
+                    #     addNewBlock(insn['dest'],args[i],insn['type'],currentLabel,numSSA)
+                    #     addPredsToNewBlock(label,numSSA,currentLabel)
+                    #     numSSA = numSSA + 1
+                    # block.remove(insn)
                         
 
 def addPredsToNewBlock(predLabel, currentNum, oldLabel):
@@ -189,7 +213,7 @@ def toSSA():
 
 program = json.load(sys.stdin)
 # file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test3.json')
-# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test\\benchmarks\\core\\ackermann.json')
+# file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\lesson06\\test\\benchmarks\\core\\armstrong.json')
 # program = json.load(file)
 for func in program['functions']:
     stack = {}                                                          # stack[v] stack of names for var v
