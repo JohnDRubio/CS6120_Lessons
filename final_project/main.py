@@ -1,5 +1,28 @@
+import json
+import sys
+sys.path.append("../library")
+import cfg
+import itertools
+
+def mangle(vars):
+    newVars = []
+    for var in vars:
+        newVars.append("_"+var)
+    return newVars
+
+
 def main():
-  pass
+  program = json.load(sys.stdin)
+  for func in program['functions']:
+     blocks = cfg.formBasicBlocks(func['instrs'])
+     for block in blocks:
+        for insn in block:
+            if 'dest' in insn:
+                insn['dest'] = mangle([insn['dest']])[0]
+            if 'args' in insn:
+                insn['args'] = mangle(insn['args'])
+     func['instrs'] = list(itertools.chain(*blocks))
+  json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
 if __name__ == "__main__":
     main()
