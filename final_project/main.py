@@ -50,12 +50,13 @@ Heierarchy for Bril Instructions
             - Mul
             - Sub
             - Div
-        - BooleanMath
+        - RelationalMath
             - Eq
             - Lt
             - Gt
             - Le
             - Ge
+        - BooleanMath
             - Not
             - And
             - Or
