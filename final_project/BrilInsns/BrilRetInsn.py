@@ -1,4 +1,4 @@
-import BrilEffectOperationInsn
+from BrilEffectOperationInsn import BrilEffectOperationInsn
 
 class BrilRetInsn(BrilEffectOperationInsn):
 

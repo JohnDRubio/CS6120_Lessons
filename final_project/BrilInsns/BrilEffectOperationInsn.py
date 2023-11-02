@@ -1,4 +1,6 @@
-class BrilEffectOperationInsn:
+from BrilInsn import BrilInsn
+
+class BrilEffectOperationInsn(BrilInsn):
     def __init__(self):
         pass
 

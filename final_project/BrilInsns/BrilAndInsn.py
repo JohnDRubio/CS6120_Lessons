@@ -1,4 +1,4 @@
-import BrilBooleanMathInsn
+from BrilBooleanMathInsn import BrilBooleanMathInsn
 
 class BrilAndInsn(BrilBooleanMathInsn):
 

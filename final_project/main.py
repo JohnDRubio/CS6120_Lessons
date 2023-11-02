@@ -4,29 +4,6 @@ sys.path.append("../library")
 import cfg
 import itertools
 
-def mangle(vars):
-    newVars = []
-    for var in vars:
-        newVars.append("_"+var)
-    return newVars
-
-
-def main():
-  program = json.load(sys.stdin)
-  for func in program['functions']:
-     blocks = cfg.formBasicBlocks(func['instrs'])
-     for block in blocks:
-        for insn in block:
-            if 'dest' in insn:
-                insn['dest'] = mangle([insn['dest']])[0]
-            if 'args' in insn:
-                insn['args'] = mangle(insn['args'])
-     func['instrs'] = list(itertools.chain(*blocks))
-  json.dump(program, sys.stdout, indent=2, sort_keys=True)
-
-if __name__ == "__main__":
-    main()
-
 '''
 Notes about classes / structure:
 
@@ -70,8 +47,6 @@ Heierarchy for Bril Instructions
   - DummyInsn
       - Bril instructions that we are ignoring -> basically no-ops (print, memory, etc.)
 
-
-
 Hierarchy for RISC-V IR Functions
 -Label
 -Args
@@ -101,5 +76,26 @@ Hierarchy for RISC-V IR Instructions:
     - Jump
         - Jump and Link
         - Jump and Link Register
-
 '''
+
+def mangle(vars):
+    newVars = []
+    for var in vars:
+        newVars.append("_"+var)
+    return newVars
+
+def main():
+  program = json.load(sys.stdin)
+  for func in program['functions']:
+     blocks = cfg.formBasicBlocks(func['instrs'])
+     for block in blocks:
+        for insn in block:
+            if 'dest' in insn:
+                insn['dest'] = mangle([insn['dest']])[0]
+            if 'args' in insn:
+                insn['args'] = mangle(insn['args'])
+     func['instrs'] = list(itertools.chain(*blocks))
+  json.dump(program, sys.stdout, indent=2, sort_keys=True)
+
+if __name__ == "__main__":
+    main()

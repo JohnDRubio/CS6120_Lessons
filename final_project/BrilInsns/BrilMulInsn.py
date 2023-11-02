@@ -1,4 +1,4 @@
-import BrilIntegerMathInsn
+from BrilIntegerMathInsn import BrilIntegerMathInsn
 
 class BrilMulInsn(BrilIntegerMathInsn):
 

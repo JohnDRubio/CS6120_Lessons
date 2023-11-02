@@ -1,4 +1,6 @@
-class BrilValueOperationInsn:
+from BrilInsn import BrilInsn
+
+class BrilValueOperationInsn(BrilInsn):
     def __init__(self,dest):
         self.dest = dest
 
