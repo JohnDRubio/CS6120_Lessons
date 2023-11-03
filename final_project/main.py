@@ -57,25 +57,46 @@ Hierarchy for RISC-V IR Instructions:
 - Label
 - RISCV_IR_INSN
     - RegRegInsn
-        - Add
-        - Mul
-        - Sub
-        - Div
-        - And
-        - Or
+        - ADD
+        - MUL
+        - SUB
+        - DIV
+        - AND
+        - OR
+        - XOR
+        - SLT
+        - SLTU
+        - SRA
+        - SRL
+        - SLL
+
     - RegImmInsn
-        - Addi
-        - Subi
-        - Xori
+        - ADDI
+        - ANDI
+        - ORI
+        - XORI
+        - SLTI
+        - SLTIU
+        - SRAI
+        - SRLI
+        - SLLI
+        - LUI
+        - AUIPC
+
+    - Memory
+        -LW
+        -SW
+
     - Conditional Branch
-        - Beq
-        - Blt
-        - Bgt
-        - Ble
-        - Bge
+        - BEQ
+        - BNE
+        - BLT
+        - BLTU
+        - BGEU
+        
     - Jump
-        - Jump and Link
-        - Jump and Link Register
+        - JAL
+        - JALR
 '''
 
 def mangle(vars):

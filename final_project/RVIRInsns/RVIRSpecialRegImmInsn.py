@@ -9,7 +9,7 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
         if src2 is not None:
             raise ValueError(f"Invalid operand '{src2}'. LUI / AUIPC take 2 operands.")
         if not isinstance(src1, numbers.Real):
-            raise ValueError(f"Invalid operand '{src1}'. Supported operands must be numeric")
+            raise ValueError(f"Invalid operand '{src1}'. Supported operands must be numeric.")
         self.op = op
         self.dst  = dst
         self.src1 = src1

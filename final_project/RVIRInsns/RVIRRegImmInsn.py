@@ -8,7 +8,7 @@ class RVIRRegImmInsn(RVIRInsn):
             raise ValueError(f"Invalid operation '{op}'. Supported operations are: {', '.join(self.valid_ops)}")
         if src2 is not None:
             if not isinstance(src2, numbers.Real):
-                raise ValueError(f"Invalid operand '{src2}'. Supported operands must be numeric")
+                raise ValueError(f"Invalid operand '{src2}'. Supported operands must be numeric.")
         self.op = op
         self.dst  = dst
         self.src1 = src1
