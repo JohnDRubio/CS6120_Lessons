@@ -1,4 +1,4 @@
-from RVIRInsn import RVIRInsn
+from RVIRInsns.RVIRInsn import RVIRInsn
 # import numbers
 
 class RVIRJumpInsn(RVIRInsn):

@@ -1,4 +1,4 @@
-from RVIRInsn import RVIRInsn
+from RVIRInsns.RVIRInsn import RVIRInsn
 
 class RVIRRegRegInsn(RVIRInsn):
     valid_ops = ['ADD','SUB','MUL','DIV','AND','OR','XOR','SLT','SLTU','SRA','SRL','SLL']

@@ -1,4 +1,5 @@
-from BrilInsn import BrilInsn
+from BrilInsns.BrilInsn import BrilInsn
+
 
 class BrilEffectOperationInsn(BrilInsn):
     def __init__(self):

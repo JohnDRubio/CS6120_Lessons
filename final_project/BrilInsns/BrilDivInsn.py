@@ -1,4 +1,5 @@
-from BrilIntegerMathInsn import BrilIntegerMathInsn
+from BrilInsns.BrilIntegerMathInsn import BrilIntegerMathInsn
+
 
 class BrilDivInsn(BrilIntegerMathInsn):
 

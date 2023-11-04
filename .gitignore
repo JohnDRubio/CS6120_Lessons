@@ -17,3 +17,5 @@ final_project/__pycache__/*
 lesson05/graphs/*
 lesson06/graphs/*
 final_project/RVIRInsn/__pycache__/*
+final_project/RVIRInsn/riscv-simulator/*
+final_project/RVIRInsn/riscv32-linux/*

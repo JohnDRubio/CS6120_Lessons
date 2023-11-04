@@ -1,4 +1,5 @@
-from BrilIntegerMathInsn import BrilIntegerMathInsn
+from BrilInsns.BrilIntegerMathInsn import BrilIntegerMathInsn
+
 
 class BrilAddInsn(BrilIntegerMathInsn):
 
@@ -8,3 +9,6 @@ class BrilAddInsn(BrilIntegerMathInsn):
   def conv_riscvir(self):
       # add dest, src1, src2
       pass 
+
+# b = BrilAddInsn("a","b","c")
+# print(b.dest)

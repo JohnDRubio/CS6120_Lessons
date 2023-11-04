@@ -1,4 +1,4 @@
-from BrilInsn import BrilInsn
+from BrilInsns.BrilInsn import BrilInsn
 
 class BrilValueOperationInsn(BrilInsn):
     def __init__(self,dest):

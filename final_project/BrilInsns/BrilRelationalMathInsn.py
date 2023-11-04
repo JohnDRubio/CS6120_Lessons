@@ -1,4 +1,5 @@
-from BrilValueOperationInsn import BrilValueOperationInsn
+from BrilInsns.BrilValueOperationInsn import BrilValueOperationInsn
+
 
 class BrilRelationalMathInsn(BrilValueOperationInsn):
 

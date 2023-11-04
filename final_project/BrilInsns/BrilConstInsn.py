@@ -1,4 +1,4 @@
-from BrilInsn import BrilInsn
+from BrilInsns.BrilInsn import BrilInsn
 
 # maybe don't need IntegerLiteral and BooleanLiteral classes
 class BrilConstInsn(BrilInsn):
