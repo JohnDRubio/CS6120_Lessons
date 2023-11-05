@@ -140,6 +140,7 @@ def convert_to_RVIRInsns(lis_BrilInsns):
     lis_RVIRInsns = []
     for b_insn in lis_BrilInsns:
         lis_RVIRInsns.extend(b_insn.conv_riscvir())
+    return lis_RVIRInsns
 
 def convert_to_BrilInsn(insn):
     relational_ops = ['eq','lt','gt','le','ge']
