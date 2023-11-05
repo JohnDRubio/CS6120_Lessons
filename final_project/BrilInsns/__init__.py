@@ -7,4 +7,6 @@ __all__ = ['BrilAddInsn','BrilAndInsn',
            'BrilJumpInsn','BrilMulInsn',
            'BrilNotInsn','BrilOrInsn',
            'BrilRelationalMathInsn','BrilRetInsn',
-           'BrilValueOperationInsn','BrilSubInsn']
+           'BrilValueOperationInsn','BrilSubInsn',
+           'BrilLabelInsn', 'BrilPrintInsn',
+           'BrilNopInsn']
