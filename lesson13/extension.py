@@ -20,9 +20,14 @@ GRAMMAR = """
   | term "<"   item      -> lt
   | term ">"   item      -> gt
   | term "=="  item      -> eq
+  | term "!="  item      -> neq
+  | term "&"   item      -> and
+  | term "|"   item      -> or
+  | term "^"   item      -> xor
 
 ?item: NUMBER           -> num
   | "-" item            -> neg
+  | "~" item            -> not
   | CNAME               -> var
   | "(" start ")"
 
@@ -41,7 +46,7 @@ def interp(tree, lookup):
     """
 
     op = tree.data
-    if op in ('add', 'sub', 'mul', 'div', 'shl', 'shr', 'lt', 'gt', 'eq'):  # Binary operators.
+    if op in ('add', 'sub', 'mul', 'div', 'shl', 'shr', 'lt', 'gt', 'eq', 'neq', 'and', 'or', 'xor'):  # Binary operators.
         lhs = interp(tree.children[0], lookup)
         rhs = interp(tree.children[1], lookup)
         if op == 'add':
@@ -57,14 +62,29 @@ def interp(tree, lookup):
         elif op == 'shr':
             return lhs >> rhs
         elif op == 'lt':
-            return lhs < rhs
+            cond = lhs < rhs
+            return z3.If(cond, 1, 0)
         elif op == 'gt':
-            return lhs > rhs
+            cond = lhs > rhs
+            return z3.If(cond, 1, 0)
         elif op == 'eq':
-            return lhs == rhs
+            cond = lhs == rhs
+            return z3.If(cond, 1, 0)
+        elif op == 'neq':
+            cond = lhs != rhs
+            return z3.If(cond, 1, 0)
+        elif op == 'and':
+            return lhs & rhs
+        elif op == 'or':
+            return lhs | rhs
+        elif op == 'xor':
+            return lhs ^ rhs
     elif op == 'neg':  # Negation.
         sub = interp(tree.children[0], lookup)
         return -sub
+    elif op == 'not':
+        not_ = interp(tree.children[0], lookup)
+        return ~not_
     elif op == 'num':  # Literal number.
         return int(tree.children[0])
     elif op == 'var':  # Variable lookup.
@@ -75,6 +95,13 @@ def interp(tree, lookup):
         false = interp(tree.children[2], lookup)
         return (cond != 0) * true + (cond == 0) * false
 
+def model_values(model):
+    """Get the values out of a Z3 model.
+    """
+    return {
+        d.name(): model[d]
+        for d in model.decls()
+    }
 
 def pretty(tree, subst={}, paren=False):
     """Pretty-print a tree, with optional substitutions applied.
@@ -117,7 +144,7 @@ def pretty(tree, subst={}, paren=False):
         true = pretty(tree.children[1], subst)
         false = pretty(tree.children[2], subst)
         return par('{} ? {} : {}'.format(cond, true, false))
-
+    
 
 def run(tree, env):
     """Ordinary expression evaluation.
@@ -144,7 +171,7 @@ def z3_expr(tree, vars=None):
         if name in vars:
             return vars[name]
         else:
-            v = z3.BitVec(name, 8)
+            v = z3.BitVec(name, 1)
             vars[name] = v
             return v
 
@@ -185,7 +212,7 @@ def synthesize(tree1, tree2):
     # variables.
     plain_vars = {k: v for k, v in vars1.items()
                   if not k.startswith('h')}
-
+    
     # Formulate the constraint for Z3.
     goal = z3.ForAll(
         list(plain_vars.values()),  # For every valuation of variables...
@@ -193,7 +220,8 @@ def synthesize(tree1, tree2):
     )
 
     # Solve the constraint.
-    return solve(goal)
+    model = solve(goal)
+    return model
 
 
 def ex2(source):
@@ -206,13 +234,22 @@ def ex2(source):
     model = synthesize(tree1, tree2)
     print(pretty(tree1))
     print(pretty(tree2, model_values(model)))
+    print(model)
 
 
 if __name__ == '__main__':
-    parser = lark.Lark(GRAMMAR)
-    # ex2(sys.stdin.read())
-    env = { 'x': 2, 'y': 9}
-    tree = parser.parse("x < y")
-    tree = parser.parse("x > y")
-    tree = parser.parse("x == y")
-    print(interp(tree, lambda v: env[v]))
+    # parser = lark.Lark(GRAMMAR)
+    ex2(sys.stdin.read())
+    # ex2('~x | ~y\n~h|~hh')
+    # ex2('x * y\nx == h1 ? y : x * y')
+    # ex2('x * x + y * y + z * z + 2 * x * y + 2 * y * z + 2 * x * z\n(hh1 + hh2 + hh3) * (hh3 + hh1 + hh2)')
+    # ex2('~x | ~y | (h&hh)\n1')
+    # ex2('~x | h\n1')
+    # ex2('A|1\nh')
+    # env = { 'x': 1, 'y': 1}
+    # tree = parser.parse("x & y")
+    # print(interp(tree, lambda v: env[v]))
+
+
+# input:  ~A & ~B
+# output: ~(hh | h)
