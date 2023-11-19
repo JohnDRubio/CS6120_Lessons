@@ -103,14 +103,7 @@ def model_values(model):
         for d in model.decls()
     }
 
-def pretty(tree, subst={}, paren=False):
-    """Pretty-print a tree, with optional substitutions applied.
-
-    If `paren` is true, then loose-binding expressions are
-    parenthesized. We simplify boolean expressions "on the fly."
-    """
-
-    # Add parentheses?
+def pretty(tree, sub={}, paren=False):
     if paren:
         def par(s):
             return '({})'.format(s)
@@ -120,8 +113,8 @@ def pretty(tree, subst={}, paren=False):
 
     op = tree.data
     if op in ('add', 'sub', 'mul', 'div', 'shl', 'shr'):
-        lhs = pretty(tree.children[0], subst, True)
-        rhs = pretty(tree.children[1], subst, True)
+        lhs = pretty(tree.children[0], sub, True)
+        rhs = pretty(tree.children[1], sub, True)
         c = {
             'add': '+',
             'sub': '-',
@@ -132,17 +125,17 @@ def pretty(tree, subst={}, paren=False):
         }[op]
         return par('{} {} {}'.format(lhs, c, rhs))
     elif op == 'neg':
-        sub = pretty(tree.children[0], subst)
+        sub = pretty(tree.children[0], sub)
         return '-{}'.format(sub, True)
     elif op == 'num':
         return tree.children[0]
     elif op == 'var':
         name = tree.children[0]
-        return str(subst.get(name, name))
+        return str(sub.get(name, name))
     elif op == 'if':
-        cond = pretty(tree.children[0], subst)
-        true = pretty(tree.children[1], subst)
-        false = pretty(tree.children[2], subst)
+        cond = pretty(tree.children[0], sub)
+        true = pretty(tree.children[1], sub)
+        false = pretty(tree.children[2], sub)
         return par('{} ? {} : {}'.format(cond, true, false))
 
 def preprocess(expr, plain_vars):
@@ -158,11 +151,11 @@ def preprocess(expr, plain_vars):
         else:
             return expr
     else:       # recursive case
-        substs = []
+        subs = []
         for c in expr.children():
-            subst_c = preprocess(c, plain_vars)
-            substs.append((c, subst_c))
-        return z3.substitute(expr, substs)
+            sub_c = preprocess(c, plain_vars)
+            subs.append((c, sub_c))
+        return z3.substitute(expr, subs)
     
 def constant_fold(t, model_vals):
     decl = t.decl()
