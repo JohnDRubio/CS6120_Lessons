@@ -103,22 +103,6 @@ def model_values(model):
         for d in model.decls()
     }
 
-
-def expand(var, plain_vars):
-    """ Expands a single hole to switches among {v1, ..., vn, h}
-    where v1,...,vn are all the bound variables.
-    """
-    name = var.decl().name()
-    if name.startswith("hh"):
-        expr = z3.BitVec(name + "#$num", 1)
-        for v in plain_vars:
-            cond = z3.BitVec(name + "#" + v, 1)
-            expr = z3.If(z3.Distinct(cond, z3.BitVecVal(0, 1)),
-                         expr, z3.BitVec(v, 1))
-        return expr
-    else:
-        return var
-
 def pretty(tree, subst={}, paren=False):
     """Pretty-print a tree, with optional substitutions applied.
 
@@ -160,73 +144,85 @@ def pretty(tree, subst={}, paren=False):
         true = pretty(tree.children[1], subst)
         false = pretty(tree.children[2], subst)
         return par('{} ? {} : {}'.format(cond, true, false))
-    
-def dig_holes(tree, plain_vars):
-    """ Replaces each hole in tree with conditional switches
-    between bound variables and constants"""
-    if tree.decl().kind() == z3.Z3_OP_UNINTERPRETED:
-        return expand(tree, plain_vars)
-    else:
-        substs = [(c, dig_holes(c, plain_vars)) for c in tree.children()]
-        return z3.substitute(tree, substs)
 
+def preprocess(expr, plain_vars):
+    if expr.decl().kind() == z3.Z3_OP_UNINTERPRETED:
+        name = expr.decl().name()
+        if name.startswith("h_"):
+            expr = z3.BitVec(name + "`const", 1)
+            for v in plain_vars:
+                cond = z3.BitVec(name + "`" + v, 1)
+                expr = z3.If(z3.Distinct(cond, z3.BitVecVal(0, 1)),
+                            expr, z3.BitVec(v, 1))
+            return expr
+        else:
+            return expr
+    else:       # recursive case
+        substs = []
+        for c in expr.children():
+            subst_c = preprocess(c, plain_vars)
+            substs.append((c, subst_c))
+        return z3.substitute(expr, substs)
     
-def fill_holes(tree, model):
-    """ Fills digged holes back in and returns new model_values """
-    model_vals = model_values(model)
-
-    # recursive constant folding from root of hole tree
-    def fold_cond(t):
-        decl = t.decl()
-        if (decl.kind() == z3.Z3_OP_UNINTERPRETED
-            and decl.name().endswith("$num")):
-            return model_vals[decl.name()]
-        elif decl.kind() == z3.Z3_OP_ITE:
-            cond = t.children()[0]
-            if cond.decl().kind() == z3.Z3_OP_DISTINCT:
-                lhs = cond.children()[0]
-                if (lhs.decl().kind() == z3.Z3_OP_UNINTERPRETED
-                    and lhs.decl().name().startswith("hh")):
-                    if model_vals[lhs.decl().name()].as_long() != 0:
-                        return fold_cond(t.children()[1])
-                    else:
-                        return t.children()[2]
-                else:
-                    return t
+def constant_fold(t, model_vals):
+    decl = t.decl()
+    
+    if decl.kind() == z3.Z3_OP_ITE:     # if kind == if-then-else
+        cond = t.children()[0]
+        
+        if cond.decl().kind() == z3.Z3_OP_DISTINCT:     # The n-ary distinct predicate (every argument is mutually distinct).
+            lhs = cond.children()[0]
+            
+            if (
+                lhs.decl().kind() == z3.Z3_OP_UNINTERPRETED
+                and lhs.decl().name().startswith("h_")
+            ):
+                return (
+                    constant_fold(t.children()[1], model_vals)
+                    if model_vals[lhs.decl().name()].as_long() != 0
+                    else t.children()[2]
+                )
             else:
                 return t
         else:
             return t
-        
-    new_model_vals = { }
+    
+    elif decl.kind() == z3.Z3_OP_UNINTERPRETED and decl.name().endswith("const"):
+        return model_vals[decl.name()]
+    
+    else:
+        return t
 
-    for key in model_vals:
-        if key.startswith("h") and not key.startswith("hh"):
-            new_model_vals[key] = model_vals[key]
-
-    def helper(t):
-        if t.decl().kind() == z3.Z3_OP_ITE:
-            print(t)
-            cond = t.children()[0]
-            false = t.children()[2]
-            if (false.decl().kind() == z3.Z3_OP_UNINTERPRETED
-                and cond.children()[0].decl().name().startswith("hh")):
-                # t is now Root of the manufactured hole tree
-                # Start constant folding
-                hole = cond.children()[0]
-                key = hole.decl().name()[:hole.decl().name().index("#")]
-                new_val = fold_cond(t)
-                new_model_vals[key] = new_val
-            else:
-                for child in t.children():
-                    helper(child)
+def helper(t, new_model_vals, model_vals):
+    if t.decl().kind() == z3.Z3_OP_ITE:
+        cond = t.children()[0]
+        false = t.children()[2]
+        if (
+            false.decl().kind() == z3.Z3_OP_UNINTERPRETED
+            and cond.children()[0].decl().name().startswith("h_")
+        ):
+            hole = cond.children()[0]
+            key = hole.decl().name()[:hole.decl().name().index("`")]
+            new_val = constant_fold(t, model_vals)
+            new_model_vals[key] = new_val
         else:
             for child in t.children():
-                helper(child)
+                helper(child, new_model_vals, model_vals)
+    else:
+        for child in t.children():
+            helper(child, new_model_vals, model_vals)
 
-    helper(tree)
+
+def postprocess(tree, model):
+    model_vals = model_values(model)
+    new_model_vals = {}
+
+    for key in model_vals:
+        if key.startswith("h") and not key.startswith("h_"):
+            new_model_vals[key] = model_vals[key]
+
+    helper(tree, new_model_vals, model_vals)
     return new_model_vals
-
 
 def run(tree, env):
     """Ordinary expression evaluation.
@@ -270,15 +266,6 @@ def solve(phi):
     return s.model()
 
 
-def model_values(model):
-    """Get the values out of a Z3 model.
-    """
-    return {
-        d.name(): model[d]
-        for d in model.decls()
-    }
-
-
 def synthesize(tree1, tree2):
     """Given two programs, synthesize the values for holes that make
     them equal.
@@ -295,7 +282,7 @@ def synthesize(tree1, tree2):
     plain_vars = {k: v for k, v in vars1.items()
                   if not k.startswith('h')}
     
-    expr2 = dig_holes(expr2, plain_vars)
+    expr2 = preprocess(expr2, plain_vars)
 
     # Formulate the constraint for Z3.
     goal = z3.ForAll(
@@ -305,7 +292,8 @@ def synthesize(tree1, tree2):
 
     # Solve the constraint.
     model = solve(goal)
-    model_vals = fill_holes(expr2, model)
+
+    model_vals = postprocess(expr2, model)
     return model_vals
 
 
@@ -323,18 +311,4 @@ def ex2(source):
 
 
 if __name__ == '__main__':
-    # parser = lark.Lark(GRAMMAR)
     ex2(sys.stdin.read())
-    # ex2('~x | ~y\n~h|~hh')
-    # ex2('x * y\nx == h1 ? y : x * y')
-    # ex2('x * x + y * y + z * z + 2 * x * y + 2 * y * z + 2 * x * z\n(hh1 + hh2 + hh3) * (hh3 + hh1 + hh2)')
-    # ex2('~x | ~y | (h&hh)\n1')
-    # ex2('~x | h\n1')
-    # ex2('A|1\nh')
-    # env = { 'x': 1, 'y': 1}
-    # tree = parser.parse("x & y")
-    # print(interp(tree, lambda v: env[v]))
-
-
-# input:  ~A & ~B
-# output: ~(hh | h)
