@@ -17,4 +17,4 @@ class BrilMulInsn(BrilIntegerMathInsn):
 
   def conv_riscvir(self):
       # mul dest, src1, src2
-      pass 
+      return [RVIRRegRegInsn("mul",self.dest,self.src1,self.src2)]  

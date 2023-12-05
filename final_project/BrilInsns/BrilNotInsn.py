@@ -17,4 +17,4 @@ class BrilNotInsn(BrilBooleanMathInsn):
 
   def conv_riscvir(self):
       # xori dest, src1, 1
-      pass
+      return [RVIRRegImmInsn('xori',self.dest,self.src1, 1)]

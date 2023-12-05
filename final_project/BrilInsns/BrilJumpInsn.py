@@ -17,4 +17,4 @@ class BrilJumpInsn(BrilEffectOperationInsn):
 
   def conv_riscvir(self):
       # jal x0, .label
-      pass 
+      return [RVIRJumpInsn('jal','x0',self.label)]  

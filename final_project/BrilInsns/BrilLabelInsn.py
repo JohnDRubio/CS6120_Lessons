@@ -17,4 +17,6 @@ class BrilLabelInsn(BrilInsn):
 
   def conv_riscvir(self):
       # .label
+      # TODO: can probably stay the same - but it would not a RISCV type
+      # maybe have a generic label instruction class that isn't bril or riscv
       pass 

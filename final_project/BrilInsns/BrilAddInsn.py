@@ -18,7 +18,3 @@ class BrilAddInsn(BrilIntegerMathInsn):
   def conv_riscvir(self):
       # add dest, src1, src2
       return [RVIRRegRegInsn("add",self.dest,self.src1,self.src2)]
-
-# b = BrilAddInsn("a","b","c")
-r = RVIRRegRegInsn("add","b","c","d")
-# print(b.dest)

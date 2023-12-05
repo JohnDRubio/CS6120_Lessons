@@ -24,4 +24,10 @@ class BrilRetInsn(BrilEffectOperationInsn):
       else:
           jalr x0, x1, 0;
       '''
-      pass 
+      insns = []
+      if self.value:
+          insns.append(RVIRRegImmInsn('addi','a0',self.value, 0))
+      
+      insns.append(RVIRJumpInsn('jalr','x0', 'x1',0)) # TODO: check since this isn't what you put in RVIRJumpInsn
+
+      return insns

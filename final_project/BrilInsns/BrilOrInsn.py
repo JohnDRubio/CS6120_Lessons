@@ -17,4 +17,4 @@ class BrilOrInsn(BrilBooleanMathInsn):
 
   def conv_riscvir(self):
       # or dest, src1, src2
-      pass
+      return [RVIRRegRegInsn("or",self.dest,self.src1,self.src2)]

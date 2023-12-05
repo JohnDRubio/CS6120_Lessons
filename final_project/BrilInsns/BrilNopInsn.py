@@ -13,5 +13,6 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 class BrilNopInsn(BrilInsn):
 
   def conv_riscvir(self):
+      # TODO: probably same with label. generic nop class
       # nop
       pass 

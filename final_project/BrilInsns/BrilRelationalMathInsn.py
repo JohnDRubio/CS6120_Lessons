@@ -19,7 +19,7 @@ class BrilRelationalMathInsn(BrilValueOperationInsn):
       self.src2 = src2
 
   def conv_riscvir(self):
-      # need to make sure that if we have multiple relational maths, that we change up the label
+      # TODO: need to make sure that if we have multiple relational maths, that we change up the label
       '''
       b(op) src1, src2, .freshLabel; 
       addi dest, x0, 0; 
@@ -27,4 +27,14 @@ class BrilRelationalMathInsn(BrilValueOperationInsn):
       .freshLabel: addi dest, x0, 1;
       .exit_cond:
       '''
-      pass 
+      insns = []
+      freshLabel = "" # TODO: generate fresh label
+      exitCond = "" # TODO: generate fresh label for exit_cond
+      insns.append(RVIRBranchInsn('b'+self.op,self.src1,self.src2,freshLabel))
+      insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 0))
+      insns.append(RVIRJumpInsn('jal','x0',exitCond))
+      # TODO: add label instruction for freshLabel
+      insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 1))
+      # TODO: add label instruction for exit_cond
+
+      return insns 
