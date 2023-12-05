@@ -18,4 +18,4 @@ class BrilIdInsn(BrilValueOperationInsn):
 
   def conv_riscvir(self):
       # addi dest, src, 0
-      pass
+      return [RVIRRegImmInsn('addi',self.dest,self.src, 0)]

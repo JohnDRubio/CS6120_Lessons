@@ -18,4 +18,4 @@ class BrilIntegerLiteralInsn(BrilConstInsn):
 
   def conv_riscvir(self):
       # addi dest, x0, value
-      pass 
+      return [RVIRRegImmInsn('addi',self.dest,'x0', self.value)]

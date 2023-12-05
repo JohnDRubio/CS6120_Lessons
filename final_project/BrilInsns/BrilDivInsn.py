@@ -17,4 +17,4 @@ class BrilDivInsn(BrilIntegerMathInsn):
 
   def conv_riscvir(self):
       # sub dest, src1, src2
-      pass 
+      return [RVIRRegRegInsn("div",self.dest,self.src1,self.src2)] 

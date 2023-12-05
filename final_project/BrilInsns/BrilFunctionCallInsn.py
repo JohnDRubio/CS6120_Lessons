@@ -30,5 +30,4 @@ class BrilFunctionCallInsn(BrilValueOperationInsn):
       if dest != None:
         addi dest, x0, a0
       '''
-
-      pass 
+      return self
