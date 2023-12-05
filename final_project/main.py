@@ -214,7 +214,6 @@ def mangle(program):
                 if 'args' in insn:
                     insn['args'] = mangle_bril_insn(insn['args'])
         func['instrs'] = list(itertools.chain(*blocks))
-    return program
 
 def main():
   program = json.load(sys.stdin)

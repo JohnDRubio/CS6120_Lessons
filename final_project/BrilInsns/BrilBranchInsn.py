@@ -18,9 +18,15 @@ class BrilBranchInsn(BrilEffectOperationInsn):
       self.label2 = label2
 
   def conv_riscvir(self):
+      insns = []
+
+      insns.append(RVIRRegImmInsn('addi','x','x0', 1))
+      insns.append(RVIRBranchInsn('beq',self.cond,'x',self.label1))
+      insns.append(RVIRJumpInsn('jal','x0',self.label2))
+
+      return insns
       '''
       addi x, x0, 1;
       beq cond, x, label1;
       jal x0, label2; 
-      '''
-      pass 
+      ''' 

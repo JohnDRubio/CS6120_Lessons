@@ -17,8 +17,13 @@ class BrilBooleanLiteralInsn(BrilConstInsn):
       self.value = value
 
   def conv_riscvir(self):
+      # TODO: need look at this more ; can be an integer or a boolean - i think this covers it though
+      if self.value:
+        return [RVIRRegImmInsn('addi',self.dest,'x0', 1)]
+      else:
+        return [RVIRRegImmInsn('addi',self.dest,'x0', 0)]
+
       # if value == true
       #   addi dest, x0, 1
       # else
       #   addi dest, x0, 0
-      pass 

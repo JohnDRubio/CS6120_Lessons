@@ -17,4 +17,4 @@ class BrilAndInsn(BrilBooleanMathInsn):
 
   def conv_riscvir(self):
       # and dest, src1, src2
-      pass
+      return [RVIRRegRegInsn("and",self.dest,self.src1,self.src2)]
