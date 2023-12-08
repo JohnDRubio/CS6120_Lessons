@@ -215,6 +215,13 @@ def mangle(program):
                     insn['args'] = mangle_bril_insn(insn['args'])
         func['instrs'] = list(itertools.chain(*blocks))
 
+def generateAbstractAssemblyWOutCC(listRISCVObjs):
+    asm = []
+    for riscvobj in listRISCVObjs:
+        asm.append(riscvobj.emit_asm())
+    return asm
+
+
 def main():
   program = json.load(sys.stdin)
   mangle(program)
@@ -225,8 +232,12 @@ def main():
   # convert each BrilInsn object to N RVIRInsn objects
   lis_RVIRInsns = convert_to_RVIRInsns(lis_BrilInsns)
 
+  abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
+
+  print(abstract_assembly_wOut_CC)
+
   # TODO: Write RISC-V IR to output file
-#   json.dump(program, sys.stdout, indent=2, sort_keys=True)
+  # json.dump(program, sys.stdout, indent=2, sort_keys=True)
 
 if __name__ == "__main__":
     main()

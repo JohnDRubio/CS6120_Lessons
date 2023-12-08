@@ -9,6 +9,7 @@ from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
+from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 
 class BrilLabelInsn(BrilInsn):
 
@@ -16,7 +17,4 @@ class BrilLabelInsn(BrilInsn):
       self.label = label
 
   def conv_riscvir(self):
-      # .label
-      # TODO: can probably stay the same - but it would not a RISCV type
-      # maybe have a generic label instruction class that isn't bril or riscv
-      pass 
+      return [RVIRLabelInsn('.'+self.label)]
