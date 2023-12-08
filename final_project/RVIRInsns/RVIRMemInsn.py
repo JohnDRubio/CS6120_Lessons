@@ -16,6 +16,9 @@ class RVIRMemInsn(RVIRInsn):
     def emit_asm(self):
         return f'{self.op} {self.src1}, {self.imm}({self.src2})'
 
+    def get_abstract_temps(self):
+        return [self.src1,self.src2]
+
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)
 # r = RVIRMemInsn('john','x1','x2',0)

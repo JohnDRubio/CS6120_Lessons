@@ -22,6 +22,13 @@ class RVIRJumpInsn(RVIRInsn):
             return f'{self.op} {self.src1}, {self.jmp_target}'     
         return f'{self.op} {self.src1}, {self.src2}, {self.jmp_target}'
 
+    def get_abstract_temps(self):
+        abstract_temps = [self.src1]
+        if self.src2 != None:
+            abstract_temps.append(self.src2)
+            
+        return abstract_temps
+
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   
 # r = RVIRJumpInsn('jalr','x1', src2='x2',jmp_target='.loop')    

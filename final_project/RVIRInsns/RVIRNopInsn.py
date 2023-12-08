@@ -6,3 +6,6 @@ class RVIRNopInsn(RVIRInsn):
     
     def emit_asm(self):
         return "nop"
+
+    def get_abstract_temps(self):
+        return []

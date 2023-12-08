@@ -16,6 +16,9 @@ class RVIRBranchInsn(RVIRInsn):
     def emit_asm(self):
         return f'{self.op} {self.src1}, {self.src2}, {self.br_target}'
 
+    def get_abstract_temps(self):
+        return [self.src1,self.src2]
+
 # r = RVIRBranchInsn('bne','x1','x2','.loop')      
 # r = RVIRBranchInsn('john','x1','x2','.loop')  # raises error    
 # print(r.emit_asm())

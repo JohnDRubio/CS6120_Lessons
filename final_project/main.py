@@ -190,6 +190,7 @@ def convert_to_BrilInsn(insn):
 
 def convert_to_BrilInsns(program):
     lis_BrilInsns = []
+    # TODO: should this be on a per function basis? otherwise we'll have overlapping variable names when doing trivial RA
     for func in program['functions']:
         blocks = cfg.formBasicBlocks(func['instrs'])
         for block in blocks:

@@ -17,6 +17,9 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
     def emit_asm(self):
         return f'{self.op} {self.dst}, {self.src1}'
 
+    def get_abstract_temps(self):
+        return [self.dst,self.src1]
+
 # r = RVIRSpecialRegImmInsn('lui','x1','x2','x3')   # raises error
 # r = RVIRSpecialRegImmInsn('lui','x1',2)   
 # r = RVIRSpecialRegImmInsn('auipc','x1',2)   

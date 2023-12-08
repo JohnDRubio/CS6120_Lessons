@@ -6,3 +6,6 @@ class RVIRLabelInsn(RVIRInsn):
     
     def emit_asm(self):
         return self.label
+
+    def get_abstract_temps(self):
+        return []
