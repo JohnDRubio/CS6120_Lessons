@@ -40,6 +40,7 @@ from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 from TrivialRegAlloc.TempMapping import TempMapping
+from TrivialRegAlloc.StackInsnAdder import StackInsnAdder
 
 '''
 Notes about classes / structure:
@@ -240,7 +241,9 @@ def main(): # TODO: we should do this on a per function basis
   mapping = TempMapping(lis_RVIRInsns)
   mapping.assignOffsets()
 
-  # TODO: do trivial register allocation
+  # do trivial register allocation
+  trivialRegAllocator = StackInsnAdder(lis_RVIRInsns,mapping)
+  RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
 
 
   # abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
