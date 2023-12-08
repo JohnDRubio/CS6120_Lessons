@@ -19,6 +19,12 @@ class RVIRMemInsn(RVIRInsn):
     def get_abstract_temps(self):
         return [self.src1,self.src2]
 
+    def uses(self):
+        pass
+
+    def writes(self):
+        pass
+
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)
 # r = RVIRMemInsn('john','x1','x2',0)

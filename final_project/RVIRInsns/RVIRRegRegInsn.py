@@ -16,6 +16,12 @@ class RVIRRegRegInsn(RVIRInsn):
     def get_abstract_temps(self):
         return [self.dst,self.src1,self.src2]
 
+    def uses(self):
+        return [self.src1,self.src2]
+
+    def writes(self):
+        return [self.dst]
+
 # r = RVIRRegRegInsn('add','x1','x2','x3')
 # r = RVIRRegRegInsn('john','x1','x2','x3')   # raises error
 # print(r.emit_asm())

@@ -24,6 +24,12 @@ class RVIRRegImmInsn(RVIRInsn):
 
         return abstract_temps
 
+    def uses(self):
+        return [self.src1]
+
+    def writes(self):
+        return [self.dst]
+
 # r = RVIRRegImmInsn('addi','x1','x2','x3')   # raises error
 # r = RVIRRegImmInsn('addi','x1','x2',2)   
 # r = RVIRRegImmInsn('john','x1','x2',2)   # raises error

@@ -26,8 +26,14 @@ class RVIRJumpInsn(RVIRInsn):
         abstract_temps = [self.src1]
         if self.src2 != None:
             abstract_temps.append(self.src2)
-            
+
         return abstract_temps
+
+    def uses(self):
+        pass
+
+    def writes(self):
+        pass
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   

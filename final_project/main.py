@@ -39,6 +39,7 @@ from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
+from TrivialRegAlloc.TempMapping import TempMapping
 
 '''
 Notes about classes / structure:
@@ -215,17 +216,17 @@ def mangle(program):
                     insn['args'] = mangle_bril_insn(insn['args'])
         func['instrs'] = list(itertools.chain(*blocks))
 
-def generateAbstractAssemblyWOutCC(listRISCVObjs):
-    asm = []
-    for riscvobj in listRISCVObjs:
-        if isinstance(riscvobj, RVIRInsn):
-            asm.append(riscvobj.emit_asm())
-        else:
-            asm.append("TODO: call insn")
-    return asm
+# def generateAbstractAssemblyWOutCC(listRISCVObjs):
+#     asm = []
+#     for riscvobj in listRISCVObjs:
+#         if isinstance(riscvobj, RVIRInsn):
+#             asm.append(riscvobj.emit_asm())
+#         else:
+#             asm.append("TODO: call insn")
+#     return asm
 
 
-def main():
+def main(): # TODO: we should do this on a per function basis
   program = json.load(sys.stdin)
   mangle(program)
 
@@ -235,10 +236,17 @@ def main():
   # convert each BrilInsn object to N RVIRInsn objects
   lis_RVIRInsns = convert_to_RVIRInsns(lis_BrilInsns)
 
-  abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
+  # assign offsets to each instruction
+  mapping = TempMapping(lis_RVIRInsns)
+  mapping.assignOffsets()
 
-  for insn in abstract_assembly_wOut_CC:
-      print(insn)
+  # TODO: do trivial register allocation
+
+
+  # abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
+
+  # for insn in abstract_assembly_wOut_CC:
+      # print(insn)
 
   # TODO: Write RISC-V IR to output file
   # json.dump(program, sys.stdout, indent=2, sort_keys=True)

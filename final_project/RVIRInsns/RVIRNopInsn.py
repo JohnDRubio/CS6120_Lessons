@@ -9,3 +9,9 @@ class RVIRNopInsn(RVIRInsn):
 
     def get_abstract_temps(self):
         return []
+
+    def uses(self):
+        return []
+
+    def writes(self):
+        return []
