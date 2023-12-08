@@ -136,7 +136,6 @@ Hierarchy for RISC-V IR Instructions:
 '''
 
 def convert_to_RVIRInsns(lis_BrilInsns):
-    # TODO: Implement conv_riscvir methods for each RVIRInsn object
     lis_RVIRInsns = []
     for b_insn in lis_BrilInsns:
         lis_RVIRInsns.extend(b_insn.conv_riscvir())
@@ -218,7 +217,10 @@ def mangle(program):
 def generateAbstractAssemblyWOutCC(listRISCVObjs):
     asm = []
     for riscvobj in listRISCVObjs:
-        asm.append(riscvobj.emit_asm())
+        if isinstance(riscvobj, RVIRInsn):
+            asm.append(riscvobj.emit_asm())
+        else:
+            asm.append("TODO: call insn")
     return asm
 
 
@@ -234,7 +236,8 @@ def main():
 
   abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
 
-  print(abstract_assembly_wOut_CC)
+  for insn in abstract_assembly_wOut_CC:
+      print(insn)
 
   # TODO: Write RISC-V IR to output file
   # json.dump(program, sys.stdout, indent=2, sort_keys=True)

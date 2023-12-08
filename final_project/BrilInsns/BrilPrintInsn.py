@@ -9,6 +9,7 @@ from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
+from RVIRInsns.RVIRNopInsn import RVIRNopInsn
 
 class BrilPrintInsn(BrilInsn):
 
@@ -16,5 +17,4 @@ class BrilPrintInsn(BrilInsn):
       self.args = args
 
   def conv_riscvir(self):
-      # TODO: ignore?
-      pass 
+      return [RVIRNopInsn()]
