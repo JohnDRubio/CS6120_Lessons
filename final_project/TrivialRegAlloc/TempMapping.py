@@ -22,8 +22,6 @@ class TempMapping():
   def getOffset(self,var):
     if var in self.mapping:
       return self.mapping[var]
-    else:
-      # TODO: throw error?
 
 
         

@@ -21,7 +21,7 @@ class StackInsnAdder():
         dest, beforeInsns = self.insnsBefore(insn)
         newInsns.extend(beforeInsns)
         newInsns.append(insn)
-        afterInsns = self.insnsAfter(dest,insn)
+        afterInsns = self.insnsAfter(insn,dest)
         newInsns.extend(afterInsns)
       else:
         newInsns.append(insn)
@@ -34,7 +34,7 @@ class StackInsnAdder():
     currReg = 5
     for temp in uses:
       offset = self.mapping.getOffset(temp)
-      beforeInsns.append(RVIRMemInsn('lw','x'+currReg,'fp', offset))
+      beforeInsns.append(RVIRMemInsn('lw','x'+str(currReg),'fp', offset))
       currReg += 1
 
     # currReg here is the destination register to use
@@ -43,8 +43,9 @@ class StackInsnAdder():
   def insnsAfter(self,insn,dest):
     # write value in the dest register to the location of the write temp
     afterInsns = []
-    write = insn.writes()[0] # should only be one value
-    offset = self.mapping.getOffset(write)
-    afterInsns.append(RVIRMemInsn('sw','x'+dest,'fp', offset))
+    writes = insn.writes() # should only be one value
+    for temp in writes:
+      offset = self.mapping.getOffset(temp)
+      afterInsns.append(RVIRMemInsn('sw','x'+str(dest),'fp', offset))
 
     return afterInsns

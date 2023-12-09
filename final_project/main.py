@@ -217,14 +217,14 @@ def mangle(program):
                     insn['args'] = mangle_bril_insn(insn['args'])
         func['instrs'] = list(itertools.chain(*blocks))
 
-# def generateAbstractAssemblyWOutCC(listRISCVObjs):
-#     asm = []
-#     for riscvobj in listRISCVObjs:
-#         if isinstance(riscvobj, RVIRInsn):
-#             asm.append(riscvobj.emit_asm())
-#         else:
-#             asm.append("TODO: call insn")
-#     return asm
+def printAsm(listRISCVObjs):
+    asm = []
+    for riscvobj in listRISCVObjs:
+        if isinstance(riscvobj, RVIRInsn):
+            asm.append(riscvobj.emit_asm())
+        else:
+            asm.append("TODO: call insn")
+    return asm
 
 
 def main(): # TODO: we should do this on a per function basis
@@ -245,11 +245,10 @@ def main(): # TODO: we should do this on a per function basis
   trivialRegAllocator = StackInsnAdder(lis_RVIRInsns,mapping)
   RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
 
+  assembly_without_cc = printAsm(RVIRInsnsAfterTrivialRA)
 
-  # abstract_assembly_wOut_CC = generateAbstractAssemblyWOutCC(lis_RVIRInsns)
-
-  # for insn in abstract_assembly_wOut_CC:
-      # print(insn)
+  for insn in assembly_without_cc:
+      print(insn)
 
   # TODO: Write RISC-V IR to output file
   # json.dump(program, sys.stdout, indent=2, sort_keys=True)
