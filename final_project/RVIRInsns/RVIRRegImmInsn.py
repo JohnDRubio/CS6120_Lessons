@@ -9,6 +9,7 @@ class RVIRRegImmInsn(RVIRInsn):
         if src2 is not None:
             if not isinstance(src2, numbers.Real):
                 raise ValueError(f"Invalid operand '{src2}'. Supported operands must be numeric.")
+        super().__init__(abstact_src1=src1, abstract_dst=dst)
         self.op = op
         self.dst  = dst
         self.src1 = src1
@@ -17,8 +18,8 @@ class RVIRRegImmInsn(RVIRInsn):
     def emit_asm(self):
         return f'{self.op} {self.dst}, {self.src1}, {self.src2}'
 
-    def get_abstract_temps(self):
-        return [self.dst,self.src1]
+    def get_abstract_registers(self):
+        return [self.abstract_src1,self.abstract_dst]
 
     def uses(self):
         return [self.src1]
@@ -26,9 +27,9 @@ class RVIRRegImmInsn(RVIRInsn):
     def writes(self):
         return [self.dst]
 
-    def removeAbstractTemps(self):
-        # TODO
-        pass
+    def convert_registers(self):
+        self.src1 = 'x5'
+        self.dst = 'x6'
 
 # r = RVIRRegImmInsn('addi','x1','x2','x3')   # raises error
 # r = RVIRRegImmInsn('addi','x1','x2',2)   

@@ -7,7 +7,7 @@ class RVIRNopInsn(RVIRInsn):
     def emit_asm(self):
         return "nop"
 
-    def get_abstract_temps(self):
+    def get_abstract_registers(self):
         return []
 
     def uses(self):
@@ -16,5 +16,5 @@ class RVIRNopInsn(RVIRInsn):
     def writes(self):
         return []
 
-    def removeAbstractTemps(self):
+    def convert_registers(self):
         pass

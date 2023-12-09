@@ -5,6 +5,7 @@ class RVIRRegRegInsn(RVIRInsn):
     def __init__(self, op, dst, src1, src2):
         if op.upper() not in self.valid_ops:
             raise ValueError(f"Invalid operation '{op}'. Supported operations are: {', '.join(self.valid_ops)}")
+        super().__init__(abstact_src1=src1, abstract_src2=src2, abstract_dst=dst)
         self.op = op
         self.dst  = dst
         self.src1 = src1
@@ -13,8 +14,8 @@ class RVIRRegRegInsn(RVIRInsn):
     def emit_asm(self):
         return f'{self.op} {self.dst}, {self.src1}, {self.src2}'
 
-    def get_abstract_temps(self):
-        return [self.dst,self.src1,self.src2]
+    def get_abstract_registers(self):
+        return [self.abstract_src1,self.abstract_src2,self.abstract_dst]
 
     def uses(self):
         return [self.src1,self.src2]
@@ -22,7 +23,7 @@ class RVIRRegRegInsn(RVIRInsn):
     def writes(self):
         return [self.dst]
 
-    def removeAbstractTemps(self):
+    def convert_registers(self):
         self.src1 = 'x5'
         self.src2 = 'x6'
         self.dst = 'x7'

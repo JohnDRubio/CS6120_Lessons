@@ -1,26 +1,57 @@
 class RVIRInsn:
-    def __init__(self):
-        pass
+    '''
+        RVIRInsn insances represent RISC-V instructions that have
+        not yet been lowered to true RISC-V assembly code. The syntax
+        and semantics of each RVIR instruction is identical to RISC-V
+        instructions. The only difference is that RVIR instructions
+        use arbitrary, abstract registers.
+    '''
+    def __init__(self, abstact_src1=None, abstract_src2=None,abstract_dst=None):
+        self.abstract_src1= abstact_src1
+        self.abstract_src2= abstract_src2
+        self.abstract_dst= abstract_dst
 
-    # For an arbitrary RVirInsn instance, 
-    # return the RISC-V IR instruction as a string
     def emit_asm(self):
+        '''
+            Return this RVIRInsn as a string.
+        '''
         pass
-
-    # For an arbitrary RISCVInsn, get all abstract temps
-    def get_abstract_temps(self):
+    
+    # ? - Feels a little weird transforming RVIRInsns to pure 
+    # ?   RISC-V instructions but maybe that's the best way?
+    def get_abstract_registers(self):
+        '''
+            For an arbitrary RVIRInsn that has been
+            lowered to a pure, RISC-V machine code instruction,
+            return the abstract registers used by its RVIR equivalent.
+        '''
         pass
-
-
-    # For each insn, return temps is uses and writes
-    # for uses, we need to add insns before for trivial RA
-    # for writes, we need to add insns after for trivial RA
 
     def uses(self):
+        '''
+            Returns a list (possibly empty) of registers that this 
+            RVIR instruction uses.
+
+            The registers returned by this method will end up being
+            the registers written to prior to the "working instruction"
+            in trivial register allocation.
+        '''
         pass
 
     def writes(self):
+        '''
+            Returns the register that this RVIR instruction writes.
+            Not all RVIR instructions write to registers.
+
+            The register returned by this method will end up being
+            the register written to after the "working instruction"
+            in trivial register allocation.
+        '''
         pass
 
-    def removeAbstractTemps(self):
+    def convert_registers(self):
+        '''
+            Convert all abstract registers to the machine registers
+            they've been mapped to.
+        '''
         pass

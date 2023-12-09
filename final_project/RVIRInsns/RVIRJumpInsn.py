@@ -1,5 +1,4 @@
 from RVIRInsns.RVIRInsn import RVIRInsn
-# import numbers
 
 class RVIRJumpInsn(RVIRInsn):
     valid_ops = ['JAL', 'JALR']
@@ -10,8 +9,7 @@ class RVIRJumpInsn(RVIRInsn):
              raise ValueError(f"Invalid JAL instruction: JAL takes 2 operands but 3 were provided.")
         if op.upper() == self.valid_ops[1] and src2 is None:
              raise ValueError(f"Invalid JALR instruction: JALR takes 3 operands but 2 were provided.")
-        # if not isinstance(jmp_target, numbers.Real):
-        #         raise ValueError(f"Invalid operand '{jmp_target}'. Supported operands must be numeric.")
+        super().__init__(src1,src2)
         self.op = op
         self.src1 = src1
         self.src2 = src2
@@ -22,20 +20,18 @@ class RVIRJumpInsn(RVIRInsn):
             return f'{self.op} {self.src1}, {self.jmp_target}'     
         return f'{self.op} {self.src1}, {self.src2}, {self.jmp_target}'
 
-    def get_abstract_temps(self):
-        abstract_temps = [self.src1]
+    def get_abstract_registers(self):
+        abstract_temps = [self.abstract_src1]
         if self.src2 != None:
-            abstract_temps.append(self.src2)
+            abstract_temps.append(self.abstract_src2)
 
         return abstract_temps
 
-    # TODO: come back to this, idk if it is right
-
     def uses(self):
         if self.op.upper() == 'JAL':
-            return [self.src1]
+            return []   # JAL does not read any registers
         else:
-            return [self.src2]
+            return [self.src2]  # JALR reads its second operand
 
     def writes(self):
         if self.op.upper() == 'JAL':
@@ -43,9 +39,13 @@ class RVIRJumpInsn(RVIRInsn):
         else:
             return [self.src1]
 
-    def removeAbstractTemps(self):
+    def convert_registers(self):
         # TODO
         pass
+
+        if self.op.upper() == 'JALR':
+            self.src2 = 'x5'
+            self.src1 = 'x1'        #TODO: Special case - After instruction must be x1. I think this is okay in TrivialRegisterAllocator class since insnsAfter is called after convert_registers()
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   

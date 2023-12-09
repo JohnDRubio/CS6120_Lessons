@@ -39,8 +39,8 @@ from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
-from TrivialRegAlloc.TempMapping import TempMapping
-from TrivialRegAlloc.StackInsnAdder import StackInsnAdder
+from TrivialRegAlloc.IRToMachMapping import IRToMachMapping
+from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
 
 '''
 Notes about classes / structure:
@@ -228,7 +228,9 @@ def printAsm(listRISCVObjs):
 
 
 def main(): # TODO: we should do this on a per function basis
-  program = json.load(sys.stdin)
+#   program = json.load(sys.stdin)
+  file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\final_project\\test\\print\\add.json')
+  program = json.load(file)
   mangle(program)
 
   # convert each Bril instruction to a BrilInsn object
@@ -238,11 +240,11 @@ def main(): # TODO: we should do this on a per function basis
   lis_RVIRInsns = convert_to_RVIRInsns(lis_BrilInsns)
 
   # assign offsets to each instruction
-  mapping = TempMapping(lis_RVIRInsns)
+  mapping = IRToMachMapping(lis_RVIRInsns)
   mapping.assignOffsets()
 
   # do trivial register allocation
-  trivialRegAllocator = StackInsnAdder(lis_RVIRInsns,mapping)
+  trivialRegAllocator = TrivialRegisterAllocator(lis_RVIRInsns,mapping)
   RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
 
   assembly_without_cc = printAsm(RVIRInsnsAfterTrivialRA)
