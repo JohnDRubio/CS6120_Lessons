@@ -8,6 +8,7 @@ class RVIRMemInsn(RVIRInsn):
             raise ValueError(f"Invalid operation '{op}'. Supported operations are: {', '.join(self.valid_ops)}")
         if not isinstance(imm, numbers.Real):
                 raise ValueError(f"Invalid operand '{imm}'. Supported operands must be numeric.")
+        super().__init__(abstact_src1=src2, abstract_dst=src1)
         self.op = op
         self.src1 = src1
         self.src2 = src2
@@ -15,9 +16,13 @@ class RVIRMemInsn(RVIRInsn):
     
     def emit_asm(self):
         return f'{self.op} {self.src1}, {self.imm}({self.src2})'
-
-    def get_abstract_temps(self):
-        return [self.src1,self.src2]
+    
+    def get_abstract_registers(self):
+        abstract_regs = []
+        for reg in [self.abstract_src1, self.abstract_dst]:
+            if reg not in self.isa_regs:
+                abstract_regs.append(reg)
+        return abstract_regs
 
     def uses(self):
         if self.op.upper() == 'LW':
@@ -31,9 +36,9 @@ class RVIRMemInsn(RVIRInsn):
         else:
             return []
 
-    def removeAbstractTemps(self):
-        # TODO
-        pass
+    def convert_registers(self):
+        self.src2 = 'x5'
+        self.src1 = 'x6'
 
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)
