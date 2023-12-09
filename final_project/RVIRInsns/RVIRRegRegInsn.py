@@ -15,7 +15,11 @@ class RVIRRegRegInsn(RVIRInsn):
         return f'{self.op} {self.dst}, {self.src1}, {self.src2}'
 
     def get_abstract_registers(self):
-        return [self.abstract_src1,self.abstract_src2,self.abstract_dst]
+        abstract_regs = []
+        for reg in [self.abstract_src1,self.abstract_src2,self.abstract_dst]:
+            if reg not in self.isa_regs:
+                abstract_regs.append(reg)
+        return abstract_regs
 
     def uses(self):
         return [self.src1,self.src2]

@@ -22,7 +22,7 @@ class IRToMachMapping():
       if isinstance(insn, RVIRInsn): # still just pass bril function calls through
         abstract_temps = insn.get_abstract_registers()
         for temp in abstract_temps:
-          if temp not in self.mapping:
+          if temp not in self.mapping and temp not in insn.isa_regs:
             self.mapping[temp] = currentOffset
             currentOffset -= 8
 

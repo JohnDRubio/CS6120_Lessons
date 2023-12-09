@@ -21,11 +21,11 @@ class RVIRJumpInsn(RVIRInsn):
         return f'{self.op} {self.src1}, {self.src2}, {self.jmp_target}'
 
     def get_abstract_registers(self):
-        abstract_temps = [self.abstract_src1]
-        if self.src2 != None:
-            abstract_temps.append(self.abstract_src2)
-
-        return abstract_temps
+        abstract_regs = []
+        for reg in [self.abstract_src1]:
+            if reg not in self.isa_regs:
+                abstract_regs.append(reg)
+        return abstract_regs
 
     def uses(self):
         if self.op.upper() == 'JAL':
@@ -40,12 +40,9 @@ class RVIRJumpInsn(RVIRInsn):
             return [self.src1]
 
     def convert_registers(self):
-        # TODO
-        pass
-
         if self.op.upper() == 'JALR':
             self.src2 = 'x5'
-            self.src1 = 'x1'        #TODO: Special case - After instruction must be x1. I think this is okay in TrivialRegisterAllocator class since insnsAfter is called after convert_registers()
+        self.src1 = 'x1'        #TODO: Special case - After instruction must be x1. I think this is okay in TrivialRegisterAllocator class since insnsAfter is called after convert_registers()
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   

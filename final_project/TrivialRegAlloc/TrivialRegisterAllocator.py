@@ -30,7 +30,6 @@ class TrivialRegisterAllocator():
         newInsns.append(insn)           # insert 'after TRA instructions
         afterInsns = self.insnsAfter(insn,dest,abstract_idx)
         newInsns.extend(afterInsns)
-        # insn.removeAbstractTemps()
       else:
         newInsns.append(insn)
 
@@ -50,11 +49,12 @@ class TrivialRegisterAllocator():
     currReg = 5
     abstract_idx = 0
     for reg in uses:
-      temp = insn.get_abstract_registers()[abstract_idx]
-      offset = self.mapping.getOffset(temp)
-      beforeInsns.append(RVIRMemInsn('lw','x'+str(currReg),'fp', offset))
+      if reg not in insn.isa_regs:
+        temp = insn.get_abstract_registers()[abstract_idx]
+        offset = self.mapping.getOffset(temp)
+        beforeInsns.append(RVIRMemInsn('lw','x'+str(currReg),'fp', offset))
+        abstract_idx += 1
       currReg += 1
-      abstract_idx += 1
     return currReg, beforeInsns, abstract_idx
 
   def insnsAfter(self,insn,dest, abstract_idx):

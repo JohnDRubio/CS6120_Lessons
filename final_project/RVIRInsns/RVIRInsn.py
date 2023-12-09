@@ -6,6 +6,7 @@ class RVIRInsn:
         instructions. The only difference is that RVIR instructions
         use arbitrary, abstract registers.
     '''
+    isa_regs = ['x0','x1']
     def __init__(self, abstact_src1=None, abstract_src2=None,abstract_dst=None):
         self.abstract_src1= abstact_src1
         self.abstract_src2= abstract_src2

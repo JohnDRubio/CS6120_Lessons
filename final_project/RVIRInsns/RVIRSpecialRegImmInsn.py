@@ -21,7 +21,11 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
         return f'{self.op} {self.dst}, {self.imm}'
 
     def get_abstract_registers(self):
-        return [self.abstract_dst]
+        abstract_regs = []
+        for reg in [self.abstract_dst]:
+            if reg not in self.isa_regs:
+                abstract_regs.append(reg)
+        return abstract_regs
 
     def uses(self):
         pass

@@ -228,9 +228,9 @@ def printAsm(listRISCVObjs):
 
 
 def main(): # TODO: we should do this on a per function basis
-#   program = json.load(sys.stdin)
-  file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\final_project\\test\\print\\add.json')
-  program = json.load(file)
+  program = json.load(sys.stdin)
+#   file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\final_project\\test\\print\\add.json')
+#   program = json.load(file)
   mangle(program)
 
   # convert each Bril instruction to a BrilInsn object
