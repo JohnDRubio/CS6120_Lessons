@@ -22,6 +22,11 @@ class RVIRRegRegInsn(RVIRInsn):
     def writes(self):
         return [self.dst]
 
+    def removeAbstractTemps(self):
+        self.src1 = 'x5'
+        self.src2 = 'x6'
+        self.dst = 'x7'
+
 # r = RVIRRegRegInsn('add','x1','x2','x3')
 # r = RVIRRegRegInsn('john','x1','x2','x3')   # raises error
 # print(r.emit_asm())

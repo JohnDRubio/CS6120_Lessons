@@ -27,6 +27,10 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
     def writes(self):
         pass
 
+    def removeAbstractTemps(self):
+        # TODO
+        pass
+
 # r = RVIRSpecialRegImmInsn('lui','x1','x2','x3')   # raises error
 # r = RVIRSpecialRegImmInsn('lui','x1',2)   
 # r = RVIRSpecialRegImmInsn('auipc','x1',2)   

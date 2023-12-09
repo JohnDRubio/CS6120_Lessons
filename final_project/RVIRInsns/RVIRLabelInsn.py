@@ -15,3 +15,6 @@ class RVIRLabelInsn(RVIRInsn):
 
     def writes(self):
         return []
+
+    def removeAbstractTemps(self):
+        pass

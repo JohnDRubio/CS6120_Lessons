@@ -31,6 +31,10 @@ class RVIRMemInsn(RVIRInsn):
         else:
             return []
 
+    def removeAbstractTemps(self):
+        # TODO
+        pass
+
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)
 # r = RVIRMemInsn('john','x1','x2',0)

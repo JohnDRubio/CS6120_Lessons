@@ -43,6 +43,10 @@ class RVIRJumpInsn(RVIRInsn):
         else:
             return [self.src1]
 
+    def removeAbstractTemps(self):
+        # TODO
+        pass
+
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   
 # r = RVIRJumpInsn('jalr','x1', src2='x2',jmp_target='.loop')    

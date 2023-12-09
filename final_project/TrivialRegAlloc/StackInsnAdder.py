@@ -20,9 +20,11 @@ class StackInsnAdder():
       if isinstance(insn, RVIRInsn):
         dest, beforeInsns = self.insnsBefore(insn)
         newInsns.extend(beforeInsns)
+        # rewrite instruction using registers
         newInsns.append(insn)
         afterInsns = self.insnsAfter(insn,dest)
         newInsns.extend(afterInsns)
+        insn.removeAbstractTemps()
       else:
         newInsns.append(insn)
 

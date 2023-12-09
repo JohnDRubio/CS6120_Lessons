@@ -25,6 +25,10 @@ class RVIRBranchInsn(RVIRInsn):
     def writes(self):
         return []
 
+    def removeAbstractTemps(self):
+        self.src1 = 'x5'
+        self.src2 = 'x6'
+
 # r = RVIRBranchInsn('bne','x1','x2','.loop')      
 # r = RVIRBranchInsn('john','x1','x2','.loop')  # raises error    
 # print(r.emit_asm())

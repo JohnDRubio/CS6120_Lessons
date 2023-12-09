@@ -18,17 +18,17 @@ class RVIRRegImmInsn(RVIRInsn):
         return f'{self.op} {self.dst}, {self.src1}, {self.src2}'
 
     def get_abstract_temps(self):
-        abstract_temps = [self.dst,self.src1]
-        if self.src2 != None:
-            abstract_temps.append(self.src2)
-
-        return abstract_temps
+        return [self.dst,self.src1]
 
     def uses(self):
         return [self.src1]
 
     def writes(self):
         return [self.dst]
+
+    def removeAbstractTemps(self):
+        # TODO
+        pass
 
 # r = RVIRRegImmInsn('addi','x1','x2','x3')   # raises error
 # r = RVIRRegImmInsn('addi','x1','x2',2)   

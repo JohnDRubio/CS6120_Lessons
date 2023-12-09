@@ -21,3 +21,6 @@ class RVIRInsn:
 
     def writes(self):
         pass
+
+    def removeAbstractTemps(self):
+        pass
