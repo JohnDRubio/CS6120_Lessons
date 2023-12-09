@@ -29,11 +29,19 @@ class RVIRJumpInsn(RVIRInsn):
 
         return abstract_temps
 
+    # TODO: come back to this, idk if it is right
+
     def uses(self):
-        pass
+        if self.op.upper() == 'JAL':
+            return [self.src1]
+        else:
+            return [self.src2]
 
     def writes(self):
-        pass
+        if self.op.upper() == 'JAL':
+            return []
+        else:
+            return [self.src1]
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   

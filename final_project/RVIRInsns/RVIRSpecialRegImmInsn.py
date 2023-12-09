@@ -1,6 +1,7 @@
 from RVIRInsns.RVIRInsn import RVIRInsn
 import numbers
 
+# TODO: do we need this? doesn't look like we are using them in any of the convert functions
 class RVIRSpecialRegImmInsn(RVIRInsn):
     valid_ops = ['LUI','AUIPC']
     def __init__(self, op, dst, src1, src2=None):

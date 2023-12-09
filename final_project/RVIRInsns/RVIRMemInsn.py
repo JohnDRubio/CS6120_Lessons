@@ -20,10 +20,16 @@ class RVIRMemInsn(RVIRInsn):
         return [self.src1,self.src2]
 
     def uses(self):
-        pass
+        if self.op.upper() == 'LW':
+            return [self.src2]
+        else:
+            return [self.src1,self.src2]
 
     def writes(self):
-        pass
+        if self.op.upper() == 'LW':
+            return [self.src1]
+        else:
+            return []
 
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)
