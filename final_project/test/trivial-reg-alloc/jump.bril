@@ -3,6 +3,6 @@
   y: int = const 5;
   jmp .jmplabel;
   z: int = add x y;
-.jmplabel
-  x: int = sub z x;
+.jmplabel:
+  a: int = sub z x;
 }

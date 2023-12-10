@@ -1,7 +1,7 @@
 from RVIRInsns.RVIRInsn import RVIRInsn
 
 class RVIRBranchInsn(RVIRInsn):
-    valid_ops = ['BEQ','BNE', 'BLT', 'BLTU', 'BGE', 'BGEU']
+    valid_ops = ['BEQ','BNE', 'BLT', 'BLE', 'BLTU', 'BGT', 'BGE', 'BGEU']
     def __init__(self, op, src1, src2, br_target):
         if op.upper() not in self.valid_ops:
             raise ValueError(f"Invalid operation '{op}'. Supported operations are: {', '.join(self.valid_ops)}")

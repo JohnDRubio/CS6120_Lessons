@@ -65,8 +65,9 @@ class TrivialRegisterAllocator():
     afterInsns = []   
     writes = insn.writes() # should only be one value
     for reg in writes:
-      temp = insn.get_abstract_registers()[abstract_idx]
-      offset = self.mapping.getOffset(temp)
-      afterInsns.append(RVIRMemInsn('sw','x'+str(dest),'fp', offset))
-      abstract_idx = 0
+      if reg not in insn.isa_regs:
+        temp = insn.get_abstract_registers()[abstract_idx]
+        offset = self.mapping.getOffset(temp)
+        afterInsns.append(RVIRMemInsn('sw','x'+str(dest),'fp', offset))
+        abstract_idx = 0
     return afterInsns

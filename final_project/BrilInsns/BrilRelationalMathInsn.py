@@ -8,9 +8,12 @@ from RVIRInsns.RVIRJumpInsn import RVIRJumpInsn
 from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
+from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 class BrilRelationalMathInsn(BrilValueOperationInsn):
+
+  numRel = 1
 
   def __init__(self,dest,src1,op,src2):
       super(BrilRelationalMathInsn, self).__init__(dest)
@@ -28,13 +31,13 @@ class BrilRelationalMathInsn(BrilValueOperationInsn):
       .exit_cond:
       '''
       insns = []
-      freshLabel = "" # TODO: generate fresh label
-      exitCond = "" # TODO: generate fresh label for exit_cond
+      freshLabel = "."+self.op+str(BrilRelationalMathInsn.numRel)
+      exitCond = ".exit_cond"+str(BrilRelationalMathInsn.numRel)
       insns.append(RVIRBranchInsn('b'+self.op,self.src1,self.src2,freshLabel))
       insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 0))
       insns.append(RVIRJumpInsn('jal','x0',exitCond))
-      # TODO: add label instruction for freshLabel
+      insns.append(RVIRLabelInsn(freshLabel))
       insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 1))
-      # TODO: add label instruction for exit_cond
-
+      insns.append(RVIRLabelInsn(exitCond))
+      BrilRelationalMathInsn.numRel+=1
       return insns 

@@ -34,10 +34,7 @@ class RVIRJumpInsn(RVIRInsn):
             return [self.src2]  # JALR reads its second operand
 
     def writes(self):
-        if self.op.upper() == 'JAL':
-            return []
-        else:
-            return [self.src1]
+        return [self.src1]
 
     def convert_registers(self):
         if self.op.upper() == 'JALR':
