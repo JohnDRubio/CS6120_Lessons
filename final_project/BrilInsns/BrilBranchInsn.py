@@ -26,7 +26,7 @@ class BrilBranchInsn(BrilEffectOperationInsn):
       insns = []
 
       insns.append(RVIRRegImmInsn('addi','x','x0', 1)) # TODO: x needs to be a fresh temp variable
-      insns.append(RVIRBranchInsn('beq',self.cond,'x',self.label1))
-      insns.append(RVIRJumpInsn('jal','x0',self.label2))
+      insns.append(RVIRBranchInsn('beq',self.cond,'x','.'+self.label1))
+      insns.append(RVIRJumpInsn('jal','x0','.'+self.label2))
 
       return insns
