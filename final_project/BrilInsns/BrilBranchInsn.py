@@ -12,6 +12,8 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 class BrilBranchInsn(BrilEffectOperationInsn):
 
+  numBranches = 1
+
   def __init__(self, cond, label1, label2):
       self.cond = cond
       self.label1 = label1
@@ -25,8 +27,10 @@ class BrilBranchInsn(BrilEffectOperationInsn):
       ''' 
       insns = []
 
-      insns.append(RVIRRegImmInsn('addi','x','x0', 1)) # TODO: x needs to be a fresh temp variable
-      insns.append(RVIRBranchInsn('beq',self.cond,'x','.'+self.label1))
+      freshTemp = "freshTemp"+str(BrilBranchInsn.numBranches)
+      insns.append(RVIRRegImmInsn('addi',freshTemp,'x0', 1))
+      insns.append(RVIRBranchInsn('beq',self.cond,freshTemp,'.'+self.label1))
       insns.append(RVIRJumpInsn('jal','x0','.'+self.label2))
 
+      BrilBranchInsn.numBranches += 1
       return insns
