@@ -1,0 +1,10 @@
+@main {
+  x: int = const 6;
+  y: int = const 5;
+  cond: bool = and x y;
+  br cond .trueLabel .falseLabel
+.trueLabel
+  c: int = add x x;
+.falseLabel
+  c: int = sub x x;
+}

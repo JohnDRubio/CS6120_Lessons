@@ -1,4 +1,0 @@
-@main {
-  c: int = add a b;
-  d: int = add c a;
-}
