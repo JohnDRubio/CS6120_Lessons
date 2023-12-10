@@ -6,7 +6,6 @@ class IRToMachMapping():
     registers in RVIR to their physical locations
     in memory.
   '''
-  # TODO: is this on a per function basis? I'm assuming that it is
   def __init__(self,lis_RVIRInsns):
     self.lis_RVIRInsns = lis_RVIRInsns
     self.mapping = {}

@@ -5,9 +5,10 @@
   br cond .trueLabel .falseLabel;
 .trueLabel:
   c: int = add x x;
+  jmp .exit1;
 .falseLabel:
   c: int = sub x x;
-
+.exit1:
   a: int = const 1;
   b: int = const 2;
   cond: bool = le a b;
@@ -15,6 +16,8 @@
 
 .trueLabel2:
   c: int = add x x;
+  jmp .exit2;
 .falseLabel2:
   c: int = sub x x;
+.exit2:
 }
