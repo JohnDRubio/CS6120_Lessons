@@ -46,6 +46,12 @@
           "type": "int"
         },
         {
+          "labels": [
+            "exit1"
+          ],
+          "op": "jmp"
+        },
+        {
           "label": "falseLabel"
         },
         {
@@ -56,6 +62,9 @@
           "dest": "c",
           "op": "sub",
           "type": "int"
+        },
+        {
+          "label": "exit1"
         },
         {
           "dest": "a",
@@ -101,6 +110,12 @@
           "type": "int"
         },
         {
+          "labels": [
+            "exit2"
+          ],
+          "op": "jmp"
+        },
+        {
           "label": "falseLabel2"
         },
         {
@@ -111,6 +126,9 @@
           "dest": "c",
           "op": "sub",
           "type": "int"
+        },
+        {
+          "label": "exit2"
         }
       ],
       "name": "main"

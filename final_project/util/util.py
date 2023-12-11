@@ -42,102 +42,6 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 from TrivialRegAlloc.IRToMachMapping import IRToMachMapping
 from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
 
-'''
-Notes about classes / structure:
-
-Hierarchy for a Bril Program
--List of Bril Functions
-
-Hierarchy for Bril Functions
--Args
--RetVal
--Body (List of BrilInsns)
-
-Heierarchy for Bril Instructions
- - Label
- - BrilInsn
-    - ConstInsn
-        - IntegerLiteral
-        - BooleanLiteral
-    - ValueOperationInsn
-        - IntegerMath
-            - Add
-            - Mul
-            - Sub
-            - Div
-        - RelationalMath
-            - Eq
-            - Lt
-            - Gt
-            - Le
-            - Ge
-        - BooleanMath
-            - Not
-            - And
-            - Or
-        - Function call (w and without args)
-        - Id
-    - EffectOperationInsn
-        - Jump
-        - Branch
-        - Procedure call (w and without args)
-        - Ret
-  - DummyInsn
-      - Bril instructions that we are ignoring -> basically no-ops (print, memory, etc.)
-
-Hierarchy for RISC-V IR Functions
--Label
--Args
--RetVal
--Body (List of RISCV_IR_INSN)
-
-Hierarchy for RISC-V IR Instructions:
-- Label
-- RISCV_IR_INSN
-    - RegRegInsn
-        - ADD
-        - MUL
-        - SUB
-        - DIV
-        - AND
-        - OR
-        - XOR
-        - SLT
-        - SLTU
-        - SRA
-        - SRL
-        - SLL
-
-    - RegImmInsn
-        - ADDI
-        - ANDI
-        - ORI
-        - XORI
-        - SLTI
-        - SLTIU
-        - SRAI
-        - SRLI
-        - SLLI
-        - LUI
-        - AUIPC
-
-    - Memory
-        -LW
-        -SW
-
-    - Conditional Branch
-        - BEQ
-        - BNE
-        - BLT
-        - BLTU
-        - BGEU
-
-    - Jump
-        - JAL
-        - JALR
-'''
-
-# TODO: Put all function definitions from HERE...
 def convert_to_RVIRInsns(lis_BrilInsns):
     lis_RVIRInsns = []
     for b_insn in lis_BrilInsns:
@@ -193,7 +97,6 @@ def convert_to_BrilInsn(insn):
 
 def convert_to_BrilInsns(func):
     lis_BrilInsns = []
-    # TODO: should this be on a per function basis? otherwise we'll have overlapping variable names when doing trivial RA
     blocks = cfg.formBasicBlocks(func['instrs'])
     for block in blocks:
         for insn in block:
@@ -254,8 +157,3 @@ def lower(program):
 
   for insn in assembly_without_cc:
       print(insn)
-
-def test():
-    print("This is a test")
-
-# ... to HERE in a util directory

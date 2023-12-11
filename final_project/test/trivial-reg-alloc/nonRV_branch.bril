@@ -19,5 +19,5 @@
   jmp .exit2;
 .falseLabel2:
   c: int = sub x x;
-.exit2:
+.exit2:  
 }

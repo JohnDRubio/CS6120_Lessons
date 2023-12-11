@@ -39,7 +39,7 @@ class RVIRJumpInsn(RVIRInsn):
     def convert_registers(self):
         if self.op.upper() == 'JALR':
             self.src2 = 'x5'
-        self.src1 = 'x1'        #TODO: Special case - After instruction must be x1. I think this is okay in TrivialRegisterAllocator class since insnsAfter is called after convert_registers()
+        self.src1 = 'x0'        #TODO: Special case - After instruction must be x1. I think this is okay in TrivialRegisterAllocator class since insnsAfter is called after convert_registers()
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   
