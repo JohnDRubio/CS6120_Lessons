@@ -38,6 +38,7 @@ from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
+from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 
 from TrivialRegAlloc.IRToMachMapping import IRToMachMapping
 from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
@@ -48,12 +49,12 @@ def convert_to_RVIRInsns(lis_BrilInsns):
         lis_RVIRInsns.extend(b_insn.conv_riscvir())
     return lis_RVIRInsns
 
-def convert_to_BrilInsn(insn):
+def convert_to_BrilInsn(insn, isFuncName=False):
     relational_ops = ['eq','lt','gt','le','ge']
     if 'op' in insn and insn['op'] in relational_ops:
         return BrilRelationalMathInsn(insn['dest'], insn['args'][0], insn['op'], insn['args'][1])
     if 'label' in insn:
-        return BrilLabelInsn(insn['label'])
+        return BrilLabelInsn(insn['label'], isFuncName)
     if 'op' in insn:
         match insn['op']:
             case 'add':
@@ -98,9 +99,12 @@ def convert_to_BrilInsn(insn):
 def convert_to_BrilInsns(func):
     lis_BrilInsns = []
     blocks = cfg.formBasicBlocks(func['instrs'])
-    for block in blocks:
+    for i, block in enumerate(blocks):
         for insn in block:
-            lis_BrilInsns.append(convert_to_BrilInsn(insn))
+            if i == 0:
+                lis_BrilInsns.append(convert_to_BrilInsn(insn,True))
+            else:
+                lis_BrilInsns.append(convert_to_BrilInsn(insn))
     return lis_BrilInsns
 
 def mangle_bril_insn(vars):
@@ -122,8 +126,8 @@ def mangle(program):
 
 def insert_labels(program):
     for func in program['functions']:
-        blocks = cfg.formBasicBlocks(func['instrs'])
-        blocks = cfg.addLabels(blocks)
+        blocks = cfg.formBasicBlocks(func['instrs'], func['name'])
+        # blocks = cfg.addLabels(blocks, func['name'])
     func['instrs'] = list(itertools.chain(*blocks))
 
 
@@ -131,7 +135,10 @@ def print_asm(listRISCVObjs):
     asm = []
     for riscvobj in listRISCVObjs:
         if isinstance(riscvobj, RVIRInsn):
-            asm.append(riscvobj.emit_asm())
+            if isinstance(riscvobj, RVIRLabelInsn):
+                asm.append(riscvobj.emit_asm())
+            else:
+                asm.append("\t"+riscvobj.emit_asm())
         else:
             asm.append("TODO: call insn")
     return asm

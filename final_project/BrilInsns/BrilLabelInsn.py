@@ -13,8 +13,13 @@ from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 
 class BrilLabelInsn(BrilInsn):
 
-  def __init__(self,label):
-      self.label = label
+  def __init__(self,label, isFuncName=False):
+      self.label = label+':'
+      self.isFuncName = isFuncName
 
   def conv_riscvir(self):
-      return [RVIRLabelInsn('.'+self.label)]
+      label = '.'+self.label if not self.isFuncName else self.label
+      if self.label[-1] != ':':
+         return [RVIRLabelInsn(label+':')]
+      return [RVIRLabelInsn(label)]
+      

@@ -42,8 +42,8 @@ class BrilRelationalMathInsn(BrilValueOperationInsn):
       insns.append(RVIRBranchInsn('b'+self.op,self.src1,self.src2,freshLabel))
       insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 0))
       insns.append(RVIRJumpInsn('jal','x0',exitCond))
-      insns.append(RVIRLabelInsn(freshLabel))
+      insns.append(RVIRLabelInsn(freshLabel+':'))
       insns.append(RVIRRegImmInsn('addi',self.dest,'x0', 1))
-      insns.append(RVIRLabelInsn(exitCond))
+      insns.append(RVIRLabelInsn(exitCond+':'))
       BrilRelationalMathInsn.numRel+=1
       return insns 
