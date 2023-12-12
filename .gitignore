@@ -1,10 +1,3 @@
-lesson02/__pycache__/*
-lesson03/__pycache__/*
-lesson04/__pycache__/*
-lesson05/__pycache__/*
-lesson06/__pycache__/*
-lesson07/__pycache__/*
-lesson08/__pycache__/*
 lesson03/*
 lesson05/*
 lesson07/*
@@ -21,3 +14,5 @@ lowering/RVIRInsn/riscv-simulator/*
 lowering/RVIRInsn/riscv32-linux/*
 *.pyc
 */__pycache__
+*.in
+*.out
