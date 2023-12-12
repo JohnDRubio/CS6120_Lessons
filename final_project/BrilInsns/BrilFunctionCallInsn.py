@@ -36,11 +36,6 @@ class BrilFunctionCallInsn(BrilValueOperationInsn):
       if dest != None:
         addi dest, x10, x0
       '''
-      #TODO: Push local variables + other caller-save regs to stack
-      #TODO: Save args to regs x10-x17 and push overflow arguments as needed
-      # *func call*
-      #TODO: Save rv to x10 if applicable
-      #TODO: Pop local variables + other caller-save regs from stack
       insns = []
       overflow = len(self.args) > 8
       NARG_REGS = 8

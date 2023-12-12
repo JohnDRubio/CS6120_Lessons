@@ -14,8 +14,8 @@
 
 ### Class Heierarchy for BrilInsn
 
-- Label # TODO: Circle back to this
 - BrilInsn
+  - BrilLabelInsn
   - ConstInsn
     - IntegerLiteral
     - BooleanLiteral
@@ -48,8 +48,6 @@
 ## RISC-V IR
 
 - We use a 1-to-N mapping of Bril instructions to RISC-V IR instructions
-- Each Bril instruction is mapped to the sequence of RISC-V IR instructions shown in Table 1 below:
-  - TODO: Add in translation table
 
 - Like Bril, each RISC-V IR (RVIR) program is structured as a list of functions
 - Each RVIR function has:
@@ -60,8 +58,8 @@
 
 ### Class Heierarchy for RVIRInsn
 
-- Label # TODO: Circle back to this
 - RVIRInsn
+  - RVIRLabelInsn
   - RVIRRegRegInsn
     - ADD
     - MUL
@@ -109,6 +107,6 @@
   - RVIRNopInsn
     - NOP
 
-## TODO: Include diagram illustrating progressive lowering from Bril->RVIR->RISC-V
+## How to run
 
-## TODO: Include other sections
+`bril2json < path/to/bril/file.bril | python main.py -o optional_file_name.asm`

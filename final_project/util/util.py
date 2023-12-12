@@ -1,7 +1,6 @@
 import json
 import sys
-sys.path.append("../library")
-import cfg
+import util.cfg as cfg
 import itertools
 
 # from BrilInsns import *
@@ -45,6 +44,13 @@ from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
 
 from util.prologue import Prologue
 from util.epilogue import Epilogue
+
+def set_fileName():
+    output_filename = 'asm/out.asm'
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '-o' and len(sys.argv) > 2:
+            output_filename = 'asm/'+sys.argv[2]
+    return output_filename
 
 def get_frame_size(func):
     '''
@@ -176,7 +182,6 @@ def mangle(program):
                     insn['dest'] = mangle_bril_insn([insn['dest']])[0]
                 if 'args' in insn:
                     insn['args'] = mangle_bril_insn(insn['args'])
-        new_args = []
         if 'args' in func:
             for arg in func['args']:
                 arg['name'] = '_'+arg['name']
@@ -185,10 +190,9 @@ def mangle(program):
 def insert_labels(program):
     for func in program['functions']:
         blocks = cfg.formBasicBlocks(func['instrs'], func['name'])
-        # blocks = cfg.addLabels(blocks, func['name'])
         func['instrs'] = list(itertools.chain(*blocks))
 
-def print_asm(listRISCVObjs):
+def write_asm(listRISCVObjs):
     asm = []
     for riscvobj in listRISCVObjs:
         if isinstance(riscvobj, RVIRInsn):
@@ -196,8 +200,6 @@ def print_asm(listRISCVObjs):
                 asm.append(riscvobj.emit_asm())
             else:
                 asm.append("\t"+riscvobj.emit_asm())
-        else:
-            asm.append("TODO: call insn")
     return asm
 
 def get_nargs(func):
@@ -227,7 +229,7 @@ def map_args(lis_RVIRInsns, args):
         insn.cc_update(new_regs)
 
 
-def lower(program):
+def lower(program, output_file):
   assembly_code = []
   for func in program['functions']:
     # convert each Bril instruction to a BrilInsn object
@@ -251,7 +253,8 @@ def lower(program):
     trivialRegAllocator = TrivialRegisterAllocator(lis_RVIRInsns,mapping)
     RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
 
-    assembly_code.extend(print_asm(RVIRInsnsAfterTrivialRA))
+    assembly_code.extend(write_asm(RVIRInsnsAfterTrivialRA))
 
-  for insn in assembly_code:
-      print(insn)
+  with open(output_file, 'w') as file:
+        for insn in assembly_code:
+            file.write(insn + '\n')
