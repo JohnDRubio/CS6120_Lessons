@@ -1,7 +1,6 @@
 from RVIRInsns.RVIRInsn import RVIRInsn
 
 class RVIRBranchInsn(RVIRInsn):
-    # valid_ops = ['BEQ','BNE', 'BLT', 'BLE', 'BLTU', 'BGT', 'BGE', 'BGEU']
     valid_ops = ['BEQ','BNE', 'BLT', 'BLTU', 'BGE', 'BGEU']
     def __init__(self, op, src1, src2, br_target):
         if op.upper() not in self.valid_ops:
@@ -31,6 +30,14 @@ class RVIRBranchInsn(RVIRInsn):
     def convert_registers(self):
         self.src1 = 'x5' if self.src1 not in self.isa_regs else self.src1
         self.src2 = 'x6' if self.src2 not in self.isa_regs else self.src2
+    
+    # For Calling Conventions
+    def get_containers(self):
+        return self.src1, self.src2
+
+    def cc_update(self, new_regs):
+        self.src1, self.src2 = new_regs
+
 
 # r = RVIRBranchInsn('bne','x1','x2','.loop')      
 # r = RVIRBranchInsn('john','x1','x2','.loop')  # raises error    

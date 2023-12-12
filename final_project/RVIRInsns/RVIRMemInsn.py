@@ -37,8 +37,15 @@ class RVIRMemInsn(RVIRInsn):
             return []
 
     def convert_registers(self):
-        self.src2 = 'x5'
-        self.src1 = 'x6'
+        self.src2 = 'x5' if self.src2 not in self.isa_regs else self.src2
+        self.src1 = 'x6' if self.src1 not in self.isa_regs else self.src1
+
+    # For Calling Conventions
+    def get_containers(self):
+        return self.src1, self.src2
+
+    def cc_update(self, new_regs):
+        self.src1, self.src2 = new_regs
 
 # r = RVIRMemInsn('lw','x1','x2','x3')      # raises error
 # r = RVIRMemInsn('lw','x1','x2',0)

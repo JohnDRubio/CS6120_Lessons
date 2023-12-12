@@ -34,7 +34,14 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
         pass
 
     def convert_registers(self):
-        self.dst = 'x5'
+        self.dst = 'x5' if self.dst not in self.isa_regs else self.dst
+
+    # For Calling Conventions
+    def get_containers(self):
+        return self.dst
+
+    def cc_update(self, new_regs):
+        self.dst = new_regs
 
 # r = RVIRSpecialRegImmInsn('lui','x1','x2','x3')   # raises error
 # r = RVIRSpecialRegImmInsn('lui','x1',2)   

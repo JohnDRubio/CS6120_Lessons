@@ -13,21 +13,20 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 class BrilRetInsn(BrilEffectOperationInsn):
 
   # assume for now that value is an argument
-  def __init__(self, value=None):
-      self.value = value
+  # Keep in mind that Bril has one optional return value
+  def __init__(self, rv=None):
+      self.rv = rv
 
   def conv_riscvir(self):
       '''
-      if value:
-          addi a0, val, 0;
-          jalr x0, x1, 0;
+      if rv
+          addi x10, val, 0;
+          jalr x0, 0(x1);
       else:
-          jalr x0, x1, 0;
+          jalr x0, 0(x1);
       '''
       insns = []
-      if self.value:
-          insns.append(RVIRRegImmInsn('addi','a0',self.value, 0))
-      
-      insns.append(RVIRJumpInsn('jalr','x0', 'x1',0)) # TODO: check since this isn't what you put in RVIRJumpInsn
-
+      if self.rv:
+          insns.append(RVIRRegImmInsn('addi','a0',self.rv, 0))      # Store return value
+      insns.append(RVIRJumpInsn('jalr','x0', 'x1', 0)) # TODO: check since this isn't what you put in RVIRJumpInsn
       return insns

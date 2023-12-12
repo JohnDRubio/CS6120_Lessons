@@ -34,6 +34,13 @@ class RVIRRegImmInsn(RVIRInsn):
     def convert_registers(self):
         self.src1 = 'x5' if self.src1 not in self.isa_regs else self.src1
         self.dst = 'x6'  if self.dst not in self.isa_regs else self.dst
+    
+    # For Calling Conventions
+    def get_containers(self):
+        return self.dst, self.src1
+
+    def cc_update(self, new_regs):
+        self.dst, self.src1 = new_regs
 
 # r = RVIRRegImmInsn('addi','x1','x2','x3')   # raises error
 # r = RVIRRegImmInsn('addi','x1','x2',2)   

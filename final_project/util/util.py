@@ -43,10 +43,58 @@ from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 from TrivialRegAlloc.IRToMachMapping import IRToMachMapping
 from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
 
-def convert_to_RVIRInsns(lis_BrilInsns):
+from util.prologue import Prologue
+from util.epilogue import Epilogue
+
+def get_frame_size(func):
+    '''
+        To calculate frame size, must consider:
+            - return address saved to stack
+            - frame pointer saved to stack
+            - the function call in function body with the highest # of args (if > 8, overflow is pushed to stack)
+            - temporaries saved to stack (include all local variables)
+    '''
+    ret_addr_size = 4
+    fp_size = 4
+    locals = len(get_temps(func))*4
+    blocks = cfg.formBasicBlocks(func['instrs'])
+    max_nargs = 0
+    for block in blocks:
+        for insn in block:
+            if 'op' in insn:
+                if 'call' in insn['op']:
+                    if 'args' in insn:
+                        if len(insn['args']) > max_nargs:
+                            max_nargs = len(insn['args'])
+    overflow_arg_size = (max_nargs - 8)*4 if max_nargs > 8 else 0
+    saved_regs_size = max_nargs *4      # Assume number saved regs used == number of args
+    frame_size = ret_addr_size + fp_size + locals + overflow_arg_size + saved_regs_size
+    reserved = frame_size - locals - overflow_arg_size
+    return frame_size, reserved
+
+def get_temps(func):
+    '''
+        Returns a list of all local variables in func.
+    '''
+    temps = []
+    blocks = cfg.formBasicBlocks(func['instrs'])
+    for block in blocks:
+        for insn in block:
+            if 'dest' in insn and insn['dest'] not in temps:
+                if 'args' in func and insn['dest'] in func['args']:
+                    continue
+                temps.append(insn['dest'])
+    return temps
+
+def convert_to_RVIRInsns(lis_BrilInsns, frame_size=0, nargs=0, temps=[],args=[]):
     lis_RVIRInsns = []
     for b_insn in lis_BrilInsns:
-        lis_RVIRInsns.extend(b_insn.conv_riscvir())
+        if isinstance(b_insn, Prologue) or isinstance(b_insn, Epilogue):    # Part of calling conventions pass
+            lis_RVIRInsns.extend(b_insn.conv_riscvir(frame_size=frame_size,nargs=nargs, args=args))
+        elif isinstance(b_insn, BrilFunctionCallInsn):                      # Part of calling conventions pass
+            lis_RVIRInsns.extend(b_insn.conv_riscvir(nargs=nargs, temps=temps))
+        else:
+            lis_RVIRInsns.extend(b_insn.conv_riscvir())
     return lis_RVIRInsns
 
 def convert_to_BrilInsn(insn, isFuncName=False):
@@ -100,11 +148,17 @@ def convert_to_BrilInsns(func):
     lis_BrilInsns = []
     blocks = cfg.formBasicBlocks(func['instrs'])
     for i, block in enumerate(blocks):
-        for insn in block:
-            if i == 0:
-                lis_BrilInsns.append(convert_to_BrilInsn(insn,True))
+        for j, insn in enumerate(block):
+            if i == 0 and j == 0:
+                lis_BrilInsns.append(convert_to_BrilInsn(insn,True))    # function name label
+                # insert prologue
+                lis_BrilInsns.append(Prologue())
+            elif i == len(blocks)-1 and j == len(block)-1:
+                # insert epilogue
+                lis_BrilInsns.append(convert_to_BrilInsn(insn))         # last function body instruction
+                lis_BrilInsns.append(Epilogue())
             else:
-                lis_BrilInsns.append(convert_to_BrilInsn(insn))
+                lis_BrilInsns.append(convert_to_BrilInsn(insn))         # ordinary function body instruction
     return lis_BrilInsns
 
 def mangle_bril_insn(vars):
@@ -122,14 +176,17 @@ def mangle(program):
                     insn['dest'] = mangle_bril_insn([insn['dest']])[0]
                 if 'args' in insn:
                     insn['args'] = mangle_bril_insn(insn['args'])
+        new_args = []
+        if 'args' in func:
+            for arg in func['args']:
+                arg['name'] = '_'+arg['name']
         func['instrs'] = list(itertools.chain(*blocks))
 
 def insert_labels(program):
     for func in program['functions']:
         blocks = cfg.formBasicBlocks(func['instrs'], func['name'])
         # blocks = cfg.addLabels(blocks, func['name'])
-    func['instrs'] = list(itertools.chain(*blocks))
-
+        func['instrs'] = list(itertools.chain(*blocks))
 
 def print_asm(listRISCVObjs):
     asm = []
@@ -143,24 +200,58 @@ def print_asm(listRISCVObjs):
             asm.append("TODO: call insn")
     return asm
 
+def get_nargs(func):
+    if 'args' in func:
+        return len(func['args']) 
+    return 0
+
+def map_args(lis_RVIRInsns, args):
+    # TODO: Dealing with < 8 arg case for now
+
+    tra_regs = ['x5','x6','x7']
+    
+    # Using regs s1-s11
+    idx = 1
+    mapping = {}
+    for i, insn in enumerate(lis_RVIRInsns):
+        if i > 11:
+            break
+        regs = insn.get_containers()
+        new_regs = []
+        for reg in regs:
+            if reg in args:
+                mapping[reg] = idx
+                new_regs.append('s'+str(idx)); idx += 1
+        while len(new_regs) < len(regs):
+            new_regs.append(regs[len(new_regs)])
+        insn.cc_update(new_regs)
+
+
 def lower(program):
-  assembly_without_cc = []
+  assembly_code = []
   for func in program['functions']:
     # convert each Bril instruction to a BrilInsn object
     lis_BrilInsns = convert_to_BrilInsns(func)
   
     # convert each BrilInsn object to N RVIRInsn objects
-    lis_RVIRInsns = convert_to_RVIRInsns(lis_BrilInsns)
+    frame_size, reserved = get_frame_size(func)
+    nargs = get_nargs(func)
+    temps = get_temps(func)
+    func_args = [] if 'args' not in func else func['args']
+    lis_RVIRInsns = convert_to_RVIRInsns(lis_BrilInsns, frame_size, nargs, temps, func_args)
 
     # assign offsets to each instruction
-    mapping = IRToMachMapping(lis_RVIRInsns)
+    mapping = IRToMachMapping(lis_RVIRInsns, reserved)
     mapping.assignOffsets()
+
+    # map args -> regs
+    map_args(lis_RVIRInsns, func_args)
 
     # do trivial register allocation
     trivialRegAllocator = TrivialRegisterAllocator(lis_RVIRInsns,mapping)
     RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
 
-    assembly_without_cc.extend(print_asm(RVIRInsnsAfterTrivialRA))
+    assembly_code.extend(print_asm(RVIRInsnsAfterTrivialRA))
 
-  for insn in assembly_without_cc:
+  for insn in assembly_code:
       print(insn)

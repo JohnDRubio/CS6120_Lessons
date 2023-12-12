@@ -12,9 +12,9 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 class BrilJumpInsn(BrilEffectOperationInsn):
 
-  def __init__(self,label):
-      self.label = label
+  def __init__(self,target):
+      self.target = target
 
   def conv_riscvir(self):
       # jal x0, .label
-      return [RVIRJumpInsn('jal','x0',self.label)]  
+      return [RVIRJumpInsn('jal','x0','.'+self.target)]  
