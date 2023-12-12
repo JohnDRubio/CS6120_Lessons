@@ -14,7 +14,7 @@ class Epilogue:
     
     def conv_riscvir(self, frame_size=0, nargs=0, args=[]):
         '''
-            Pop things that need popping before returing.
+            Pop things that need popping before returning.
 
             This list of things includes:
                 - return address
