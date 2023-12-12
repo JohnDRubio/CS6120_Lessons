@@ -1,3 +1,6 @@
+# The goal
+The goal of this project is to develop a compiler backend which lowers from [Bril](https://capra.cs.cornell.edu/bril/) to RISC-V. Specifically, the target is [RV32I](https://en.wikipedia.org/wiki/RISC-V#:~:text=Base%20Integer%20Instruction%20Set%2C%2032%2Dbit)
+
 # Lowering System Architecture
 
 ## Representing Bril Programs
