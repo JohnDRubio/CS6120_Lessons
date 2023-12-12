@@ -1,7 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./final_project/BrilInsns",
-        "./final_project/RVIRInsns",
-        "./library"
-    ]
-}
