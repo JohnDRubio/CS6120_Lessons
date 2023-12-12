@@ -16,6 +16,8 @@ final_project/__pycache__/*
 .DS_Store
 lesson05/graphs/*
 lesson06/graphs/*
-final_project/RVIRInsn/__pycache__/*
-final_project/RVIRInsn/riscv-simulator/*
-final_project/RVIRInsn/riscv32-linux/*
+lowering/RVIRInsn/__pycache__/*
+lowering/RVIRInsn/riscv-simulator/*
+lowering/RVIRInsn/riscv32-linux/*
+*.pyc
+*/__pycache__
