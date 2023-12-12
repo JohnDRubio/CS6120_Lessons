@@ -1,4 +1,4 @@
-def formBasicBlocks(insns):
+def formBasicBlocks(insns, funcName=None):
     basicBlocks = []
     currBlock = []
     for i in insns:
@@ -14,13 +14,15 @@ def formBasicBlocks(insns):
             currBlock.append(i)
     basicBlocks.append(currBlock)
     basicBlocks = removeEmptyBasicBlocks(basicBlocks)
-    basicBlocks = addLabels(basicBlocks)
+    basicBlocks = addLabels(basicBlocks, funcName)
     return basicBlocks
 
-def addLabels(basicBlocks):
+def addLabels(basicBlocks, funcName=None):
     num = 0
-    for block in basicBlocks:
-        if 'label' not in block[0]:
+    for i, block in enumerate(basicBlocks):
+        if i == 0 and funcName is not None:
+            block.insert(0,{"label": funcName})
+        elif 'label' not in block[0]:
             block.insert(0,{"label": "label_"+str(num)})
             num = num + 1
     return basicBlocks
