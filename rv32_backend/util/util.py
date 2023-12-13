@@ -44,6 +44,7 @@ from TrivialRegAlloc.TrivialRegisterAllocator import TrivialRegisterAllocator
 
 from util.prologue import Prologue
 from util.epilogue import Epilogue
+from util.visitor import Visitor
 
 def set_fileName():
     output_filename = 'asm/out.asm'
@@ -229,8 +230,8 @@ def map_args(lis_RVIRInsns, args):
         insn.cc_update(new_regs)
 
 def use_xregs(RVIRInsnsAfterTrivialRA):
-    for insn in RVIRInsnsAfterTrivialRA:
-        insn.xregs()
+    visitor = Visitor(RVIRInsnsAfterTrivialRA)
+    visitor.xregs()
 
 def lower(program, output_file):
   # logic for renaming to 'x' register names

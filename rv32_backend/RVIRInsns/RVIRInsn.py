@@ -102,12 +102,12 @@ class RVIRInsn:
             they've been mapped to.
         '''
         pass
+    
+    def xregs(self, visitor):
+        pass
 
     def get_containers(self):
         return []
     
     def cc_update(self, lis):
-        pass
-
-    def xregs(self):
         pass

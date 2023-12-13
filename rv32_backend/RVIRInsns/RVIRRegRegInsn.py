@@ -30,6 +30,9 @@ class RVIRRegRegInsn(RVIRInsn):
     # Visitor pattern
     def convert_registers(self, visitor):
         visitor.RVIRRegRegInsn_convert_registers(self)
+
+    def xregs(self, visitor):
+        visitor.RVIRRegRegInsn_xregs(self)
     
     # For Calling Conventions
     def get_containers(self):
@@ -37,11 +40,6 @@ class RVIRRegRegInsn(RVIRInsn):
 
     def cc_update(self, new_regs):
         self.dst, self.src1, self.src2 = new_regs
-    
-    def xregs(self):
-        self.dst = self.dst if self.dst not in self.reg_map else self.reg_map[self.dst]
-        self.src1 = self.src1 if self.src1 not in self.reg_map else self.reg_map[self.src1]
-        self.src2 = self.src2 if self.src2 not in self.reg_map else self.reg_map[self.src2]
 
 # r = RVIRRegRegInsn('add','x1','x2','x3')
 # r = RVIRRegRegInsn('john','x1','x2','x3')   # raises error

@@ -16,6 +16,10 @@ class Visitor:
     def convert_registers(self):
         for insn in self.insns:
             insn.convert_registers(self)
+    
+    def xregs(self):
+        for insn in self.insns:
+            insn.xregs(self)
     # ====================================================================
     # RVIRBranchInsn Visitor Methods
     # ====================================================================
