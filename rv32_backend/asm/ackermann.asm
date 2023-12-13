@@ -121,7 +121,7 @@ main:
 	jal x1, ack
 	add x7, a0, x0
 	sw x7, -24(fp)
-	nop
+	add x0, x0, x0
 	lw s2, 4(sp)
 	lw s1, 8(sp)
 	lw fp, 12(sp)
