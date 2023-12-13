@@ -49,12 +49,9 @@ class RVIRJumpInsn(RVIRInsn):
     def writes(self):
         return [self.src1]
 
-    def convert_registers(self):
-        # TODO: Test this   
-        if self.isFunc and self.op.upper == 'JAL':
-            self.src1 = 'x1' if self.src1 not in self.isa_regs else self.src1
-        else:       # Unconditional jmp (within a function) or JALR
-            self.src1 = 'x0' if self.src1 not in self.isa_regs else self.src1
+    # Visitor pattern
+    def convert_registers(self, visitor):
+        visitor.RVIRJumpInsn_convert_registers(self)
     
     # For Calling Conventions
     def get_containers(self):

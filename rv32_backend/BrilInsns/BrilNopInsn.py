@@ -9,10 +9,9 @@ from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRRegRegInsn import RVIRRegRegInsn
 from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
+from RVIRInsns.RVIRNopInsn import RVIRNopInsn
 
 class BrilNopInsn(BrilInsn):
 
   def conv_riscvir(self):
-      # TODO: probably same with label. generic nop class
-      # nop
-      pass 
+      return [RVIRNopInsn()]

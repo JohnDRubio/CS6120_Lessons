@@ -96,7 +96,7 @@ class RVIRInsn:
         '''
         pass
 
-    def convert_registers(self):
+    def convert_registers(self, visitor):
         '''
             Convert all abstract registers to the machine registers
             they've been mapped to.

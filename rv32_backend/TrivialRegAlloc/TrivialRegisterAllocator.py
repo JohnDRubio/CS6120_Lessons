@@ -1,5 +1,6 @@
 from RVIRInsns.RVIRMemInsn import RVIRMemInsn
 from RVIRInsns.RVIRInsn import RVIRInsn
+from util.visitor import Visitor
 
 class TrivialRegisterAllocator():
   '''
@@ -21,12 +22,14 @@ class TrivialRegisterAllocator():
     '''
     newInsns = [] # should only have real registers -> only insns not done would be BrilCallInsns 
                    # (just passing them through below)
+    visitor = Visitor(self.lis_RVIRInsns)
+    visitor.convert_registers()
 
     for insn in self.lis_RVIRInsns:
       if isinstance(insn, RVIRInsn):
         dest, beforeInsns, abstract_idx = self.insnsBefore(insn)
         newInsns.extend(beforeInsns)    # insert 'before' TRA instructions
-        insn.convert_registers()        # convert all abstract registers to machine registers 
+        # insn.convert_registers()        # convert all abstract registers to machine registers 
         newInsns.append(insn)           # insert 'after TRA instructions
         afterInsns = self.insnsAfter(insn,dest,abstract_idx)
         newInsns.extend(afterInsns)

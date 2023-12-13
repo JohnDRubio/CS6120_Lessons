@@ -15,6 +15,3 @@ class RVIRNopInsn(RVIRInsn):
 
     def writes(self):
         return []
-
-    def convert_registers(self):
-        pass

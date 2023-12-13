@@ -33,8 +33,9 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
     def writes(self):
         pass
 
-    def convert_registers(self):
-        self.dst = 'x5' if self.dst not in self.isa_regs else self.dst
+    # Visitor pattern
+    def convert_registers(self, visitor):
+        visitor.RVIRSpecialRegImmInsn_convert_registers(self)
 
     # For Calling Conventions
     def get_containers(self):

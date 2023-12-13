@@ -31,9 +31,9 @@ class RVIRRegImmInsn(RVIRInsn):
     def writes(self):
         return [self.dst]
 
-    def convert_registers(self):
-        self.src1 = 'x5' if self.src1 not in self.isa_regs else self.src1
-        self.dst = 'x6'  if self.dst not in self.isa_regs else self.dst
+    # Visitor pattern
+    def convert_registers(self, visitor):
+        visitor.RVIRRegImmInsn_convert_registers(self)
     
     # For Calling Conventions
     def get_containers(self):

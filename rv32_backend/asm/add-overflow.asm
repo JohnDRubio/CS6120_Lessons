@@ -1,5 +1,4 @@
 main:
-	addi sp, sp, 0xFFFFFFFC
 	addi sp, sp, -44
 	sw x1, 40(sp)
 	sw fp, 36(sp)
@@ -17,7 +16,7 @@ main:
 	jal x1, pow
 	add x7, a0, x0
 	sw x7, -28(fp)
-	nop
+	add x0, x0, x0
 	lw x5, -28(fp)
 	lw x6, -16(fp)
 	sub x7, x5, x6
@@ -26,12 +25,12 @@ main:
 	lw x6, -32(fp)
 	add x7, x5, x6
 	sw x7, -36(fp)
-	nop
+	add x0, x0, x0
 	lw x5, -36(fp)
 	lw x6, -16(fp)
 	add x7, x5, x6
 	sw x7, -40(fp)
-	nop
+	add x0, x0, x0
 	lw fp, 36(sp)
 	lw x1, 40(sp)
 	addi sp, sp, 44

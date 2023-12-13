@@ -27,9 +27,9 @@ class RVIRBranchInsn(RVIRInsn):
     def writes(self):
         return []
 
-    def convert_registers(self):
-        self.src1 = 'x5' if self.src1 not in self.isa_regs else self.src1
-        self.src2 = 'x6' if self.src2 not in self.isa_regs else self.src2
+    # Visitor pattern
+    def convert_registers(self, visitor):
+        visitor.RVIRBranchInsn_convert_registers(self)
     
     # For Calling Conventions
     def get_containers(self):

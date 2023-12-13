@@ -36,9 +36,9 @@ class RVIRMemInsn(RVIRInsn):
         else:
             return []
 
-    def convert_registers(self):
-        self.src2 = 'x5' if self.src2 not in self.isa_regs else self.src2
-        self.src1 = 'x6' if self.src1 not in self.isa_regs else self.src1
+    # Visitor pattern
+    def convert_registers(self, visitor):
+        visitor.RVIRMemInsn_convert_registers(self)
 
     # For Calling Conventions
     def get_containers(self):
