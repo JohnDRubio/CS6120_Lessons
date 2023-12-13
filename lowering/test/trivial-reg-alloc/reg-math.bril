@@ -1,9 +1,0 @@
-@main {
-  c: int = add a b;
-  d: int = add c a;
-  e: int = mul c d;
-  f: int = sub e b;
-  c: int = div e f;
-  a: int = add a a;
-  print d;
-}

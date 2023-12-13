@@ -1,8 +1,0 @@
-@main {
-  x: int = const 6;
-  y: int = const 5;
-  jmp .jmplabel;
-  z: int = add x y;
-.jmplabel:
-  a: int = sub z x;
-}

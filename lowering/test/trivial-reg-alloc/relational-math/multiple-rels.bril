@@ -1,9 +1,0 @@
-@main {
-  a: int = const 4;
-  b: int = const 10;
-  c: int = const 15;
-
-  x: bool = eq a b;
-  y: bool = gt c a;
-  
-}
