@@ -62,6 +62,11 @@ class RVIRJumpInsn(RVIRInsn):
 
     def cc_update(self, new_regs):
         self.src1, self.jmp_target = new_regs
+    
+    def xregs(self):
+        def xregs(self):
+            self.src1 = self.src1 if self.src1 not in self.reg_map else self.reg_map[self.src1]
+            self.jmp_target = self.jmp_target if self.jmp_target not in self.reg_map else self.reg_map[self.jmp_target]
 
 # r = RVIRJumpInsn('jal','x1','.loop')      
 # r = RVIRJumpInsn('jal','x1', 'x2','.loop')  # raises error   

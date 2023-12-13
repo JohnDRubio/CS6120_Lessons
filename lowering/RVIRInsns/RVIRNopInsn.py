@@ -5,7 +5,7 @@ class RVIRNopInsn(RVIRInsn):
         pass
     
     def emit_asm(self):
-        return "nop"
+        return "add x0, x0, x0"
 
     def get_abstract_registers(self):
         return []

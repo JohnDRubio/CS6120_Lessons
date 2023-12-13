@@ -43,6 +43,9 @@ class RVIRSpecialRegImmInsn(RVIRInsn):
     def cc_update(self, new_regs):
         self.dst = new_regs
 
+    def xregs(self):
+        self.dst = self.dst if self.dst not in self.reg_map else self.reg_map[self.dst]
+
 # r = RVIRSpecialRegImmInsn('lui','x1','x2','x3')   # raises error
 # r = RVIRSpecialRegImmInsn('lui','x1',2)   
 # r = RVIRSpecialRegImmInsn('auipc','x1',2)   

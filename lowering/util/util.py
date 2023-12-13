@@ -228,8 +228,15 @@ def map_args(lis_RVIRInsns, args):
             new_regs.append(regs[len(new_regs)])
         insn.cc_update(new_regs)
 
+def use_xregs(RVIRInsnsAfterTrivialRA):
+    for insn in RVIRInsnsAfterTrivialRA:
+        insn.xregs()
 
 def lower(program, output_file):
+  # logic for renaming to 'x' register names
+  x_regs = False
+  if '-x' in sys.argv:
+      x_regs = True
   assembly_code = []
   for func in program['functions']:
     # convert each Bril instruction to a BrilInsn object
@@ -252,7 +259,12 @@ def lower(program, output_file):
     # do trivial register allocation
     trivialRegAllocator = TrivialRegisterAllocator(lis_RVIRInsns,mapping)
     RVIRInsnsAfterTrivialRA = trivialRegAllocator.trivialRegisterAllocation()
+    
+    # convert special regs to x_regs if x_regs flag passed
+    if x_regs:
+        use_xregs(RVIRInsnsAfterTrivialRA)
 
+    # convert RVIRInsn objects to assembly code
     assembly_code.extend(write_asm(RVIRInsnsAfterTrivialRA))
 
   with open(output_file, 'w') as file:

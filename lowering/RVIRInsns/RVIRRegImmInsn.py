@@ -42,6 +42,10 @@ class RVIRRegImmInsn(RVIRInsn):
     def cc_update(self, new_regs):
         self.dst, self.src1 = new_regs
 
+    def xregs(self):
+        self.dst = self.dst if self.dst not in self.reg_map else self.reg_map[self.dst]
+        self.src1 = self.src1 if self.src1 not in self.reg_map else self.reg_map[self.src1]
+
 # r = RVIRRegImmInsn('addi','x1','x2','x3')   # raises error
 # r = RVIRRegImmInsn('addi','x1','x2',2)   
 # r = RVIRRegImmInsn('john','x1','x2',2)   # raises error
