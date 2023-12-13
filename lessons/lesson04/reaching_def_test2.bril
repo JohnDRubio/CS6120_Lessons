@@ -1,0 +1,29 @@
+@func(): int {
+  a: int = const 4;
+  b: int = const 5;
+  cond_m: bool = eq a zero;
+  br cond_m .l1 .l2;
+.l1:
+  a: int = const 10;
+  d: int = const 6;
+  jmp .l3;
+.l2:
+  c: int = const 15;
+  b: int = const 8;
+  br cond_m .l4 .l5;
+.l3:
+  a: int = const 16;
+  c: int = const 1;
+  jmp .l6;
+.l4:
+  a: int = const 20;
+  jmp .l6;
+.l5:
+  e: int = const 12;
+  jmp .end;
+.l6:
+  tmp: int = const 100;
+.end:
+  tmp2: int = const 0;
+}
+

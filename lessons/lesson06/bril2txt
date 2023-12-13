@@ -1,0 +1,94 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "label": "entry"
+        },
+        {
+          "dest": "zero.1",
+          "op": "const",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "dest": "one.1",
+          "op": "const",
+          "type": "int",
+          "value": 1
+        },
+        {
+          "args": [
+            "one.1",
+            "zero.1"
+          ],
+          "dest": "cond.1",
+          "op": "eq",
+          "type": "bool"
+        },
+        {
+          "args": [
+            "cond.1"
+          ],
+          "labels": [
+            "left",
+            "right"
+          ],
+          "op": "br"
+        },
+        {
+          "label": "left"
+        },
+        {
+          "args": [
+            "zero.1",
+            "zero.1"
+          ],
+          "dest": "a.2",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "labels": [
+            "exit"
+          ],
+          "op": "jmp"
+        },
+        {
+          "label": "right"
+        },
+        {
+          "labels": [
+            "exit"
+          ],
+          "op": "jmp"
+        },
+        {
+          "label": "exit"
+        },
+        {
+          "args": [
+            "a.2"
+          ],
+          "dest": "a.1",
+          "labels": [
+            "left"
+          ],
+          "op": "phi",
+          "type": "int"
+        },
+        {
+          "args": [
+            "a.1"
+          ],
+          "op": "print"
+        },
+        {
+          "op": "ret"
+        }
+      ],
+      "name": "func",
+      "type": "int"
+    }
+  ]
+}

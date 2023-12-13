@@ -1,0 +1,9 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\llvm-pass-skeleton",
+    "\\llvm-pass-skeleton\\skeleton"
+  ],
+  "SelectedNode": "\\llvm-pass-skeleton\\skeleton\\LoopDetection.cpp",
+  "PreviewInSolutionExplorer": false
+}

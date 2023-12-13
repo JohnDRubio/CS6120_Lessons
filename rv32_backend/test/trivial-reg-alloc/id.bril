@@ -1,0 +1,5 @@
+@main {
+  x: int = const 2;
+  y: int = id x;
+  z: int = add x y;
+}

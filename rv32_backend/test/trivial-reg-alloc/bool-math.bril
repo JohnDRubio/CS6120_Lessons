@@ -1,0 +1,8 @@
+@main {
+  x: int = const 1;
+  y: int = const 5;
+
+  a: bool = not y;
+  b: bool = and x y;
+  c: bool = or b a;
+}

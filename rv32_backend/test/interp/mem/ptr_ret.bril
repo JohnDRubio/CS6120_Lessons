@@ -1,0 +1,4 @@
+@main(a: int) {
+  e: int = const 9;
+  c: ptr<int> = call @ident a e;
+}
