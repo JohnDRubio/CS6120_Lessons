@@ -16,3 +16,4 @@ lowering/RVIRInsn/riscv32-linux/*
 */__pycache__
 *.in
 *.out
+*.txt
