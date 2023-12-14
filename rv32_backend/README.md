@@ -114,4 +114,4 @@ The goal of this project is to develop a compiler backend which lowers from [Bri
 
 `bril2json < path/to/bril/file.bril | python main.py -o optional_file_name.asm -x`
 
-_Note_: `-o` and `-x` are optional.
+**Note:** `-o` and `-x` are optional.
