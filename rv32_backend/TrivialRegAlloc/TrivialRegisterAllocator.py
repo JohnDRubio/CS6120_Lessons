@@ -8,7 +8,7 @@ class TrivialRegisterAllocator():
     Here, we define a class that allows users to instantiate an instance
     of a register allocator. This particular register allocator uses
     trivial register allocation. The shuttle registers used are the
-    caler-saved RISC-V registers: x5, x6, and x7.
+    caller-saved RISC-V registers: x5, x6, and x7.
   '''
   def __init__(self,lis_RVIRInsns,mapping):
     self.lis_RVIRInsns = lis_RVIRInsns
