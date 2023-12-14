@@ -1,5 +1,5 @@
 # The goal
-The goal of this project is to develop a compiler backend which lowers from [Bril](https://capra.cs.cornell.edu/bril/) to RISC-V. Specifically, the target is [TINYRV32I](https://www.csl.cornell.edu/courses/ece4750/handouts/ece4750-tinyrv-isa.pdf).
+The goal of this project is to develop a compiler backend which lowers from [Bril](https://capra.cs.cornell.edu/bril/) to RISC-V. Specifically, the target is [TINYRV32IM](https://www.csl.cornell.edu/courses/ece4750/handouts/ece4750-tinyrv-isa.pdf).
 
 # Lowering System Architecture
 
