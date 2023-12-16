@@ -46,10 +46,10 @@ class Epilogue:
             insns.append(RVIRMemInsn('lw','s'+str(i-1),'sp',offset))
             offset = offset + 4   
 
-        # Step 2: Retore old frame pointer
+        # Step 2: Restore old frame pointer
         insns.append(RVIRMemInsn('lw','fp','sp',offset))
 
-        # Step 3: Retore return address 
+        # Step 3: Restore return address 
         insns.append(RVIRMemInsn('lw','x1','sp',offset+4))
 
         # Step 4: Destroy frame

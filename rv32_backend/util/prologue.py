@@ -61,5 +61,5 @@ class Prologue:
         
         # Step 6: Put args into saved registers
         for i in range(len(args)):
-            insns.append(RVIRRegImmInsn('addi',args[i]['name'],'a'+str(i),0))
+            insns.append(RVIRRegRegInsn('add',args[i]['name'],'x0','a'+str(i)))
         return insns

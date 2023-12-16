@@ -5,10 +5,10 @@ main:
 	addi fp, sp, 28
 	sw s1, 20(sp)
 	sw s2, 16(sp)
-	addi x6, a0, 0
-	sw x6, -8(fp)
-	addi x6, a1, 0
-	sw x6, -12(fp)
+	add x7, x0, a0
+	sw x7, -8(fp)
+	add x7, x0, a1
+	sw x7, -12(fp)
 	addi x6, x0, 0
 	sw x6, -16(fp)
 	lw x5, -8(fp)
