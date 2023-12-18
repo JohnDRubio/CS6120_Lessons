@@ -27,6 +27,7 @@ from BrilInsns.BrilOrInsn import BrilOrInsn
 from BrilInsns.BrilPrintInsn import BrilPrintInsn
 from BrilInsns.BrilRelationalMathInsn import BrilRelationalMathInsn
 from BrilInsns.BrilRetInsn import BrilRetInsn
+from BrilInsns.BrilMathInsn import BrilMathInsn
 from BrilInsns.BrilValueOperationInsn import BrilValueOperationInsn
 
 # from RVIRInsns import *
@@ -126,10 +127,8 @@ def convert_to_BrilInsn(insn, isFuncName=False):
             #     return BrilOrInsn(insn['dest'], insn['args'][0], insn['args'][1])
             # case 'not':
             #     return BrilNotInsn(insn['dest'], insn['args'][0])
-            case 'add' | 'sub' | 'mul' | 'div':
-                return BrilIntegerMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
-            case 'and' | 'or' | 'not':
-                return BrilBooleanMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
+            case 'add' | 'sub' | 'mul' | 'div' | 'and' | 'or' | 'not':
+                return BrilMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
             case 'const':
                 # if insn['type'] == 'int':
                 #     return BrilIntegerLiteralInsn(insn['dest'], insn['value'])
@@ -148,7 +147,7 @@ def convert_to_BrilInsn(insn, isFuncName=False):
                 return BrilRetInsn(retval)
             case 'id':
                 return BrilIdInsn(insn['dest'], insn['args'][0])
-            case 'print':
+            case 'print':       # Currently being treated as a NOP
                 return BrilPrintInsn(insn['args'])
             case 'nop':
                 return BrilNopInsn()
