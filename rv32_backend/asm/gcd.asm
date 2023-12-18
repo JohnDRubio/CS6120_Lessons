@@ -1,90 +1,90 @@
 main:
-	addi sp, sp, -32
-	sw x1, 28(sp)
-	sw fp, 24(sp)
-	addi fp, sp, 28
-	sw s1, 20(sp)
-	sw s2, 16(sp)
-	add x7, x0, a0
-	sw x7, -8(fp)
-	add x7, x0, a1
-	sw x7, -12(fp)
+	addi x2, x2, -32
+	sw x1, 28(x2)
+	sw x8, 24(x2)
+	addi x8, x2, 28
+	sw x9, 20(x2)
+	sw x18, 16(x2)
+	add x7, x0, x10
+	sw x7, -8(x8)
+	add x7, x0, x11
+	sw x7, -12(x8)
 	addi x6, x0, 0
-	sw x6, -16(fp)
-	lw x5, -8(fp)
+	sw x6, -16(x8)
+	lw x5, -8(x8)
 	addi x6, x5, 0
-	sw x6, -20(fp)
-	lw x5, -12(fp)
+	sw x6, -20(x8)
+	lw x5, -12(x8)
 	addi x6, x5, 0
-	sw x6, -24(fp)
+	sw x6, -24(x8)
 .cmp.val:
-	lw x5, -20(fp)
-	lw x6, -24(fp)
+	lw x5, -20(x8)
+	lw x6, -24(x8)
 	blt x5, x6, .lt1
 	addi x6, x0, 0
-	sw x6, -28(fp)
+	sw x6, -28(x8)
 	jal x0, .exit_cond1
 .lt1:
 	addi x6, x0, 1
-	sw x6, -28(fp)
+	sw x6, -28(x8)
 .exit_cond1:
 	addi x6, x0, 1
-	sw x6, -32(fp)
-	lw x5, -28(fp)
-	lw x6, -32(fp)
+	sw x6, -32(x8)
+	lw x5, -28(x8)
+	lw x6, -32(x8)
 	beq x5, x6, .if.1
 	jal x0, .else.1
 .if.1:
-	lw x5, -24(fp)
-	lw x6, -20(fp)
+	lw x5, -24(x8)
+	lw x6, -20(x8)
 	sub x7, x5, x6
-	sw x7, -36(fp)
+	sw x7, -36(x8)
 	jal x0, .loop.bound
 .else.1:
-	lw x5, -20(fp)
-	lw x6, -24(fp)
+	lw x5, -20(x8)
+	lw x6, -24(x8)
 	sub x7, x5, x6
-	sw x7, -36(fp)
+	sw x7, -36(x8)
 	jal x0, .loop.bound
 .loop.bound:
-	lw x5, -36(fp)
-	lw x6, -16(fp)
+	lw x5, -36(x8)
+	lw x6, -16(x8)
 	beq x5, x6, .eq2
 	addi x6, x0, 0
-	sw x6, -40(fp)
+	sw x6, -40(x8)
 	jal x0, .exit_cond2
 .eq2:
 	addi x6, x0, 1
-	sw x6, -40(fp)
+	sw x6, -40(x8)
 .exit_cond2:
 	addi x6, x0, 1
-	sw x6, -44(fp)
-	lw x5, -40(fp)
-	lw x6, -44(fp)
+	sw x6, -44(x8)
+	lw x5, -40(x8)
+	lw x6, -44(x8)
 	beq x5, x6, .program.end
 	jal x0, .update.val
 .update.val:
 	addi x6, x0, 1
-	sw x6, -48(fp)
-	lw x5, -28(fp)
-	lw x6, -48(fp)
+	sw x6, -48(x8)
+	lw x5, -28(x8)
+	lw x6, -48(x8)
 	beq x5, x6, .if.2
 	jal x0, .else.2
 .if.2:
-	lw x5, -36(fp)
+	lw x5, -36(x8)
 	addi x6, x5, 0
-	sw x6, -24(fp)
+	sw x6, -24(x8)
 	jal x0, .cmp.val
 .else.2:
-	lw x5, -36(fp)
+	lw x5, -36(x8)
 	addi x6, x5, 0
-	sw x6, -20(fp)
+	sw x6, -20(x8)
 	jal x0, .cmp.val
 .program.end:
 	add x0, x0, x0
-	lw s2, 16(sp)
-	lw s1, 20(sp)
-	lw fp, 24(sp)
-	lw x1, 28(sp)
-	addi sp, sp, 32
+	lw x18, 16(x2)
+	lw x9, 20(x2)
+	lw x8, 24(x2)
+	lw x1, 28(x2)
+	addi x2, x2, 32
 	jalr x0, x1, 0 

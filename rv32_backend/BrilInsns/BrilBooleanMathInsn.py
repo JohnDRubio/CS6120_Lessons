@@ -12,10 +12,13 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 class BrilBooleanMathInsn(BrilValueOperationInsn):
 
-  def __init__(self,dest,src1,src2=None):
+  def __init__(self,op,dest,src1,src2=None):
       super(BrilBooleanMathInsn, self).__init__(dest)
+      self.op = op
       self.src1 = src1
       self.src2 = src2
 
   def conv_riscvir(self):
-      pass 
+      if self.op.lower() == "not": 
+         return [RVIRRegImmInsn('xori',self.dest,self.src1, 1)]
+      return [RVIRRegRegInsn(self.op.lower(),self.dest,self.src1,self.src2)]

@@ -4,8 +4,8 @@ mod2:
 	sw fp, 24(sp)
 	addi fp, sp, 28
 	sw s1, 20(sp)
-	addi x6, a0, 0
-	sw x6, -8(fp)
+	add x7, x0, a0
+	sw x7, -8(fp)
 	addi x6, x0, 2
 	sw x6, -12(fp)
 	lw x5, -8(fp)
@@ -48,12 +48,12 @@ loop_subroutine:
 	sw s1, 48(sp)
 	sw s2, 44(sp)
 	sw s3, 40(sp)
-	addi x6, a0, 0
-	sw x6, -12(fp)
-	addi x6, a1, 0
-	sw x6, -16(fp)
-	addi x6, a2, 0
-	sw x6, -20(fp)
+	add x7, x0, a0
+	sw x7, -12(fp)
+	add x7, x0, a1
+	sw x7, -16(fp)
+	add x7, x0, a2
+	sw x7, -20(fp)
 	addi x6, x0, 0
 	sw x6, -24(fp)
 	addi x6, x0, 63
@@ -157,10 +157,10 @@ OR:
 	addi fp, sp, 24
 	sw s1, 16(sp)
 	sw s2, 12(sp)
-	addi x6, a0, 0
-	sw x6, -20(fp)
-	addi x6, a1, 0
-	sw x6, -24(fp)
+	add x7, x0, a0
+	sw x7, -20(fp)
+	add x7, x0, a1
+	sw x7, -24(fp)
 	addi x6, x0, 1
 	sw x6, -28(fp)
 	lw x6, -20(fp)
@@ -188,10 +188,10 @@ AND:
 	addi fp, sp, 24
 	sw s1, 16(sp)
 	sw s2, 12(sp)
-	addi x6, a0, 0
-	sw x6, -20(fp)
-	addi x6, a1, 0
-	sw x6, -24(fp)
+	add x7, x0, a0
+	sw x7, -20(fp)
+	add x7, x0, a1
+	sw x7, -24(fp)
 	addi x6, x0, 0
 	sw x6, -28(fp)
 	lw x6, -20(fp)
@@ -219,10 +219,10 @@ XOR:
 	addi fp, sp, 24
 	sw s1, 16(sp)
 	sw s2, 12(sp)
-	addi x6, a0, 0
-	sw x6, -16(fp)
-	addi x6, a1, 0
-	sw x6, -20(fp)
+	add x7, x0, a0
+	sw x7, -16(fp)
+	add x7, x0, a1
+	sw x7, -20(fp)
 	lw x6, -16(fp)
 	add a0, x0, x6
 	lw x6, -20(fp)
@@ -258,12 +258,12 @@ main:
 	sw s1, 32(sp)
 	sw s2, 28(sp)
 	sw s3, 24(sp)
-	addi x6, a0, 0
-	sw x6, -16(fp)
-	addi x6, a1, 0
-	sw x6, -20(fp)
-	addi x6, a2, 0
-	sw x6, -24(fp)
+	add x7, x0, a0
+	sw x7, -16(fp)
+	add x7, x0, a1
+	sw x7, -20(fp)
+	add x7, x0, a2
+	sw x7, -24(fp)
 	addi x6, x0, 1
 	sw x6, -28(fp)
 	addi x6, x0, 0
@@ -345,7 +345,7 @@ main:
 	add x7, a0, x0
 	sw x7, -40(fp)
 .end:
-	nop
+	add x0, x0, x0
 	lw s3, 24(sp)
 	lw s2, 28(sp)
 	lw s1, 32(sp)

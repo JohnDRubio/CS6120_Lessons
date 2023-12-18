@@ -13,8 +13,20 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 # maybe don't need IntegerLiteral and BooleanLiteral classes
 class BrilConstInsn(BrilInsn):
 
-  def __init__(self,dest):
+  def __init__(self, type, dest, value):
+      self.type = type
       self.dest = dest
+      self.value = value
 
   def conv_riscvir(self):
-      pass 
+      if self.type.lower() != "bool":
+        # addi dest, x0, value
+        return [RVIRRegImmInsn('addi',self.dest,'x0', self.value)]
+      # if value == true
+      #   addi dest, x0, 1
+      # else
+      #   addi dest, x0, 0
+      if self.value:
+        return [RVIRRegImmInsn('addi',self.dest,'x0', 1)]
+      else:
+        return [RVIRRegImmInsn('addi',self.dest,'x0', 0)] 

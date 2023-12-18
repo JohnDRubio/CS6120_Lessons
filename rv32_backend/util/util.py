@@ -112,24 +112,29 @@ def convert_to_BrilInsn(insn, isFuncName=False):
         return BrilLabelInsn(insn['label'], isFuncName)
     if 'op' in insn:
         match insn['op']:
-            case 'add':
-                return BrilAddInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'mul':
-                return BrilMulInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'sub':
-                return BrilSubInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'div':
-                return BrilDivInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'and':
-                return BrilAndInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'or':
-                return BrilOrInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            case 'not':
-                return BrilNotInsn(insn['dest'], insn['args'][0])
+            # case 'add':
+            #     return BrilAddInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'mul':
+            #     return BrilMulInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'sub':
+            #     return BrilSubInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'div':
+            #     return BrilDivInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'and':
+            #     return BrilAndInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'or':
+            #     return BrilOrInsn(insn['dest'], insn['args'][0], insn['args'][1])
+            # case 'not':
+            #     return BrilNotInsn(insn['dest'], insn['args'][0])
+            case 'add' | 'sub' | 'mul' | 'div':
+                return BrilIntegerMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
+            case 'and' | 'or' | 'not':
+                return BrilBooleanMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
             case 'const':
-                if insn['type'] == 'int':
-                    return BrilIntegerLiteralInsn(insn['dest'], insn['value'])
-                return BrilBooleanLiteralInsn(insn['dest'], insn['value'])
+                # if insn['type'] == 'int':
+                #     return BrilIntegerLiteralInsn(insn['dest'], insn['value'])
+                # return BrilBooleanLiteralInsn(insn['dest'], insn['value'])
+                return BrilConstInsn(insn['type'],insn['dest'], insn['value'])
             case 'jmp':
                 return BrilJumpInsn(insn['labels'][0])
             case 'br':

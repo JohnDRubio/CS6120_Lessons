@@ -12,10 +12,11 @@ from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
 class BrilIntegerMathInsn(BrilValueOperationInsn):
 
-  def __init__(self,dest,src1,src2):
+  def __init__(self,op, dest,src1,src2):
       super(BrilIntegerMathInsn, self).__init__(dest)
+      self.op = op
       self.src1 = src1
       self.src2 = src2
 
   def conv_riscvir(self):
-      pass 
+      return [RVIRRegRegInsn(self.op,self.dest,self.src1,self.src2)] 
