@@ -1,4 +1,4 @@
-from BrilInsns.BrilValueOperationInsn import BrilValueOperationInsn
+from BrilInsns.BrilMathInsn import BrilMathInsn
 
 import sys
 sys.path.append("../")
@@ -11,18 +11,18 @@ from RVIRInsns.RVIRRegImmInsn import RVIRRegImmInsn
 from RVIRInsns.RVIRLabelInsn import RVIRLabelInsn
 from RVIRInsns.RVIRSpecialRegImmInsn import RVIRSpecialRegImmInsn
 
-class BrilRelationalMathInsn(BrilValueOperationInsn):
+class BrilRelationalMathInsn(BrilMathInsn):
 
   numRel = 1
   non_RV_rel_ops = ['le', 'gt']     # these ops are in Bril but not RISC-V
   def __init__(self,dest,src1,op,src2):
-      super(BrilRelationalMathInsn, self).__init__(dest)
-      
       # if relational op is a 'Bril-only' op, invert the op
       # and swap the operands
       if op in self.non_RV_rel_ops:
          op = 'ge' if op == 'le' else 'lt'
          src1, src2 = src2, src1
+         
+      super(BrilRelationalMathInsn, self).__init__(op, dest, src1, src2)
       self.op = op
       self.src1 = src1
       self.src2 = src2
