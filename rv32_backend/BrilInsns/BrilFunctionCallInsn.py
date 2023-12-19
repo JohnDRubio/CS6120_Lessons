@@ -37,12 +37,22 @@ class BrilFunctionCallInsn(BrilValueOperationInsn):
         addi dest, x10, x0
       '''
       insns = []
-      overflow = len(self.args) > 8
+      overflow = len(self.args) - 8 if len(self.args) > 8 else 0
       NARG_REGS = 8
       idx = 0
+
+      # Step 1: Move arguments to arg registers
       while idx < NARG_REGS and idx < len(self.args):
          insns.append(RVIRRegRegInsn('add','a'+str(idx),'x0',self.args[idx])); idx += 1
+      
+      # Step 2: Push overflow arguments to stack
+      for i in range(overflow):     # Will not execute if overflow 
+         insns.append(RVIRMemInsn('sw',self.args[idx],'sp',i*4))
+
+      # Step 3: Function call
       insns.append(RVIRJumpInsn('jal','x1',self.func_name,isFunc=True))
+
+      # Step 4: Move result to dest
       if self.dest is not None:
         insns.append(RVIRRegRegInsn('add',self.dest,'a0','x0'))
       return insns
