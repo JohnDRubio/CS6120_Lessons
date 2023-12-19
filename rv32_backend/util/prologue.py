@@ -39,6 +39,9 @@ class Prologue:
             -----------------------------------
         '''
         insns = []
+        overflow = len(args) - 8 if len(args) > 8 else 0
+        NARG_REGS = 8
+        idx = 0
         # Step 1: create stack frame
         #   addi sp, sp, -frame_size
         insns.append(RVIRRegImmInsn('addi','sp','sp', -frame_size))
@@ -59,7 +62,15 @@ class Prologue:
             insns.append(RVIRMemInsn('sw','s'+str(i),'sp',offset))
             offset = offset -4   
         
-        # Step 6: Put args into saved registers
+        # Step 6.1: Move arguments to arg registers
+        while idx < NARG_REGS and idx < len(args):
+            insns.append(RVIRRegRegInsn('add','a'+str(i),'x0',args[idx]['name'])); idx += 1
+        
+        # Step 6.2: Push overflow arguments to stack
+        for i in range(overflow):     # Will not execute if overflow 
+            insns.append(RVIRMemInsn('lw',self.args[idx]['name'],'fp',(1+i)*4))
+        
+        # Step 6.3: Put args into saved registers
         for i in range(len(args)):
-            insns.append(RVIRRegRegInsn('add',args[i]['name'],'x0','a'+str(i)))
+            insns.append(RVIRRegRegInsn('add',args[i]['name'],'x0','a'+str(i)))     # Note: The overflow arguments will be loaded into TRA regs so they're fine
         return insns
