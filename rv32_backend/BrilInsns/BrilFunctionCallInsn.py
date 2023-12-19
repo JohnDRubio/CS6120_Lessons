@@ -47,7 +47,7 @@ class BrilFunctionCallInsn(BrilValueOperationInsn):
       
       # Step 2: Push overflow arguments to stack
       for i in range(overflow):     # Will not execute if overflow 
-         insns.append(RVIRMemInsn('sw',self.args[idx],'sp',i*4))
+         insns.append(RVIRMemInsn('sw',self.args[idx],'sp',i*4)); idx += 1
 
       # Step 3: Function call
       insns.append(RVIRJumpInsn('jal','x1',self.func_name,isFunc=True))
