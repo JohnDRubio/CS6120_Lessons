@@ -107,32 +107,15 @@ def convert_to_RVIRInsns(lis_BrilInsns, frame_size=0, nargs=0, temps=[],args=[])
 
 def convert_to_BrilInsn(insn, isFuncName=False):
     relational_ops = ['eq','lt','gt','le','ge']
-    if 'op' in insn and insn['op'] in relational_ops:
-        return BrilRelationalMathInsn(insn['dest'], insn['args'][0], insn['op'], insn['args'][1])
     if 'label' in insn:
         return BrilLabelInsn(insn['label'], isFuncName)
     if 'op' in insn:
         match insn['op']:
-            # case 'add':
-            #     return BrilAddInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'mul':
-            #     return BrilMulInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'sub':
-            #     return BrilSubInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'div':
-            #     return BrilDivInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'and':
-            #     return BrilAndInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'or':
-            #     return BrilOrInsn(insn['dest'], insn['args'][0], insn['args'][1])
-            # case 'not':
-            #     return BrilNotInsn(insn['dest'], insn['args'][0])
             case 'add' | 'sub' | 'mul' | 'div' | 'and' | 'or' | 'not':
                 return BrilMathInsn(insn['op'], insn['dest'], insn['args'][0], insn['args'][1])
+            case op if op in relational_ops:
+                return BrilRelationalMathInsn(insn['dest'], insn['args'][0], insn['op'], insn['args'][1])
             case 'const':
-                # if insn['type'] == 'int':
-                #     return BrilIntegerLiteralInsn(insn['dest'], insn['value'])
-                # return BrilBooleanLiteralInsn(insn['dest'], insn['value'])
                 return BrilConstInsn(insn['type'],insn['dest'], insn['value'])
             case 'jmp':
                 return BrilJumpInsn(insn['labels'][0])
@@ -147,7 +130,7 @@ def convert_to_BrilInsn(insn, isFuncName=False):
                 return BrilRetInsn(retval)
             case 'id':
                 return BrilIdInsn(insn['dest'], insn['args'][0])
-            case 'print':       # Currently being treated as a NOP
+            case 'print':   # Currently being treated as a NOP
                 return BrilPrintInsn(insn['args'])
             case 'nop':
                 return BrilNopInsn()
