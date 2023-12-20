@@ -1,0 +1,14 @@
+@main() {
+  v1: int = const 99;
+  final: int = call @no_effect v1;
+}
+
+@f(n: int): int {
+    rv2: int = call @g n;
+    ret rv2;
+}
+
+@g(m: int): int {
+    rv1: int = mul m m;
+    ret rv1;
+}

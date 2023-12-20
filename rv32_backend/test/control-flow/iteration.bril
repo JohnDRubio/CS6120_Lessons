@@ -1,0 +1,12 @@
+@main() {
+    .start:
+        i: int = const 0;
+        max: int = const 10;
+        one: int = const 1;
+    .loop: 
+        cond: bool = ge i max;
+        print i;
+        i: int = add i one;
+        br cond .exit .loop;
+    .exit:
+}

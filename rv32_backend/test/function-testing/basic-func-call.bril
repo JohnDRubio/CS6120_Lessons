@@ -1,0 +1,9 @@
+@main() {
+  v2: int = const 1;
+  i: int = id v2;
+  sameVal: int = call @no_effect i;
+}
+
+@no_effect(n: int): int {
+    ret n;
+}

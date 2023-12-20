@@ -1,0 +1,15 @@
+@main(input: int) {
+  v1: int = const 1;
+  v2: int = id v1;
+.cond.0:
+  v3: int = id v2;
+  v4: bool = lt v3 input;
+  br v4 .true.0 .false.0;
+.true.0:
+  t: int = const true;
+  print t;
+  jmp .exit.0;
+.false.0:
+  f: int = const false;
+.exit.0:
+}

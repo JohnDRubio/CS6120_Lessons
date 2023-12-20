@@ -1,0 +1,6 @@
+@main() {
+    op1: int = const 1;
+    op2: int = const 2;
+    op3: bool = const false;
+    op4: bool = const true;
+}

@@ -69,3 +69,5 @@ class Prologue:
         # Step 6.2: Move arguments to TRA registers (args 8+)
         for i in range(overflow):     # Will not execute if overflow 
             insns.append(RVIRMemInsn('lw',self.args[idx]['name'],'fp',(1+i)*4)); idx += 1
+
+        return insns

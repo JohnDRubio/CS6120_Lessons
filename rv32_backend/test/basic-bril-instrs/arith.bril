@@ -1,0 +1,8 @@
+@main() {
+    op1: int = const 1;
+    op2: int = const 2;
+    sum: int = add op1 op2;
+    diff: int = sub op1 op2;
+    prod: int = mul op1 op2;
+    divi: int = div op1 op2;
+}

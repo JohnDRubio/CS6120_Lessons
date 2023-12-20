@@ -1,0 +1,11 @@
+@main() {
+    op1: int = const 1;
+    op2: int = const 2;
+    op3: bool = const false;
+    op4: bool = const true;
+
+    new_op1: int = id op1;
+    new_op2: int = id op2;
+    new_op3: bool = id op3;
+    new_op4: bool = id op4;
+}
