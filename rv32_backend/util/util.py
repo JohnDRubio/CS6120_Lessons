@@ -47,6 +47,10 @@ from util.prologue import Prologue
 from util.epilogue import Epilogue
 from util.visitor import Visitor
 
+def preprocess(program):
+    insert_labels(program)
+    mangle(program)
+
 def set_fileName():
     output_filename = 'asm/out.asm'
     if len(sys.argv) > 1:
@@ -196,8 +200,6 @@ def get_nargs(func):
     return 0
 
 def map_args(lis_RVIRInsns, args):
-    # TODO: Dealing with < 8 arg case for now
-
     tra_regs = ['x5','x6','x7']
     
     # Using regs s1-s11
@@ -220,12 +222,18 @@ def use_xregs(RVIRInsnsAfterTrivialRA):
     visitor = Visitor(RVIRInsnsAfterTrivialRA)
     visitor.xregs()
 
-def lower(program, output_file):
+def lower(program):
+  # get name of output file
+  output_file = set_fileName()
+
   # logic for renaming to 'x' register names
   x_regs = False
   if '-x' in sys.argv:
       x_regs = True
   assembly_code = []
+
+  # preprocessing step
+  preprocess(program)
   for func in program['functions']:
     # convert each Bril instruction to a BrilInsn object
     lis_BrilInsns = convert_to_BrilInsns(func)

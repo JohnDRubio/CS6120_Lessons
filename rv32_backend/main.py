@@ -4,16 +4,9 @@ from util.util import *
 def main():
   # Read in source Bril program
   program = json.load(sys.stdin)
-  # file = open('C:\\Users\\rubio\\Documents\\personal\\School\\CS6120\\lessons\\CS6120_Lessons\\rv32_backend\\test\\function-testing\\basic-func-call.json')
-  # program = json.load(file)
-  output_file = set_fileName()
 
-  # Preprocessing
-  insert_labels(program)
-  mangle(program)
-  
   # Lower to RISC-V
-  lower(program, output_file)
+  lower(program)
 
 if __name__ == "__main__":
     main()
